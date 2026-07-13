@@ -213,6 +213,59 @@
     color: #333333;
   }
 
+  /* ===== BIG FEATURED ROW (large thumb + stacked text, one per row) ===== */
+  .bigItemRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 3px solid #000080;
+    margin-bottom: 4px;
+  }
+
+  .bigThumb {
+    flex-shrink: 0;
+    width: 160px;
+    height: 160px;
+    border: 3px solid #000000;
+    background: #C0C0C0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .bigThumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .bigThumb.bigThumbText {
+    font-size: 40px;
+    font-weight: bold;
+    color: #000000;
+  }
+
+  .bigItemInfo {
+    padding-top: 4px;
+  }
+
+  .bigItemTitle {
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: underline;
+    color: #551A8B;
+    margin-bottom: 4px;
+    display: inline-block;
+  }
+
+  .bigItemDesc {
+    font-size: 12px;
+    color: #333333;
+  }
+
   .footerBar {
     background: #C0C0C0;
     border: 1px solid #000000;
@@ -1011,17 +1064,15 @@
 </td></tr>
 <tr><td>
   <div class="navbar">
-    <a href="#fun">Fun Stops</a>
-    <a href="#tools">Tool Shed</a>
-    <a href="#picks">Ray's Picks</a>
+    <a href="#fun">All Stops</a>
     <a href="#mystops" id="myStopsNavLink">My Stops</a>
-    <a href="#" onclick="openModal('mk','MK','Fun Stops','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">MK Chat</a>
+    <a href="#" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">MK Chat</a>
     <a href="#">About</a>
     <a href="#">Contact</a>
   </div>
 </td></tr>
 <tr><td>
-  <div class="mkBanner" onclick="openModal('mk','MK','Fun Stops','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com');">
+  <div class="mkBanner" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com');">
     <div class="mkBannerInner">
       <div class="mkLogoCircle">MK</div>
       <div class="mkBannerText">online chatting<br>better than<br>discord???</div>
@@ -1056,17 +1107,17 @@
   <div class="adSlotWrap">
     <div class="adSlotLabel">Featured</div>
 
-    <div class="adCard activeAd" id="ad-mk" onclick="openModal('mk','MK','Fun Stops','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">
+    <div class="adCard activeAd" id="ad-mk" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">
       <img src="/mk-screenshot-chat.png" alt="MK chat app">
       <div class="adCaption">MK &mdash; online chatting better than discord???</div>
     </div>
 
-    <div class="adCard" id="ad-whenwhere" onclick="openModal('whenwhere','the when &amp; where','Fun Stops','Live events in the Triangle &mdash; Raleigh, Durham, and Chapel Hill.','1 hour ago','18 times','410 times','/whenwhere-screenshot-home.png','https://thewhenandwhere.com'); return false;">
+    <div class="adCard" id="ad-whenwhere" onclick="openModal('whenwhere','the when &amp; where','Browse','Live events in the Triangle &mdash; Raleigh, Durham, and Chapel Hill.','1 hour ago','18 times','410 times','/whenwhere-screenshot-home.png','https://thewhenandwhere.com'); return false;">
       <img src="/whenwhere-screenshot-home.png" alt="the when and where">
       <div class="adCaption">the when &amp; where &mdash; live events in the Triangle</div>
     </div>
 
-    <div class="adCard" id="ad-mtd" onclick="openModal('mtd','MusicToDiscord','Tool Shed','Show what you\'re playing in Apple Music / iTunes as your Discord status.','2 days ago','9 times','204 times','/addformusic2discord.png','https://github.com/macksiminski53/iTunes2Discord/releases/latest'); return false;">
+    <div class="adCard" id="ad-mtd" onclick="openModal('mtd','MusicToDiscord','Browse','Show what you\'re playing in Apple Music / iTunes as your Discord status.','2 days ago','9 times','204 times','/addformusic2discord.png','https://github.com/macksiminski53/iTunes2Discord/releases/latest'); return false;">
       <img src="/addformusic2discord.png" alt="MusicToDiscord">
       <div class="adCaption">MusicToDiscord &mdash; show what you're playing as your Discord status</div>
     </div>
@@ -1100,9 +1151,7 @@
       <td class="sidebarCell">
         <h4>Browse</h4>
         <ul>
-          <li><a href="#fun">Fun Stops</a></li>
-          <li><a href="#tools">Tool Shed</a></li>
-          <li><a href="#picks">Ray's Picks</a></li>
+          <li><a href="#fun">All Stops</a></li>
           <li><a href="#mystops">My Stops</a></li>
         </ul>
         <h4>Sort By</h4>
@@ -1120,66 +1169,70 @@
       </td>
       <td class="mainCell">
 
-        <div class="sectionHead" id="fun">Fun Stops</div>
+        <div class="sectionHead" id="fun">Browse</div>
+
+        <div class="bigItemRow">
+          <div class="bigThumb bigThumbText" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com');">MK</div>
+          <div class="bigItemInfo">
+            <div><a class="bigItemTitle" href="#" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">MK</a></div>
+            <div class="bigItemDesc">Online chatting better than discord???</div>
+          </div>
+        </div>
+
+        <div class="bigItemRow">
+          <div class="bigThumb" onclick="openModal('whenwhere','the when &amp; where','Browse','Live events in the Triangle &mdash; Raleigh, Durham, and Chapel Hill.','1 hour ago','18 times','410 times','/whenwhere-screenshot-home.png','https://thewhenandwhere.com');"><img src="/whenwhere-screenshot-home.png" alt="the when and where"></div>
+          <div class="bigItemInfo">
+            <div><a class="bigItemTitle" href="#" onclick="openModal('whenwhere','the when &amp; where','Browse','Live events in the Triangle &mdash; Raleigh, Durham, and Chapel Hill.','1 hour ago','18 times','410 times','/whenwhere-screenshot-home.png','https://thewhenandwhere.com'); return false;">the when &amp; where</a></div>
+            <div class="bigItemDesc">Live events in the Triangle.</div>
+          </div>
+        </div>
+
+        <div class="bigItemRow">
+          <div class="bigThumb" onclick="openModal('mtd','MusicToDiscord','Browse','Show what you\'re playing in Apple Music / iTunes as your Discord status.','2 days ago','9 times','204 times','/addformusic2discord.png','https://github.com/macksiminski53/iTunes2Discord/releases/latest');"><img src="/addformusic2discord.png" alt="MusicToDiscord"></div>
+          <div class="bigItemInfo">
+            <div><a class="bigItemTitle" href="#" onclick="openModal('mtd','MusicToDiscord','Browse','Show what you\'re playing in Apple Music / iTunes as your Discord status.','2 days ago','9 times','204 times','/addformusic2discord.png','https://github.com/macksiminski53/iTunes2Discord/releases/latest'); return false;">MusicToDiscord</a></div>
+            <div class="bigItemDesc">Show what you're playing as your Discord status.</div>
+          </div>
+        </div>
+
+        <div class="bigItemRow">
+          <div class="bigThumb" onclick="openModal('markus','Markus the Music Pet','Browse','A little bear who eats music instead of food. From MusicToDiscord.','Just now','7 times','133 times','/markus-party.svg','/markus.html');"><img src="/markus-party.svg" alt="Markus the Music Pet"></div>
+          <div class="bigItemInfo">
+            <div><a class="bigItemTitle" href="#" onclick="openModal('markus','Markus the Music Pet','Browse','A little bear who eats music instead of food. From MusicToDiscord.','Just now','7 times','133 times','/markus-party.svg','/markus.html'); return false;">Markus the Music Pet</a></div>
+            <div class="bigItemDesc">A bear who eats music instead of food.</div>
+          </div>
+        </div>
+
         <table class="itemTable">
           <tr>
-            <td>
-              <div class="thumb" style="font-size:16px; font-weight:bold;">MK</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('mk','MK','Fun Stops','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">MK</a></div>
-              <div class="itemDesc">Online chatting better than discord???</div>
-            </td>
-            <td>
-              <div class="thumb">&#9819;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('whenwhere','the when &amp; where','Fun Stops','Live events in the Triangle &mdash; Raleigh, Durham, and Chapel Hill.','1 hour ago','18 times','410 times','/whenwhere-screenshot-home.png','https://thewhenandwhere.com'); return false;">the when &amp; where</a></div>
-              <div class="itemDesc">Live events in the Triangle.</div>
-            </td>
             <td>
               <div class="thumb">&#9731;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('site-c','Placeholder Site C','Fun Stops','Add a quirky corner of the web here.','5 hours ago','3 times','98 times','&#9731;'); return false;">Placeholder Site C</a></div>
+              <div class="itemTitle"><a href="#" onclick="openModal('site-c','Placeholder Site C','Browse','Add a quirky corner of the web here.','5 hours ago','3 times','98 times','&#9731;'); return false;">Placeholder Site C</a></div>
               <div class="itemDesc">A quirky corner of the web.</div>
-            </td>
-          </tr>
-        </table>
-
-        <div class="sectionHead" id="tools">Tool Shed</div>
-        <table class="itemTable">
-          <tr>
-            <td>
-              <div class="thumb">&#9834;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('mtd','MusicToDiscord','Tool Shed','Show what you\'re playing in Apple Music / iTunes as your Discord status.','2 days ago','9 times','204 times','/addformusic2discord.png','https://github.com/macksiminski53/iTunes2Discord/releases/latest'); return false;">MusicToDiscord</a></div>
-              <div class="itemDesc">Show what you're playing as your Discord status.</div>
             </td>
             <td>
               <div class="thumb">&#9881;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('tool-b','Placeholder Tool B','Tool Shed','Another useful utility goes here.','6 hours ago','15 times','389 times','&#9881;'); return false;">Placeholder Tool B</a></div>
+              <div class="itemTitle"><a href="#" onclick="openModal('tool-b','Placeholder Tool B','Browse','Another useful utility goes here.','6 hours ago','15 times','389 times','&#9881;'); return false;">Placeholder Tool B</a></div>
               <div class="itemDesc">Another useful utility.</div>
             </td>
             <td>
               <div class="thumb">&#9998;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('tool-c','Placeholder Tool C','Tool Shed','Save a slot for a handy site you use often.','2 days ago','9 times','204 times','&#9998;'); return false;">Placeholder Tool C</a></div>
+              <div class="itemTitle"><a href="#" onclick="openModal('tool-c','Placeholder Tool C','Browse','Save a slot for a handy site you use often.','2 days ago','9 times','204 times','&#9998;'); return false;">Placeholder Tool C</a></div>
               <div class="itemDesc">A handy site you use often.</div>
             </td>
           </tr>
-        </table>
-
-        <div class="sectionHead" id="picks">Ray's Picks</div>
-        <table class="itemTable">
           <tr>
             <td>
               <div class="thumb">&#9733;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('pick-a','Placeholder Pick A','Ray\'s Picks','Your own project, social, or favorite link goes here.','1 hour ago','30 times','670 times','&#9733;'); return false;">Placeholder Pick A</a></div>
+              <div class="itemTitle"><a href="#" onclick="openModal('pick-a','Placeholder Pick A','Browse','Your own project, social, or favorite link goes here.','1 hour ago','30 times','670 times','&#9733;'); return false;">Placeholder Pick A</a></div>
               <div class="itemDesc">Your own project or link.</div>
             </td>
             <td>
               <div class="thumb">&#9834;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('pick-b','Placeholder Pick B','Ray\'s Picks','Another personal favorite slot.','4 hours ago','11 times','156 times','&#9834;'); return false;">Placeholder Pick B</a></div>
+              <div class="itemTitle"><a href="#" onclick="openModal('pick-b','Placeholder Pick B','Browse','Another personal favorite slot.','4 hours ago','11 times','156 times','&#9834;'); return false;">Placeholder Pick B</a></div>
               <div class="itemDesc">Another favorite slot.</div>
             </td>
-            <td>
-              <div class="thumb" style="padding:0; overflow:hidden;"><img src="/markus-party.svg" alt="Markus the Music Pet" style="width:100%; height:100%; object-fit:cover;"></div>
-              <div class="itemTitle"><a href="#" onclick="openModal('markus','Markus the Music Pet','Ray\'s Picks','A little bear who eats music instead of food. From MusicToDiscord.','Just now','7 times','133 times','/markus-party.svg','/markus.html'); return false;">Markus the Music Pet</a></div>
-              <div class="itemDesc">A bear who eats music instead of food.</div>
-            </td>
+            <td></td>
           </tr>
         </table>
 
