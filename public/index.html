@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Internet Rest Stop</title>
+<style>
+  body {
+    margin: 0;
+    background: #ffffff;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+  }
+
+  a { color: #0000EE; }
+  a:visited { color: #551A8B; }
+
+  /* ===== LOGIN OVERLAY ===== */
+  #siteContent.blurred {
+    display: none;
+  }
+
+  #loginScreen {
+    width: 300px;
+    margin: 60px auto;
+    border: 2px solid #000000;
+    background: #ECE9D8;
+    padding: 10px;
+    font-family: Tahoma, Arial, sans-serif;
+  }
+
+  #loginScreen.hidden { display: none; }
+
+  #loginScreen h2 {
+    margin: 0 0 10px;
+    background: #000080;
+    color: #ffffff;
+    padding: 4px 6px;
+    font-size: 13px;
+  }
+
+  #loginScreen table { width: 100%; }
+  #loginScreen td { padding: 3px 0; }
+
+  #loginScreen input[type="text"],
+  #loginScreen input[type="password"] {
+    width: 150px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+  }
+
+  #loginScreen input[type="button"] {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    padding: 2px 10px;
+  }
+
+  #loginScreen .privacy {
+    margin-top: 10px;
+    font-size: 10px;
+    font-style: italic;
+    text-align: center;
+  }
+
+  #loginScreen .modeToggle {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 11px;
+  }
+
+  #loginError {
+    display: none;
+    background: #ffe0e0;
+    border: 1px solid #800000;
+    color: #800000;
+    font-size: 11px;
+    padding: 4px 6px;
+    margin-top: 8px;
+  }
+
+  /* ===== TOP TABLE LAYOUT ===== */
+  table.layout {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+  }
+
+  .banner {
+    background: #000080;
+    color: #ffffff;
+    padding: 4px 8px;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .headtable {
+    width: 100%;
+    background: #C0C0C0;
+    border: 1px solid #000000;
+  }
+
+  .headtable td { padding: 6px; vertical-align: middle; }
+
+  .sitename {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 30px;
+    font-weight: bold;
+    color: #800000;
+  }
+
+  .navbar {
+    background: #D4D0C8;
+    border: 1px solid #000000;
+    border-top: none;
+    padding: 4px;
+    font-size: 11px;
+  }
+
+  .navbar a {
+    margin-right: 12px;
+    font-weight: bold;
+  }
+
+  .mainbody {
+    border: 1px solid #000000;
+    border-top: none;
+  }
+
+  table.contentTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  td.sidebarCell {
+    width: 150px;
+    background: #EFEFEF;
+    border-right: 1px solid #999999;
+    vertical-align: top;
+    padding: 8px;
+  }
+
+  td.sidebarCell h4 {
+    background: #000080;
+    color: #ffffff;
+    margin: 0 0 4px;
+    padding: 2px 4px;
+    font-size: 11px;
+  }
+
+  td.sidebarCell ul {
+    margin: 0 0 12px;
+    padding-left: 16px;
+    font-size: 11px;
+  }
+
+  td.mainCell {
+    vertical-align: top;
+    padding: 10px;
+  }
+
+  .sectionHead {
+    background: #000080;
+    color: #ffffff;
+    padding: 3px 6px;
+    font-weight: bold;
+    font-size: 12px;
+    margin: 10px 0 6px;
+  }
+
+  table.itemTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+  }
+
+  table.itemTable td {
+    border: 1px solid #999999;
+    padding: 6px;
+    vertical-align: top;
+    width: 33%;
+    background: #ffffff;
+  }
+
+  .thumb {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #000000;
+    background: #C0C0C0;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 24px;
+    float: left;
+    margin-right: 8px;
+  }
+
+  .itemTitle {
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  .itemDesc {
+    font-size: 11px;
+    color: #333333;
+  }
+
+  .footerBar {
+    background: #C0C0C0;
+    border: 1px solid #000000;
+    border-top: none;
+    text-align: center;
+    font-size: 10px;
+    padding: 6px;
+  }
+
+  hr { border: none; border-top: 1px solid #999999; }
+
+  /* ===== DETAIL MODAL (place-page style) ===== */
+  #modalOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+  }
+  #modalOverlay.open { display: block; }
+
+  #modalBox {
+    width: 700px;
+    max-width: 92%;
+    margin: 30px auto;
+    background: #ffffff;
+    border: 2px solid #000000;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  #modalBox .modalTitleBar {
+    background: #000080;
+    color: #ffffff;
+    padding: 5px 8px;
+    font-size: 13px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #modalBox .modalTitleBar a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    border: 1px solid #ffffff;
+    padding: 0px 6px;
+  }
+
+  #modalBox .modalBody { padding: 10px; }
+
+  table.modalLayout {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  td.previewCell {
+    width: 65%;
+    vertical-align: top;
+    padding-right: 10px;
+  }
+
+  .previewBox {
+    border: 1px solid #999999;
+    background: #C0C0C0;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+  }
+
+  .previewCaption {
+    text-align: center;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  .visitBtnRow { text-align: center; margin-top: 8px; }
+  .visitBtnRow input[type="button"] {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    padding: 2px 10px;
+    margin: 0 3px;
+  }
+
+  td.infoCell {
+    width: 35%;
+    vertical-align: top;
+    border: 1px solid #999999;
+    padding: 8px;
+    background: #F5F5F5;
+    font-size: 11px;
+  }
+
+  td.infoCell .infoHead {
+    font-weight: bold;
+    border-bottom: 1px solid #999999;
+    margin-bottom: 6px;
+    padding-bottom: 3px;
+  }
+
+  td.infoCell .infoLine { margin-bottom: 4px; }
+  td.infoCell .infoLine b { display: inline; }
+
+  .descBox {
+    border: 1px solid #999999;
+    background: #ffffff;
+    padding: 4px;
+    margin-top: 4px;
+    font-size: 11px;
+    min-height: 50px;
+  }
+
+  .modalSectionHead {
+    background: #000080;
+    color: #ffffff;
+    padding: 3px 6px;
+    font-weight: bold;
+    font-size: 12px;
+    margin: 14px 0 6px;
+  }
+
+  .presenceGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .presenceAvatar {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #000000;
+    background: #C0C0C0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .savedTag {
+    display: inline-block;
+    background: #006400;
+    color: #ffffff;
+    font-size: 10px;
+    padding: 1px 4px;
+    margin-left: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <h2 id="loginTitle">Member Login</h2>
+  <table>
+    <tr>
+      <td>Username:</td>
+      <td><input type="text" id="username"></td>
+    </tr>
+    <tr>
+      <td>Password:</td>
+      <td><input type="password" id="password"></td>
+    </tr>
+  </table>
+  <br>
+  <input type="button" value="Login" id="loginBtn">
+  <input type="button" value="Register" id="registerBtn">
+  <div id="loginError"></div>
+  <div class="privacy">No need for an email or phone number, we aren't here for your data.</div>
+  <div class="modeToggle"><a href="#" id="toggleModeLink">New here? Register instead</a></div>
+  <div style="text-align:center; margin-top:6px;"><a href="#" id="forgotLink">Forgot your password?</a></div>
+  <div id="forgotMsg" style="display:none; text-align:center; margin-top:6px; font-size:11px; font-weight:bold; color:#800000;">To bad, i told you we aint taking your email!</div>
+</div>
+
+<div id="siteContent" class="blurred">
+
+<table class="layout">
+<tr><td class="banner">Welcome to theinternetreststop.com &mdash; pull over and stretch your legs</td></tr>
+<tr><td>
+  <table class="headtable">
+    <tr>
+      <td><span class="sitename">The Internet Rest Stop</span></td>
+      <td align="right">Logged in as: <b id="whoAmI">Guest</b> &nbsp; <a href="#" id="logoutLink">Log out</a></td>
+    </tr>
+  </table>
+</td></tr>
+<tr><td>
+  <div class="navbar">
+    <a href="#fun">Fun Stops</a>
+    <a href="#tools">Tool Shed</a>
+    <a href="#picks">Ray's Picks</a>
+    <a href="#mystops" id="myStopsNavLink">My Stops</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </div>
+</td></tr>
+<tr><td class="mainbody">
+  <table class="contentTable">
+    <tr>
+      <td class="sidebarCell">
+        <h4>Browse</h4>
+        <ul>
+          <li><a href="#fun">Fun Stops</a></li>
+          <li><a href="#tools">Tool Shed</a></li>
+          <li><a href="#picks">Ray's Picks</a></li>
+          <li><a href="#mystops">My Stops</a></li>
+        </ul>
+        <h4>Sort By</h4>
+        <ul>
+          <li><a href="#">Most Recent</a></li>
+          <li><a href="#">A-Z</a></li>
+          <li><a href="#">Most Visited</a></li>
+        </ul>
+        <h4>Time</h4>
+        <ul>
+          <li><a href="#">All-time</a></li>
+          <li><a href="#">This Week</a></li>
+          <li><a href="#">This Month</a></li>
+        </ul>
+      </td>
+      <td class="mainCell">
+
+        <div class="sectionHead" id="fun">Fun Stops</div>
+        <table class="itemTable">
+          <tr>
+            <td>
+              <div class="thumb">&#9728;</div>
+              <div class="itemTitle"><a href="#" onclick="openModal('site-a','Placeholder Site A','Fun Stops','Swap this card for a real link — a fun site, game, or internet oddity.','2 hours ago','12 times','340 times','&#9728;'); return false;">Placeholder Site A</a></div>
+              <div class="itemDesc">Swap this card for a real link.</div>
+            </td>
+            <td>
+              <div class="thumb">&#9819;</div>
+              <div class="itemTitle"><a href="#" onclick="openModal('site-b','Placeholder Site B','Fun Stops','Another slot ready for your favorite time-waster.','1 day ago','8 times','221 times','&#9819;'); return false;">Placeholder Site B</a></div>
+              <div class="itemDesc">Another slot for a time-waster.</div>
+            </td>
+            <td>
+              <div class="thumb">&#9731;</div>
+              <div class="itemTitle"><a href="#" onclick="openModal('site-c','Placeholder Site C','Fun Stops','Add a quirky corner of the web here.','5 hours ago','3 times','98 times','&#9731;'); return false;">Placeholder Site C</a></div>
+              <div class="itemDesc">A quirky corner of the web.</div>
+            </td>
+          </tr>
+        </table>
+
+        <div class="sectionHead" id="tools">Tool Shed</div>
+        <table class="itemTable">
+          <tr>
+            <td>
+              <div class="thumb">&#9874;</div>
+              <div class="itemTitle"><a href="#" onclick="openModal('tool-a','Placeholder Tool A','Tool Shed','Drop in a converter, generator, or productivity tool.','3 days ago','20 times','512 times','&#9874;'); return false;">Placeholder Tool A</a></div>
+              <div class="itemDesc">A converter or generator.</div>
+            </td>
+            <td>
+              <div class="thumb">&#9881;</div>
+              <div class="itemTitle"><a href="#" onclick="openModal('tool-b','Placeholder Tool B','Tool Shed','Another useful utility goes here.','6 hours ago','15 times','389 times','&#9881;'); return false;">Placeholder Tool B</a></div>
+              <div class="itemDesc">Another useful utility.</div>
+            </td>
+            <td>
+              <div class="thumb">&#9998;</div>
+              <div class="itemTitle"><a href="#" onclick="openModal('tool-c','Placeholder Tool C','Tool Shed','Save a slot for a handy site you use often.','2 days ago','9 times','204 times','&#9998;'); return false;">Placeholder Tool C</a></div>
+              <div class="itemDesc">A handy site you use often.</div>
+            </td>
+          </tr>
+        </table>
+
+        <div class="sectionHead" id="picks">Ray's Picks</div>
+        <table class="itemTable">
+          <tr>
+            <td>
+              <div class="thumb">&#9733;</div>
+              <div class="itemTitle"><a href="#" onclick="openModal('pick-a','Placeholder Pick A','Ray\'s Picks','Your own project, social, or favorite link goes here.','1 hour ago','30 times','670 times','&#9733;'); return false;">Placeholder Pick A</a></div>
+              <div class="itemDesc">Your own project or link.</div>
+            </td>
+            <td>
+              <div class="thumb">&#9834;</div>
+              <div class="itemTitle"><a href="#" onclick="openModal('pick-b','Placeholder Pick B','Ray\'s Picks','Another personal favorite slot.','4 hours ago','11 times','156 times','&#9834;'); return false;">Placeholder Pick B</a></div>
+              <div class="itemDesc">Another favorite slot.</div>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+
+        <div class="sectionHead" id="mystops">My Stops</div>
+        <div id="myStopsBox" style="border:1px solid #999999; padding:8px; font-size:11px; margin-bottom:10px;">
+          <span id="myStopsEmpty">Log in to save cards here.</span>
+          <table class="itemTable" id="myStopsTable" style="display:none;"><tr id="myStopsRow"></tr></table>
+        </div>
+
+      </td>
+    </tr>
+  </table>
+</td></tr>
+<tr><td class="footerBar">
+  &copy; 2026 The Internet Rest Stop &middot; live test build &middot; best viewed at 1024x768
+</td></tr>
+</table>
+
+  <div id="modalOverlay">
+    <div id="modalBox">
+      <div class="modalTitleBar">
+        <span id="modalTitle">Site Name</span>
+        <a href="#" id="modalCloseBtn">Close X</a>
+      </div>
+      <div class="modalBody">
+        <table class="modalLayout">
+          <tr>
+            <td class="previewCell">
+              <div class="previewBox" id="modalPreviewIcon">&#9728;</div>
+              <div class="previewCaption" id="modalCaption">Preview</div>
+              <div class="visitBtnRow">
+                <input type="button" value="Visit Site" id="modalVisitBtn">
+                <input type="button" value="Add to Picks" id="modalSaveBtn">
+              </div>
+            </td>
+            <td class="infoCell">
+              <div class="infoHead" id="modalCategory">Category</div>
+              <div class="infoLine">Added by: <b>Ray</b></div>
+              <div class="infoLine">Updated: <b id="modalUpdated">a while ago</b></div>
+              <div class="infoLine">Favorited: <b id="modalFavorited">0 times</b></div>
+              <div class="infoLine">Visited: <b id="modalVisited">0 times</b></div>
+              <div class="infoLine">Description:</div>
+              <div class="descBox" id="modalDesc">Description goes here.</div>
+            </td>
+          </tr>
+        </table>
+
+        <div class="modalSectionHead">Who's Here Now</div>
+        <div class="presenceGrid" id="modalPresence"></div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var presenceIcons = ["&#128100;","&#128121;","&#128123;","&#129302;","&#128119;","&#128120;","&#128018;","&#128049;"];
+  var currentCard = null; // holds data for whatever card is open in the modal
+  var isRegisterMode = false;
+
+  // ---------- MODAL ----------
+  function openModal(cardId, title, category, desc, updated, favorited, visited, icon) {
+    currentCard = { cardId: cardId, title: title, category: category, desc: desc, icon: icon };
+
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalCategory').textContent = category;
+    document.getElementById('modalCaption').textContent = title;
+    document.getElementById('modalDesc').textContent = desc;
+    document.getElementById('modalUpdated').textContent = updated;
+    document.getElementById('modalFavorited').textContent = favorited;
+    document.getElementById('modalVisited').textContent = visited;
+    document.getElementById('modalPreviewIcon').innerHTML = icon;
+
+    var presenceCount = Math.floor(Math.random() * 6) + 1;
+    var grid = document.getElementById('modalPresence');
+    grid.innerHTML = '';
+    for (var i = 0; i < presenceCount; i++) {
+      var av = document.createElement('div');
+      av.className = 'presenceAvatar';
+      av.innerHTML = presenceIcons[Math.floor(Math.random() * presenceIcons.length)];
+      grid.appendChild(av);
+    }
+
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  document.getElementById('modalCloseBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('modalOverlay').classList.remove('open');
+  });
+
+  document.getElementById('modalOverlay').addEventListener('click', function (e) {
+    if (e.target.id === 'modalOverlay') {
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+  });
+
+  document.getElementById('modalSaveBtn').addEventListener('click', async function () {
+    if (!currentCard) return;
+    try {
+      const res = await fetch('/api/mystops', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cardId: currentCard.cardId,
+          title: currentCard.title,
+          category: currentCard.category,
+          description: currentCard.desc
+        })
+      });
+      if (res.status === 401) {
+        alert('Log in first to save links to My Stops.');
+        return;
+      }
+      const data = await res.json();
+      if (data.ok) {
+        alert('Saved to My Stops!');
+        loadMyStops();
+      } else {
+        alert(data.error || 'Could not save.');
+      }
+    } catch (err) {
+      alert('Could not reach the server.');
+    }
+  });
+
+  // ---------- FORGOT PASSWORD JOKE ----------
+  document.getElementById('forgotLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('forgotMsg').style.display = 'block';
+  });
+
+  // ---------- LOGIN / REGISTER TOGGLE ----------
+  document.getElementById('toggleModeLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    isRegisterMode = !isRegisterMode;
+    document.getElementById('loginTitle').textContent = isRegisterMode ? 'Create Account' : 'Member Login';
+    document.getElementById('toggleModeLink').textContent = isRegisterMode ? 'Already have an account? Log in' : 'New here? Register instead';
+    hideLoginError();
+  });
+
+  function showLoginError(msg) {
+    var el = document.getElementById('loginError');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+  function hideLoginError() {
+    document.getElementById('loginError').style.display = 'none';
+  }
+
+  async function doAuth(endpoint) {
+    hideLoginError();
+    var username = document.getElementById('username').value.trim();
+    var password = document.getElementById('password').value;
+
+    if (!username || !password) {
+      showLoginError('Enter a username and password.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/' + endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username, password: password })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showLoginError(data.error || 'Something went wrong.');
+        return;
+      }
+      enterSite(data.user.username);
+    } catch (err) {
+      showLoginError('Could not reach the server.');
+    }
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', function () {
+    doAuth(isRegisterMode ? 'register' : 'login');
+  });
+  document.getElementById('registerBtn').addEventListener('click', function () {
+    isRegisterMode = true;
+    doAuth('register');
+  });
+
+  document.getElementById('logoutLink').addEventListener('click', async function (e) {
+    e.preventDefault();
+    await fetch('/api/logout', { method: 'POST' });
+    location.reload();
+  });
+
+  function enterSite(username) {
+    document.getElementById('whoAmI').textContent = username;
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('siteContent').classList.remove('blurred');
+    loadMyStops();
+  }
+
+  // ---------- MY STOPS ----------
+  async function loadMyStops() {
+    try {
+      const res = await fetch('/api/mystops');
+      if (res.status === 401) {
+        document.getElementById('myStopsEmpty').style.display = 'block';
+        document.getElementById('myStopsEmpty').textContent = 'Log in to save cards here.';
+        document.getElementById('myStopsTable').style.display = 'none';
+        return;
+      }
+      const data = await res.json();
+      var row = document.getElementById('myStopsRow');
+      row.innerHTML = '';
+
+      if (!data.links || data.links.length === 0) {
+        document.getElementById('myStopsEmpty').style.display = 'block';
+        document.getElementById('myStopsEmpty').textContent = 'Nothing saved yet. Click a card, then "Add to Picks".';
+        document.getElementById('myStopsTable').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('myStopsEmpty').style.display = 'none';
+      document.getElementById('myStopsTable').style.display = '';
+
+      data.links.forEach(function (link) {
+        var td = document.createElement('td');
+        td.innerHTML = '<div class="itemTitle">' + link.title + '</div>' +
+          '<div class="itemDesc">' + (link.description || '') + '</div>' +
+          '<a href="#" onclick="removeStop(\'' + link.card_id + '\'); return false;">Remove</a>';
+        row.appendChild(td);
+      });
+    } catch (err) {
+      // server not reachable yet, quietly ignore
+    }
+  }
+
+  async function removeStop(cardId) {
+    await fetch('/api/mystops/' + encodeURIComponent(cardId), { method: 'DELETE' });
+    loadMyStops();
+  }
+
+  // ---------- CHECK SESSION ON LOAD ----------
+  (async function checkSession() {
+    try {
+      const res = await fetch('/api/me');
+      const data = await res.json();
+      if (data.loggedIn) {
+        enterSite(data.user.username);
+      }
+    } catch (err) {
+      // server not up yet locally; login screen just stays visible
+    }
+  })();
+</script>
+
+</body>
+</html>
