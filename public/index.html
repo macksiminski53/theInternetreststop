@@ -1071,10 +1071,16 @@
       <div class="adCaption">MusicToDiscord &mdash; show what you're playing as your Discord status</div>
     </div>
 
+    <div class="adCard" id="ad-markus" onclick="openModal('markus','Markus the Music Pet','Ray\'s Picks','A little bear who eats music instead of food. From MusicToDiscord.','Just now','7 times','133 times','/markus-party.svg','/markus.html'); return false;">
+      <img src="/markus-party.svg" alt="Markus the Music Pet">
+      <div class="adCaption">Markus the Music Pet &mdash; feed him songs, keep him happy</div>
+    </div>
+
     <div class="adDots" id="adDots">
       <span class="activeDot" onclick="showAdSlide(0);"></span>
       <span onclick="showAdSlide(1);"></span>
       <span onclick="showAdSlide(2);"></span>
+      <span onclick="showAdSlide(3);"></span>
     </div>
   </div>
 </td></tr>
@@ -1170,8 +1176,8 @@
               <div class="itemDesc">Another favorite slot.</div>
             </td>
             <td>
-              <div class="thumb">&#128058;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('markus','Markus the Music Pet','Ray\'s Picks','A little bear who eats music instead of food. From MusicToDiscord.','Just now','7 times','133 times','&#128058;','/markus.html'); return false;">Markus the Music Pet</a></div>
+              <div class="thumb" style="padding:0; overflow:hidden;"><img src="/markus-party.svg" alt="Markus the Music Pet" style="width:100%; height:100%; object-fit:cover;"></div>
+              <div class="itemTitle"><a href="#" onclick="openModal('markus','Markus the Music Pet','Ray\'s Picks','A little bear who eats music instead of food. From MusicToDiscord.','Just now','7 times','133 times','/markus-party.svg','/markus.html'); return false;">Markus the Music Pet</a></div>
               <div class="itemDesc">A bear who eats music instead of food.</div>
             </td>
           </tr>
@@ -1357,7 +1363,7 @@
   }
 
   // ---------- ROTATING AD SLOT ----------
-  var adSlideOrder = ['ad-mk', 'ad-whenwhere', 'ad-mtd'];
+  var adSlideOrder = ['ad-mk', 'ad-whenwhere', 'ad-mtd', 'ad-markus'];
   var adSlideIndex = 0;
   var adRotateTimer = null;
 

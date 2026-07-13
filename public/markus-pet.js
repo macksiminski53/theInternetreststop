@@ -256,23 +256,79 @@
   }
 
   // ---- Sound ----
-  var _petAudio = null;
+  // No audio files -- each mood gets a little synthesized chirp instead,
+  // built from a base pitch/shape per emotion with random jitter so it
+  // doesn't sound identical every time.
   var _petAudioCtx = null;
-  function petSound(clip) {
-    if (!clip) return;
+  function getAudioCtx() {
+    if (!_petAudioCtx) _petAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return _petAudioCtx;
+  }
+
+  // Each mood: base frequency (Hz), oscillator shape, and a pitch "contour"
+  // (multiplier applied to frequency over the note's life) that gives it
+  // character -- rising = perky/happy, falling = sad/dying, wobble = sick.
+  var MOOD_TONES = {
+    happy:     { freq: 660, type: 'triangle', contour: 'rise', notes: 2, dur: 0.11 },
+    fed:       { freq: 520, type: 'triangle', contour: 'rise', notes: 2, dur: 0.10 },
+    play:      { freq: 580, type: 'square',   contour: 'rise', notes: 1, dur: 0.09 },
+    clean:     { freq: 720, type: 'sine',     contour: 'rise', notes: 1, dur: 0.12 },
+    party:     { freq: 700, type: 'triangle', contour: 'rise', notes: 4, dur: 0.09 },
+    revival:   { freq: 440, type: 'triangle', contour: 'rise', notes: 3, dur: 0.14 },
+    request:   { freq: 600, type: 'sine',     contour: 'wobble', notes: 2, dur: 0.13 },
+    hungry:    { freq: 320, type: 'sawtooth', contour: 'fall', notes: 1, dur: 0.14 },
+    dirty:     { freq: 260, type: 'sawtooth', contour: 'wobble', notes: 1, dur: 0.15 },
+    poop:      { freq: 200, type: 'square',   contour: 'fall', notes: 1, dur: 0.10 },
+    sick:      { freq: 220, type: 'sawtooth', contour: 'wobble', notes: 2, dur: 0.18 },
+    starving:  { freq: 180, type: 'sawtooth', contour: 'fall', notes: 2, dur: 0.16 },
+    sad:       { freq: 300, type: 'sine',     contour: 'fall', notes: 1, dur: 0.22 },
+    dead:      { freq: 160, type: 'sine',     contour: 'fall', notes: 1, dur: 0.5 }
+  };
+
+  function playTone(freq, type, contour, dur, startAt) {
+    var ctx = getAudioCtx();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = type;
+
+    // Random jitter (+/- 6%) so repeated plays of the same mood aren't identical.
+    var jitter = 1 + (Math.random() - 0.5) * 0.12;
+    var f0 = freq * jitter;
+    var f1 = f0;
+    if (contour === 'rise') f1 = f0 * 1.5;
+    else if (contour === 'fall') f1 = f0 * 0.6;
+
+    osc.frequency.setValueAtTime(f0, startAt);
+    if (contour === 'wobble') {
+      osc.frequency.setValueAtTime(f0, startAt);
+      osc.frequency.linearRampToValueAtTime(f0 * 0.85, startAt + dur * 0.5);
+      osc.frequency.linearRampToValueAtTime(f0, startAt + dur);
+    } else {
+      osc.frequency.linearRampToValueAtTime(f1, startAt + dur);
+    }
+
+    gain.gain.setValueAtTime(0.0001, startAt);
+    gain.gain.linearRampToValueAtTime(0.18, startAt + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startAt + dur);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(startAt);
+    osc.stop(startAt + dur + 0.02);
+  }
+
+  function petSound(mood) {
+    if (!mood) return;
+    var spec = MOOD_TONES[mood];
+    if (!spec) return;
     try {
-      if (_petAudio) { _petAudio.pause(); _petAudio = null; }
-      var src = 'pet-sounds/' + clip + '.mp3';
-      _petAudio = new Audio(src);
-      _petAudio.volume = 1.0;
-      if (!_petAudioCtx) _petAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      var source = _petAudioCtx.createMediaElementSource(_petAudio);
-      var gain = _petAudioCtx.createGain();
-      gain.gain.value = 1.8;
-      source.connect(gain);
-      gain.connect(_petAudioCtx.destination);
-      _petAudioCtx.resume().then(function () {
-        _petAudio.play().catch(function () {});
+      var ctx = getAudioCtx();
+      ctx.resume().then(function () {
+        var t = ctx.currentTime;
+        var notes = spec.notes || 1;
+        for (var i = 0; i < notes; i++) {
+          playTone(spec.freq, spec.type, spec.contour, spec.dur, t + i * (spec.dur * 0.85));
+        }
       });
     } catch (e) { /* audio not critical */ }
   }
