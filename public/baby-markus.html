@@ -218,11 +218,276 @@
   .bmBarFill { height: 100%; background: #2b4fd6; border-radius: 5px; transition: width 0.5s; }
   .bmBarFill.low { background: #c0392b; }
 
-  .bmActions { display: flex; gap: 8px; }
+  .bmActions { display: flex; gap: 8px; align-items: center; }
   .bmActions input[type="button"] {
     font-size: 12px;
     padding: 5px 12px;
     cursor: pointer;
+  }
+
+  #bm-coins-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff6da;
+    border: 1px solid #e0c568;
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #8a6d1f;
+    margin-left: auto;
+  }
+
+  /* ---------- Dirt spots + brush ---------- */
+  .bm-dirt {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    margin-left: -9px;
+    margin-top: -9px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #6b4a2f 0%, #6b4a2f 60%, transparent 75%);
+    opacity: 0.75;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  #bm-brush {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    margin-left: -20px;
+    margin-top: -20px;
+    font-size: 30px;
+    line-height: 40px;
+    text-align: center;
+    cursor: grab;
+    z-index: 20;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.35));
+    user-select: none;
+    touch-action: none;
+    left: 50%;
+    top: 12%;
+  }
+  #bm-brush.active {
+    cursor: grabbing;
+    transform: scale(1.15) rotate(-15deg);
+  }
+
+  /* ---------- Shop overlay ---------- */
+  #bm-shop-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  #bm-shop-box {
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 6px;
+    width: 360px;
+    max-width: 92vw;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  #bm-shop-titlebar {
+    background: #000080;
+    color: #ffffff;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 13px;
+  }
+  #bm-shop-titlebar a { color: #ffffff; font-size: 11px; font-weight: normal; }
+  .bm-shop-tabs { display: flex; border-bottom: 1px solid #cccccc; }
+  .bm-shop-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #eeeeee;
+    border-right: 1px solid #cccccc;
+  }
+  .bm-shop-tab:last-child { border-right: none; }
+  .bm-shop-tab.active { background: #ffffff; font-weight: bold; color: #000080; }
+  .bm-shop-panel { display: none; padding: 10px 12px; }
+  .bm-shop-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #eeeeee;
+    font-size: 12px;
+  }
+  .bm-shop-emoji { font-size: 20px; width: 26px; text-align: center; }
+  .bm-shop-name { flex: 1; }
+  .bm-shop-cost { color: #8a6d1f; font-weight: bold; font-size: 11px; }
+  .bm-buy-btn, .bm-inventory-btn {
+    font-size: 11px;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+  .bm-inventory-btn { display: block; width: 100%; margin-bottom: 6px; text-align: left; }
+
+  /* ---------- Mini-games overlay ---------- */
+  #bmg-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  #bmg-box {
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 6px;
+    width: 460px;
+    max-width: 94vw;
+    max-height: 86vh;
+    overflow-y: auto;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  #bmg-titlebar {
+    background: #000080;
+    color: #ffffff;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 13px;
+  }
+  #bmg-titlebar a#bmg-close { color: #ffffff; font-size: 11px; font-weight: normal; }
+  #bmg-menu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+  .bmg-game-card {
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    background: #f7f7f7;
+  }
+  .bmg-game-card:hover { background: #eef1ff; border-color: #2b4fd6; }
+  .bmg-game-icon { font-size: 30px; }
+  .bmg-game-name { font-size: 12px; font-weight: bold; margin-top: 4px; }
+  .bmg-game-desc { font-size: 10px; color: #666666; margin-top: 3px; }
+
+  #bmg-game-area { padding: 14px; text-align: center; }
+  .bmg-hud { font-size: 12px; margin-bottom: 8px; }
+  .bmg-hud-note { font-size: 11px; color: #666666; margin-top: 8px; }
+  .bmg-result { font-size: 13px; font-weight: bold; margin: 12px 0 8px; line-height: 1.5; }
+  .bmg-back-btn { font-size: 12px; padding: 5px 14px; cursor: pointer; }
+
+  /* Whack-a-Markus */
+  #wk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 320px; margin: 0 auto; }
+  .wk-hole {
+    background: #5cb85c;
+    border: 2px solid #3d7d3d;
+    border-radius: 50%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .wk-critter {
+    font-size: 30px;
+    transform: translateY(60px);
+    transition: transform 0.12s ease-out;
+  }
+  .wk-hole.up .wk-critter { transform: translateY(0); }
+  .wk-hole.hit { background: #ffd93b; }
+
+  /* Stop the Bar */
+  #tb-track {
+    position: relative;
+    height: 26px;
+    background: #dddddd;
+    border: 1px solid #999999;
+    border-radius: 13px;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+  #tb-zone { position: absolute; top: 0; bottom: 0; background: #8ee08e; }
+  #tb-marker {
+    position: absolute;
+    top: -2px;
+    width: 6px;
+    height: 30px;
+    background: #c0392b;
+    margin-left: -3px;
+  }
+  #tb-stop-btn { font-size: 13px; padding: 6px 16px; cursor: pointer; margin-top: 6px; }
+
+  /* Memory Match */
+  #mm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; max-width: 320px; margin: 0 auto; }
+  .mm-card {
+    height: 56px;
+    perspective: 400px;
+    cursor: pointer;
+  }
+  .mm-card-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.3s;
+  }
+  .mm-card.flipped .mm-card-inner, .mm-card.matched .mm-card-inner { transform: rotateY(180deg); }
+  .mm-card-back, .mm-card-front {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    backface-visibility: hidden;
+    border-radius: 5px;
+    font-size: 22px;
+  }
+  .mm-card-back { background: #2b4fd6; color: #ffffff; font-weight: bold; }
+  .mm-card-front { background: #f4e9d8; transform: rotateY(180deg); }
+  .mm-card.matched .mm-card-front { background: #d5f2d5; }
+
+  /* Snack Catcher */
+  #dg-stage {
+    position: relative;
+    height: 260px;
+    background: linear-gradient(180deg, #bfe6ff 0%, #e8f7ff 100%);
+    border: 1px solid #999999;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: none;
+  }
+  #dg-basket {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    margin-left: -22px;
+    font-size: 34px;
+    line-height: 44px;
+    text-align: center;
+  }
+  #dg-basket.dg-hurt { filter: drop-shadow(0 0 6px #c0392b); }
+  .dg-item {
+    position: absolute;
+    font-size: 24px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
   }
 
   .aboutBox {
@@ -270,6 +535,9 @@
     <div id="bm-toy" title="Drag to Baby Markus">&#9967;</div>
     <div id="bm-treat" title="Drag to Baby Markus">&#127853;</div>
 
+    <div id="bm-dirt-layer"></div>
+    <div id="bm-brush" title="Drag over dirt to scrub it off">&#129692;</div>
+
     <div id="bm-creature">
       <svg viewBox="0 0 140 140" width="90" height="90">
         <circle cx="34" cy="40" r="19" fill="#a06a30"/>
@@ -308,19 +576,43 @@
     </div>
 
     <div class="bmActions">
-      <input type="button" value="Feed" id="bm-feed-btn">
-      <input type="button" value="Clean" id="bm-clean-btn">
-      <input type="button" value="Play" id="bm-play-btn">
+      <input type="button" value="Shop" id="bm-shop-btn">
+      <input type="button" value="Play Games" id="bm-games-btn">
+      <span id="bm-coins-badge">&#129689; <span id="bm-coins">0</span> coins</span>
     </div>
   </div>
 
   <div class="aboutBox">
-    <b>Who is this?</b> This is baby Markus &mdash; a young, separate version of the Markus character, from before he grew up into the Markus you see in MusicToDiscord. He wanders his field on his own; drag him around, or drag toys and treats that show up to him. He grows into new stages over real days if you keep him well cared for. His stats and growth save to this browser only.
+    <b>Who is this?</b> This is baby Markus &mdash; a young, separate version of the Markus character, from before he grew up into the Markus you see in MusicToDiscord. He wanders his field on his own; drag him around, or drag toys and treats that show up to him. Play mini-games to earn coins, spend them in the Shop on food and toys, and drag the brush over dirt spots to keep him clean. He grows into new stages over real days if you keep him well cared for. His stats and growth save to this browser only.
   </div>
 </div>
 
 <div class="footerBar">&copy; 2026 The Internet Rest Stop &middot; live test build</div>
 
+<div id="bm-shop-overlay">
+  <div id="bm-shop-box">
+    <div id="bm-shop-titlebar">
+      <span>Baby Markus's Shop</span>
+      <a href="#" id="bm-shop-close">Close X</a>
+    </div>
+    <div class="bm-shop-tabs">
+      <div class="bm-shop-tab active" data-tab="food">Food</div>
+      <div class="bm-shop-tab" data-tab="toys">Toys</div>
+      <div class="bm-shop-tab" data-tab="inventory">Inventory</div>
+    </div>
+    <div class="bm-shop-panel" id="bm-shop-panel-food" style="display:block;">
+      <div id="bm-shop-food"></div>
+    </div>
+    <div class="bm-shop-panel" id="bm-shop-panel-toys">
+      <div id="bm-shop-toys"></div>
+    </div>
+    <div class="bm-shop-panel" id="bm-shop-panel-inventory">
+      <div id="bm-inventory"></div>
+    </div>
+  </div>
+</div>
+
 <script src="/baby-markus-pet.js"></script>
+<script src="/baby-markus-games.js"></script>
 </body>
 </html>

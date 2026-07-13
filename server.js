@@ -56,19 +56,4 @@ app.get('/healthz', (req, res) => res.send('ok'));
 // This lets the app work on Render's free tier, which doesn't
 // include Shell access to run `npm run migrate` manually.
 // Safe to run every time the server starts: schema.sql uses
-// "CREATE TABLE IF NOT EXISTS", so it's a no-op once tables exist.
-async function runMigration() {
-  try {
-    const schema = fs.readFileSync(path.join(__dirname, 'db/schema.sql'), 'utf8');
-    await pool.query(schema);
-    console.log('Database ready (users, saved_links tables checked/created).');
-  } catch (err) {
-    console.error('Migration on startup failed:', err);
-  }
-}
-
-runMigration().then(() => {
-  app.listen(PORT, () => {
-    console.log(`The Internet Rest Stop server running on port ${PORT}`);
-  });
-});
+// "CREATE TABLE IF NOT EXISTS", so i

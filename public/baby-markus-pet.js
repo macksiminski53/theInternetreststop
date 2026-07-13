@@ -36,6 +36,20 @@
     return Math.round((b - a) / 86400000);
   }
 
+  // Shop catalog: food is consumed on use, toys are owned once bought and
+  // can be dragged onto him any time after that (like the random-event toy,
+  // but permanently available from your inventory).
+  var SHOP_FOOD = [
+    { key: 'apple', label: 'Apple', emoji: '🍎', cost: 8, hunger: 15, happiness: 2 },
+    { key: 'sandwich', label: 'Sandwich', emoji: '🥪', cost: 18, hunger: 30, happiness: 4 },
+    { key: 'cake', label: 'Slice of Cake', emoji: '🍰', cost: 35, hunger: 40, happiness: 15 }
+  ];
+  var SHOP_TOYS = [
+    { key: 'ball', label: 'Ball', emoji: '⚽', cost: 25, happiness: 10 },
+    { key: 'kite', label: 'Kite', emoji: '🫁', cost: 40, happiness: 16 },
+    { key: 'blocks', label: 'Blocks', emoji: '🧱', cost: 55, happiness: 22 }
+  ];
+
   function defPet() {
     var today = todayKey();
     return {
@@ -54,7 +68,10 @@
       activeTreat: false,
       raining: false,
       x: 50, // field position, in percent
-      y: 60
+      y: 60,
+      coins: 20, // small starting balance so the shop isn't empty on day one
+      ownedToys: [], // keys from SHOP_TOYS the player has bought
+      dirtSpots: [] // [{id, x, y}] scrubbable dirt marks, in percent relative to the creature sprite
     };
   }
 
@@ -125,28 +142,80 @@
     pet.lastUpdate = now;
     sampleCareForToday();
     pet.lastVisitDate = todayKey();
+    maybeAddDirt();
     savePet();
   }
 
-  function feedPet() {
-    pet.hunger = Math.min(100, pet.hunger + 22);
-    pet.happiness = Math.min(100, pet.happiness + 6);
+  function feedPet(hungerAmt, happyAmt) {
+    pet.hunger = Math.min(100, pet.hunger + (hungerAmt != null ? hungerAmt : 22));
+    pet.happiness = Math.min(100, pet.happiness + (happyAmt != null ? happyAmt : 6));
     sampleCareForToday();
     savePet();
   }
 
-  function cleanPet() {
-    pet.cleanliness = Math.min(100, pet.cleanliness + 30);
-    pet.happiness = Math.min(100, pet.happiness + 4);
+  function playWithPet(happyAmt) {
+    pet.happiness = Math.min(100, pet.happiness + (happyAmt != null ? happyAmt : 12));
+    sampleCareForToday();
+    savePet();
+  }
+
+  // ---------- Dirt / brush cleaning (Talking-Tom style) ----------
+  var nextDirtId = 1;
+
+  function maybeAddDirt() {
+    if (pet.cleanliness > 55) return; // only gets visibly dirty once cleanliness has dropped a fair bit
+    if (pet.dirtSpots.length >= 5) return;
+    if (Math.random() > 0.35) return;
+    pet.dirtSpots.push({
+      id: nextDirtId++,
+      x: 20 + Math.random() * 60,
+      y: 25 + Math.random() * 55
+    });
+    savePet();
+  }
+
+  function scrubDirt(dirtId) {
+    var idx = pet.dirtSpots.findIndex(function (d) { return d.id === dirtId; });
+    if (idx === -1) return false;
+    pet.dirtSpots.splice(idx, 1);
+    pet.cleanliness = Math.min(100, pet.cleanliness + 12);
+    pet.happiness = Math.min(100, pet.happiness + 2);
     if (pet.hasCold && pet.cleanliness > 70) pet.hasCold = false;
     sampleCareForToday();
     savePet();
+    return true;
   }
 
-  function playWithPet() {
-    pet.happiness = Math.min(100, pet.happiness + 12);
-    sampleCareForToday();
+  // ---------- Coins / shop ----------
+  function addCoins(amount) {
+    pet.coins = Math.max(0, pet.coins + amount);
     savePet();
+  }
+
+  function buyFood(key) {
+    var item = SHOP_FOOD.filter(function (f) { return f.key === key; })[0];
+    if (!item) return { ok: false, error: 'Unknown item.' };
+    if (pet.coins < item.cost) return { ok: false, error: 'Not enough coins.' };
+    pet.coins -= item.cost;
+    feedPet(item.hunger, item.happiness);
+    return { ok: true, item: item };
+  }
+
+  function buyToy(key) {
+    var item = SHOP_TOYS.filter(function (t) { return t.key === key; })[0];
+    if (!item) return { ok: false, error: 'Unknown item.' };
+    if (pet.ownedToys.indexOf(key) !== -1) return { ok: false, error: 'Already owned.' };
+    if (pet.coins < item.cost) return { ok: false, error: 'Not enough coins.' };
+    pet.coins -= item.cost;
+    pet.ownedToys.push(key);
+    savePet();
+    return { ok: true, item: item };
+  }
+
+  function useOwnedToy(key) {
+    var item = SHOP_TOYS.filter(function (t) { return t.key === key; })[0];
+    if (!item) return;
+    playWithPet(item.happiness);
   }
 
   function renamePet(name) {
@@ -255,6 +324,9 @@
     var rainEl = document.getElementById('bm-rain');
     var coldEl = document.getElementById('bm-cold-badge');
     var growthNote = document.getElementById('bm-growth-note');
+    var coinsEl = document.getElementById('bm-coins');
+    var dirtLayer = document.getElementById('bm-dirt-layer');
+    var brushEl = document.getElementById('bm-brush');
 
     function notify(msg) {
       notifyEl.textContent = msg;
@@ -281,6 +353,19 @@
       treatEl.style.display = pet.activeTreat ? 'block' : 'none';
       rainEl.style.display = pet.raining ? 'block' : 'none';
       coldEl.style.display = pet.hasCold ? 'inline' : 'none';
+      coinsEl.textContent = pet.coins;
+
+      // Dirt spots render as little clickable/draggable smudges positioned
+      // relative to the creature sprite so they move and scale along with him.
+      dirtLayer.innerHTML = '';
+      pet.dirtSpots.forEach(function (spot) {
+        var el = document.createElement('div');
+        el.className = 'bm-dirt';
+        el.style.left = spot.x + '%';
+        el.style.top = spot.y + '%';
+        el.dataset.dirtId = spot.id;
+        dirtLayer.appendChild(el);
+      });
 
       var daysInStage = daysBetween(pet.stageStartDate, todayKey());
       var minDays = STAGE_MIN_DAYS[pet.stage];
@@ -357,114 +442,4 @@
           onDeliver();
           itemEl.style.left = '';
           itemEl.style.top = '';
-        }
-      }
-
-      itemEl.addEventListener('mousedown', function (e) {
-        e.preventDefault();
-        dragging = true;
-      });
-      document.addEventListener('mousemove', function (e) {
-        if (!dragging) return;
-        var rect = field.getBoundingClientRect();
-        itemEl.style.left = (((e.clientX - rect.left) / rect.width) * 100) + '%';
-        itemEl.style.top = (((e.clientY - rect.top) / rect.height) * 100) + '%';
-      });
-      document.addEventListener('mouseup', function (e) {
-        if (!dragging) return;
-        dragging = false;
-        drop(e.clientX, e.clientY);
-      });
-
-      itemEl.addEventListener('touchstart', function () { dragging = true; }, { passive: true });
-      document.addEventListener('touchmove', function (e) {
-        if (!dragging) return;
-        var t = e.touches[0];
-        var rect = field.getBoundingClientRect();
-        itemEl.style.left = (((t.clientX - rect.left) / rect.width) * 100) + '%';
-        itemEl.style.top = (((t.clientY - rect.top) / rect.height) * 100) + '%';
-      }, { passive: true });
-      document.addEventListener('touchend', function (e) {
-        if (!dragging) return;
-        dragging = false;
-        var t = e.changedTouches[0];
-        drop(t.clientX, t.clientY);
-      });
-    }
-
-    wireDraggableItem(toyEl, function () {
-      pet.activeToy = false;
-      playWithPet();
-      notify(pet.name + ' loved playing with the toy!');
-      render();
-    });
-    wireDraggableItem(treatEl, function () {
-      pet.activeTreat = false;
-      feedPet();
-      notify(pet.name + ' gobbled up the treat!');
-      render();
-    });
-
-    // ---- Buttons ----
-    document.getElementById('bm-feed-btn').addEventListener('click', function () {
-      feedPet();
-      notify(pet.name + ' is happily fed.');
-      render();
-    });
-    document.getElementById('bm-clean-btn').addEventListener('click', function () {
-      cleanPet();
-      notify(pet.name + ' is squeaky clean.');
-      render();
-    });
-    document.getElementById('bm-play-btn').addEventListener('click', function () {
-      playWithPet();
-      notify(pet.name + ' had fun playing!');
-      render();
-    });
-
-    var renameBtn = document.getElementById('bm-rename-btn');
-    renameBtn.addEventListener('click', function () {
-      var input = document.getElementById('bm-rename-input');
-      var confirmBtn = document.getElementById('bm-rename-confirm');
-      renameBtn.style.display = 'none';
-      input.value = pet.name;
-      input.style.display = '';
-      confirmBtn.style.display = '';
-      input.focus();
-      input.select();
-
-      function doRename() {
-        renamePet(input.value.trim());
-        input.style.display = 'none';
-        confirmBtn.style.display = 'none';
-        renameBtn.style.display = '';
-        render();
-      }
-      confirmBtn.onclick = doRename;
-      input.onkeydown = function (e) {
-        if (e.key === 'Enter') doRename();
-        if (e.key === 'Escape') {
-          input.style.display = 'none';
-          confirmBtn.style.display = 'none';
-          renameBtn.style.display = '';
-        }
-      };
-    });
-
-    // ---- Periodic loop: decay + random events ----
-    setInterval(function () {
-      updatePet();
-      var grown2 = maybeGrow();
-      if (grown2) notify(pet.name + ' grew into a ' + STAGE_LABELS[grown2] + '!');
-      render();
-    }, 20000);
-
-    setInterval(function () {
-      var evt = rollFieldEvent();
-      if (evt) applyFieldEvent(evt, notify);
-      render();
-    }, 25000);
-  }
-
-  document.addEventListener('DOMContentLoaded', initBabyMarkus);
-})();
+      
