@@ -353,6 +353,225 @@
     padding: 1px 4px;
     margin-left: 4px;
   }
+
+  /* ===== AVATAR / PROFILE ===== */
+  .headerAvatar {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #000000;
+    font-size: 15px;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+
+  #avatarPickerBtn {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    padding: 1px 6px;
+    margin-left: 4px;
+  }
+
+  #avatarPicker {
+    display: none;
+    position: absolute;
+    background: #ECE9D8;
+    border: 2px solid #000000;
+    padding: 8px;
+    z-index: 3000;
+    right: 20px;
+    margin-top: 4px;
+  }
+  #avatarPicker.open { display: block; }
+
+  #avatarPicker .avatarChoice {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 18px;
+    background: #ffffff;
+    border: 1px solid #999999;
+    margin: 2px;
+    cursor: pointer;
+  }
+  #avatarPicker .avatarChoice:hover { border-color: #000080; background: #D4D0C8; }
+  #avatarPicker .avatarChoice.selected { border-color: #000080; border-width: 2px; background: #D4D0C8; }
+
+  .loginAvatarRow {
+    text-align: center;
+    margin: 6px 0;
+  }
+  .loginAvatarRow .avatarChoice {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    font-size: 15px;
+    background: #ffffff;
+    border: 1px solid #999999;
+    margin: 2px;
+    cursor: pointer;
+  }
+  .loginAvatarRow .avatarChoice.selected { border-color: #000080; border-width: 2px; background: #D4D0C8; }
+
+  /* ===== MK PROMO BANNER ===== */
+  .mkBanner {
+    background: #000000;
+    border: 2px solid #000000;
+    padding: 16px;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .mkBannerInner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .mkLogoCircle {
+    flex-shrink: 0;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #5c1010, #2b0505 80%);
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 900;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mkBannerText {
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 1.25;
+  }
+
+  .mkBannerCta {
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    text-align: center;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== MK CHAT MODAL ===== */
+  #mkOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 2500;
+  }
+  #mkOverlay.open { display: block; }
+
+  #mkModalBox {
+    width: 900px;
+    max-width: 95%;
+    height: 85vh;
+    margin: 3vh auto;
+    background: #000000;
+    border: 2px solid #ffffff;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #mkModalBox .mkTitleBar {
+    background: #000000;
+    color: #ffffff;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #5c1010;
+  }
+
+  #mkModalBox .mkTitleBar a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    border: 1px solid #ffffff;
+    padding: 0px 6px;
+  }
+
+  #mkFrame {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: #ffffff;
+  }
+
+  #mkFrameFallback {
+    display: none;
+    flex: 1;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  #mkFrameFallback a { color: #ff8080; }
+
+  .mkTabBar {
+    background: #000000;
+    border-bottom: 2px solid #5c1010;
+    display: flex;
+  }
+
+  .mkTabBtn {
+    flex: 1;
+    background: #000000;
+    color: #999999;
+    border: none;
+    border-right: 1px solid #333333;
+    padding: 8px 0;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .mkTabBtn:last-child { border-right: none; }
+  .mkTabBtn.active {
+    background: #5c1010;
+    color: #ffffff;
+  }
+
+  #mkScreenshots {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    background: #111111;
+    padding: 16px;
+    text-align: center;
+  }
+
+  #mkScreenshots img {
+    max-width: 100%;
+    border: 1px solid #5c1010;
+    margin-bottom: 16px;
+  }
+
+  #mkScreenshots .mkShotCaption {
+    color: #cccccc;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    margin-bottom: 20px;
+  }
 </style>
 </head>
 <body>
@@ -370,6 +589,10 @@
     </tr>
   </table>
   <br>
+  <div class="loginAvatarRow" id="registerAvatarRow" style="display:none;">
+    <div style="font-size:10px; margin-bottom:2px;">Pick an avatar:</div>
+    <span id="registerAvatarChoices"></span>
+  </div>
   <input type="button" value="Login" id="loginBtn">
   <input type="button" value="Register" id="registerBtn">
   <div id="loginError"></div>
@@ -387,7 +610,15 @@
   <table class="headtable">
     <tr>
       <td><span class="sitename">The Internet Rest Stop</span></td>
-      <td align="right">Logged in as: <b id="whoAmI">Guest</b> &nbsp; <a href="#" id="logoutLink">Log out</a></td>
+      <td align="right">
+        Logged in as: <span class="headerAvatar" id="headerAvatar">&#128100;</span><b id="whoAmI">Guest</b>
+        <input type="button" value="Change" id="avatarPickerBtn">
+        &nbsp; <a href="#" id="logoutLink">Log out</a>
+        <div id="avatarPicker">
+          <div style="font-size:10px; font-weight:bold; margin-bottom:4px;">Choose your avatar</div>
+          <span id="headerAvatarChoices"></span>
+        </div>
+      </td>
     </tr>
   </table>
 </td></tr>
@@ -397,8 +628,18 @@
     <a href="#tools">Tool Shed</a>
     <a href="#picks">Ray's Picks</a>
     <a href="#mystops" id="myStopsNavLink">My Stops</a>
+    <a href="#" onclick="openMkChat(); return false;">MK Chat</a>
     <a href="#">About</a>
     <a href="#">Contact</a>
+  </div>
+</td></tr>
+<tr><td>
+  <div class="mkBanner" onclick="openMkChat();">
+    <div class="mkBannerInner">
+      <div class="mkLogoCircle">MK</div>
+      <div class="mkBannerText">online chatting<br>better than<br>discord???</div>
+    </div>
+    <div class="mkBannerCta">ITS RIGHT HERE ON THE INTERNET RESTSTOP!!!!</div>
   </div>
 </td></tr>
 <tr><td class="mainbody">
@@ -501,6 +742,31 @@
 </td></tr>
 </table>
 
+  <div id="mkOverlay">
+    <div id="mkModalBox">
+      <div class="mkTitleBar">
+        <span>MK &mdash; online chatting better than discord???</span>
+        <a href="#" id="mkCloseBtn">Close X</a>
+      </div>
+      <div class="mkTabBar">
+        <button type="button" class="mkTabBtn active" id="mkTabLiveBtn" onclick="showMkTab('live');">Live Chat</button>
+        <button type="button" class="mkTabBtn" id="mkTabShotsBtn" onclick="showMkTab('screenshots');">Screenshots</button>
+      </div>
+      <iframe id="mkFrame" src="about:blank" title="MK Chat"></iframe>
+      <div id="mkFrameFallback">
+        MK wouldn't load in a window here &mdash; it might be blocking embedding.
+        <br><br>
+        <a href="https://mk-app-1.onrender.com" target="_blank" rel="noopener">Open MK in a new tab instead</a>
+      </div>
+      <div id="mkScreenshots">
+        <img src="/mk-screenshot-chat.png" alt="MK chat screenshot">
+        <div class="mkShotCaption">MK's chat view &mdash; mini chats, activity sidebar, and calls</div>
+        <img src="/mk-screenshot-calling.png" alt="MK calling screen screenshot">
+        <div class="mkShotCaption">Calling a friend on MK</div>
+      </div>
+    </div>
+  </div>
+
   <div id="modalOverlay">
     <div id="modalBox">
       <div class="modalTitleBar">
@@ -543,6 +809,152 @@
   var presenceIcons = ["&#128100;","&#128121;","&#128123;","&#129302;","&#128119;","&#128120;","&#128018;","&#128049;"];
   var currentCard = null; // holds data for whatever card is open in the modal
   var isRegisterMode = false;
+
+  // ---------- AVATARS ----------
+  var AVATAR_ICONS = {
+    traveler: '&#128100;',
+    trucker: '&#128119;',
+    raccoon: '&#129440;',
+    robot: '&#129302;',
+    ghost: '&#128123;',
+    cat: '&#128049;',
+    alien: '&#128125;',
+    cowboy: '&#129312;'
+  };
+  var selectedRegisterAvatar = 'traveler';
+  var currentUserAvatar = 'traveler';
+
+  function buildAvatarChoices(container, onPick, selected) {
+    container.innerHTML = '';
+    Object.keys(AVATAR_ICONS).forEach(function (key) {
+      var span = document.createElement('span');
+      span.className = 'avatarChoice' + (key === selected ? ' selected' : '');
+      span.innerHTML = AVATAR_ICONS[key];
+      span.title = key;
+      span.addEventListener('click', function () {
+        container.querySelectorAll('.avatarChoice').forEach(function (el) { el.classList.remove('selected'); });
+        span.classList.add('selected');
+        onPick(key);
+      });
+      container.appendChild(span);
+    });
+  }
+
+  buildAvatarChoices(document.getElementById('registerAvatarChoices'), function (key) {
+    selectedRegisterAvatar = key;
+  }, selectedRegisterAvatar);
+
+  document.getElementById('avatarPickerBtn').addEventListener('click', function () {
+    document.getElementById('avatarPicker').classList.toggle('open');
+  });
+
+  function setHeaderAvatar(key) {
+    currentUserAvatar = key;
+    document.getElementById('headerAvatar').innerHTML = AVATAR_ICONS[key] || AVATAR_ICONS.traveler;
+  }
+
+  function refreshHeaderAvatarPicker() {
+    buildAvatarChoices(document.getElementById('headerAvatarChoices'), async function (key) {
+      try {
+        const res = await fetch('/api/me/avatar', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ avatar: key })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          setHeaderAvatar(key);
+          document.getElementById('avatarPicker').classList.remove('open');
+        } else {
+          alert(data.error || 'Could not update avatar.');
+        }
+      } catch (err) {
+        alert('Could not reach the server.');
+      }
+    }, currentUserAvatar);
+  }
+
+  // ---------- MK CHAT ----------
+  var MK_URL = 'https://mk-app-1.onrender.com';
+  var mkLoaded = false;
+  var mkFallbackTimer = null;
+
+  function showMkTab(tab) {
+    var frame = document.getElementById('mkFrame');
+    var fallback = document.getElementById('mkFrameFallback');
+    var shots = document.getElementById('mkScreenshots');
+    var liveBtn = document.getElementById('mkTabLiveBtn');
+    var shotsBtn = document.getElementById('mkTabShotsBtn');
+
+    if (tab === 'screenshots') {
+      shots.style.display = 'block';
+      frame.style.display = 'none';
+      fallback.style.display = 'none';
+      shotsBtn.classList.add('active');
+      liveBtn.classList.remove('active');
+    } else {
+      shots.style.display = 'none';
+      liveBtn.classList.add('active');
+      shotsBtn.classList.remove('active');
+      // restore whichever of frame/fallback was showing before
+      if (mkLoaded) {
+        frame.style.display = 'block';
+        fallback.style.display = 'none';
+      } else if (frame.src.indexOf('mk-app-1.onrender.com') !== -1) {
+        // still loading or already failed; let the existing timer/state decide,
+        // just make sure the frame is visible while we wait
+        frame.style.display = 'block';
+      }
+    }
+  }
+
+  function openMkChat() {
+    var frame = document.getElementById('mkFrame');
+    var fallback = document.getElementById('mkFrameFallback');
+
+    showMkTab('live');
+    fallback.style.display = 'none';
+    frame.style.display = 'block';
+
+    if (!mkLoaded) {
+      frame.src = MK_URL;
+      // If the site blocks embedding (X-Frame-Options / CSP frame-ancestors),
+      // the iframe just stays blank with no error we can catch directly.
+      // As a rough heuristic, if "load" hasn't fired shortly, offer the
+      // new-tab fallback link instead of leaving a dead black box.
+      mkFallbackTimer = setTimeout(function () {
+        if (!mkLoaded) {
+          frame.style.display = 'none';
+          fallback.style.display = 'flex';
+          fallback.style.flexDirection = 'column';
+          fallback.style.alignItems = 'center';
+          fallback.style.justifyContent = 'center';
+        }
+      }, 4000);
+    }
+
+    document.getElementById('mkOverlay').classList.add('open');
+  }
+
+  document.getElementById('mkFrame').addEventListener('load', function () {
+    // Blank initial load ("about:blank") also fires this event, so only
+    // treat it as a real success once we've actually pointed it at MK_URL.
+    if (document.getElementById('mkFrame').src.indexOf('mk-app-1.onrender.com') !== -1) {
+      mkLoaded = true;
+      if (mkFallbackTimer) clearTimeout(mkFallbackTimer);
+    }
+  });
+
+  document.getElementById('mkCloseBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('mkOverlay').classList.remove('open');
+  });
+
+  document.getElementById('mkOverlay').addEventListener('click', function (e) {
+    if (e.target.id === 'mkOverlay') {
+      document.getElementById('mkOverlay').classList.remove('open');
+    }
+  });
 
   // ---------- MODAL ----------
   function openModal(cardId, title, category, desc, updated, favorited, visited, icon) {
@@ -622,6 +1034,7 @@
     isRegisterMode = !isRegisterMode;
     document.getElementById('loginTitle').textContent = isRegisterMode ? 'Create Account' : 'Member Login';
     document.getElementById('toggleModeLink').textContent = isRegisterMode ? 'Already have an account? Log in' : 'New here? Register instead';
+    document.getElementById('registerAvatarRow').style.display = isRegisterMode ? 'block' : 'none';
     hideLoginError();
   });
 
@@ -644,18 +1057,23 @@
       return;
     }
 
+    var payload = { username: username, password: password };
+    if (endpoint === 'register') {
+      payload.avatar = selectedRegisterAvatar;
+    }
+
     try {
       const res = await fetch('/api/' + endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username, password: password })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       if (!res.ok) {
         showLoginError(data.error || 'Something went wrong.');
         return;
       }
-      enterSite(data.user.username);
+      enterSite(data.user.username, data.user.avatar);
     } catch (err) {
       showLoginError('Could not reach the server.');
     }
@@ -675,10 +1093,12 @@
     location.reload();
   });
 
-  function enterSite(username) {
+  function enterSite(username, avatar) {
     document.getElementById('whoAmI').textContent = username;
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('siteContent').classList.remove('blurred');
+    setHeaderAvatar(avatar || 'traveler');
+    refreshHeaderAvatarPicker();
     loadMyStops();
   }
 
@@ -729,7 +1149,7 @@
       const res = await fetch('/api/me');
       const data = await res.json();
       if (data.loggedIn) {
-        enterSite(data.user.username);
+        enterSite(data.user.username, data.user.avatar);
       }
     } catch (err) {
       // server not up yet locally; login screen just stays visible
