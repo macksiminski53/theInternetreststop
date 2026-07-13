@@ -76,6 +76,41 @@
     pointer-events: none;
   }
 
+  /* ===== ZOOM-IN TRANSITION (corner rip -> full screen -> navigate) ===== */
+  #zoomTransitionOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: linear-gradient(180deg, #8fd3f4 0%, #8fd3f4 35%, #6cc96a 35%, #4caf50 100%);
+    pointer-events: none;
+  }
+
+  #zoomTransitionOverlay.zooming {
+    display: block;
+    animation: zoomIntoField 0.7s ease-in forwards;
+  }
+
+  #zoomTransitionOverlay .ztCloud {
+    position: absolute;
+    background: #ffffff;
+    border-radius: 50%;
+    opacity: 0.9;
+  }
+
+  @keyframes zoomIntoField {
+    0% {
+      clip-path: polygon(100% 100%, 100% 0%, 78% 6%, 66% 2%, 55% 10%, 44% 4%, 34% 14%, 22% 8%, 12% 18%, 0% 12%, 0% 100%);
+      transform: scale(1);
+      transform-origin: bottom right;
+    }
+    100% {
+      clip-path: polygon(100% 100%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 0% 0%, 0% 100%);
+      transform: scale(8);
+      transform-origin: bottom right;
+    }
+  }
+
   body {
     margin: 0;
     background: #ffffff;
@@ -1394,6 +1429,12 @@
   <div id="tornCornerLabel">raise markus</div>
 </a>
 
+<div id="zoomTransitionOverlay">
+  <div class="ztCloud" style="width:80px; height:34px; top:10%; left:15%;"></div>
+  <div class="ztCloud" style="width:60px; height:26px; top:22%; left:60%;"></div>
+  <div class="ztCloud" style="width:100px; height:40px; top:6%; left:70%;"></div>
+</div>
+
 <script>
   var presenceColorKeys = ["mp-traveler","mp-trucker","mp-raccoon","mp-robot","mp-ghost","mp-cat","mp-alien","mp-cowboy","mp-rand1","mp-rand2","mp-rand3","mp-rand4"];
   var currentCard = null; // holds data for whatever card is open in the modal
@@ -2264,6 +2305,17 @@
 
   loadCards();
   loadAdminStatus();
+
+  // ---------- TORN CORNER ZOOM TRANSITION ----------
+  document.getElementById('tornCornerLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    var dest = this.href;
+    var overlay = document.getElementById('zoomTransitionOverlay');
+    overlay.classList.add('zooming');
+    setTimeout(function () {
+      window.location.href = dest;
+    }, 650);
+  });
 </script>
 
 </body>
