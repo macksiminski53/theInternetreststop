@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baby Markus's Field &mdash; The Internet Rest Stop</title>
+<style>
+  html, body {
+    margin: 0;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  body {
+    background: #ffffff;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+  }
+
+  .banner {
+    background: #000080;
+    color: #ffffff;
+    padding: 4px 8px;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .headerBar {
+    background: #C0C0C0;
+    border-bottom: 1px solid #999999;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .headerBar .sitename {
+    font-size: 18px;
+    font-weight: bold;
+    color: #800000;
+    font-family: Georgia, 'Times New Roman', serif;
+    text-decoration: none;
+  }
+
+  .headerBar a.backLink {
+    font-size: 11px;
+  }
+
+  .pageWrap {
+    max-width: 720px;
+    margin: 20px auto;
+    padding: 0 14px;
+  }
+
+  .pageTitle {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  .pageSub {
+    font-size: 11px;
+    color: #555555;
+    margin-bottom: 14px;
+  }
+
+  #bm-field {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    border: 3px solid #000000;
+    border-radius: 6px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #8fd3f4 0%, #b8e6fb 30%, #7bc96e 30%, #5cb85c 65%, #4a9e4a 100%);
+    cursor: default;
+    touch-action: none;
+  }
+
+  .bmCloud {
+    position: absolute;
+    background: #ffffff;
+    border-radius: 50%;
+    opacity: 0.9;
+  }
+
+  .bmFlower {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+  }
+  .bmFlower::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, #ffd93b 0 30%, transparent 31%),
+      radial-gradient(circle at 50% 0%, #ff6b9d 0 45%, transparent 46%),
+      radial-gradient(circle at 100% 50%, #ff6b9d 0 45%, transparent 46%),
+      radial-gradient(circle at 50% 100%, #ff6b9d 0 45%, transparent 46%),
+      radial-gradient(circle at 0% 50%, #ff6b9d 0 45%, transparent 46%);
+  }
+
+  #bm-creature {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    margin-left: -45px;
+    margin-top: -70px;
+    cursor: grab;
+    transition: left 1.3s ease-in-out, top 1.3s ease-in-out;
+    transform: scale(var(--bm-scale, 0.7));
+    transform-origin: center bottom;
+    user-select: none;
+    touch-action: none;
+  }
+
+  #bm-creature.bm-dragging {
+    cursor: grabbing;
+    transition: none;
+  }
+
+  #bm-creature.bm-walking {
+    animation: bmBob 0.4s ease-in-out infinite;
+  }
+
+  @keyframes bmBob {
+    0%, 100% { margin-top: -70px; }
+    50% { margin-top: -76px; }
+  }
+
+  #bm-toy, #bm-treat {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    display: none;
+    cursor: grab;
+    font-size: 26px;
+    text-align: center;
+    line-height: 36px;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+    user-select: none;
+    touch-action: none;
+  }
+  #bm-toy { left: 70%; top: 45%; }
+  #bm-treat { left: 25%; top: 50%; }
+
+  #bm-rain {
+    position: absolute;
+    inset: 0;
+    display: none;
+    background: repeating-linear-gradient(115deg, rgba(120,150,200,0.25) 0px, rgba(120,150,200,0.25) 2px, transparent 2px, transparent 14px);
+    pointer-events: none;
+  }
+
+  #bm-notify {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0,0,0,0.75);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 6px 14px;
+    border-radius: 14px;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  #bm-notify.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .bmPanel {
+    border: 1px solid #999999;
+    background: #f4f4f4;
+    padding: 10px 14px;
+    margin-top: 10px;
+  }
+
+  #bm-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  #bm-name { font-size: 16px; font-weight: bold; }
+  #bm-stage {
+    background: #000080;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  #bm-cold-badge {
+    display: none;
+    background: #800000;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  #bm-rename-btn {
+    background: none; border: none; color: #555555;
+    font-size: 11px; cursor: pointer; text-decoration: underline;
+  }
+
+  #bm-growth-note {
+    font-size: 11px;
+    color: #333333;
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+
+  .bmStats { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; max-width: 320px; }
+  .bmStat { display: flex; align-items: center; gap: 8px; }
+  .bmStatLabel { font-size: 11px; width: 50px; color: #333333; }
+  .bmBar { flex: 1; height: 10px; background: #dddddd; border-radius: 5px; overflow: hidden; border: 1px solid #bbbbbb; }
+  .bmBarFill { height: 100%; background: #2b4fd6; border-radius: 5px; transition: width 0.5s; }
+  .bmBarFill.low { background: #c0392b; }
+
+  .bmActions { display: flex; gap: 8px; }
+  .bmActions input[type="button"] {
+    font-size: 12px;
+    padding: 5px 12px;
+    cursor: pointer;
+  }
+
+  .aboutBox {
+    margin-top: 14px;
+    border: 1px solid #999999;
+    background: #f4f4f4;
+    padding: 10px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .aboutBox b { color: #800000; }
+
+  .footerBar {
+    text-align: center;
+    font-size: 10px;
+    color: #666666;
+    padding: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">theinternetreststop.com &mdash; pull over and stretch your legs</div>
+<div class="headerBar">
+  <a class="sitename" href="/">The Internet Rest Stop</a>
+  <a class="backLink" href="/">&larr; Back to the Rest Stop</a>
+</div>
+
+<div class="pageWrap">
+  <div class="pageTitle">Baby Markus's Field</div>
+  <div class="pageSub">Long before MK's Markus grew up and started eating music, he was just a little guy in a field. Feed him, clean him up, play with him, and watch him grow over time.</div>
+
+  <div id="bm-field">
+    <div class="bmCloud" style="width:70px; height:28px; top:6%; left:10%;"></div>
+    <div class="bmCloud" style="width:50px; height:20px; top:14%; left:65%;"></div>
+    <div class="bmCloud" style="width:90px; height:34px; top:4%; left:40%;"></div>
+    <div class="bmFlower" style="left:8%; top:80%;"></div>
+    <div class="bmFlower" style="left:88%; top:75%;"></div>
+    <div class="bmFlower" style="left:50%; top:88%;"></div>
+    <div class="bmFlower" style="left:20%; top:70%;"></div>
+
+    <div id="bm-rain"></div>
+    <div id="bm-notify"></div>
+
+    <div id="bm-toy" title="Drag to Baby Markus">&#9967;</div>
+    <div id="bm-treat" title="Drag to Baby Markus">&#127853;</div>
+
+    <div id="bm-creature">
+      <svg viewBox="0 0 140 140" width="90" height="90">
+        <circle cx="34" cy="40" r="19" fill="#a06a30"/>
+        <circle cx="106" cy="40" r="19" fill="#a06a30"/>
+        <circle cx="34" cy="40" r="10" fill="#c99a5f"/>
+        <circle cx="106" cy="40" r="10" fill="#c99a5f"/>
+        <ellipse cx="70" cy="80" rx="52" ry="48" fill="#a06a30"/>
+        <ellipse cx="70" cy="98" rx="26" ry="20" fill="#e0bd8f"/>
+        <ellipse cx="70" cy="90" rx="8" ry="6" fill="#2a1a0e"/>
+        <path d="M 60 104 Q 70 111 80 104" fill="none" stroke="#2a1a0e" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="50" cy="70" r="6" fill="#ffffff"/>
+        <circle cx="52" cy="71" r="3" fill="#2a1a0e"/>
+        <circle cx="90" cy="70" r="6" fill="#ffffff"/>
+        <circle cx="88" cy="71" r="3" fill="#2a1a0e"/>
+        <ellipse cx="40" cy="86" rx="7" ry="5" fill="#c99a5f" opacity="0.6"/>
+        <ellipse cx="100" cy="86" rx="7" ry="5" fill="#c99a5f" opacity="0.6"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="bmPanel">
+    <div id="bm-name-row">
+      <span id="bm-name">Baby Markus</span>
+      <span id="bm-stage">Baby</span>
+      <span id="bm-cold-badge">Has a cold</span>
+      <button id="bm-rename-btn" title="Rename">edit</button>
+      <input id="bm-rename-input" type="text" maxlength="24" placeholder="New name..." style="display:none;width:110px;font-size:12px;padding:2px 6px;" />
+      <button id="bm-rename-confirm" style="display:none;font-size:11px;padding:2px 8px;">Save</button>
+    </div>
+    <div id="bm-growth-note"></div>
+
+    <div class="bmStats">
+      <div class="bmStat"><span class="bmStatLabel">Hunger</span><div class="bmBar"><div class="bmBarFill" id="bm-hunger"></div></div></div>
+      <div class="bmStat"><span class="bmStatLabel">Clean</span><div class="bmBar"><div class="bmBarFill" id="bm-clean"></div></div></div>
+      <div class="bmStat"><span class="bmStatLabel">Happy</span><div class="bmBar"><div class="bmBarFill" id="bm-happy"></div></div></div>
+    </div>
+
+    <div class="bmActions">
+      <input type="button" value="Feed" id="bm-feed-btn">
+      <input type="button" value="Clean" id="bm-clean-btn">
+      <input type="button" value="Play" id="bm-play-btn">
+    </div>
+  </div>
+
+  <div class="aboutBox">
+    <b>Who is this?</b> This is baby Markus &mdash; a young, separate version of the Markus character, from before he grew up into the Markus you see in MusicToDiscord. He wanders his field on his own; drag him around, or drag toys and treats that show up to him. He grows into new stages over real days if you keep him well cared for. His stats and growth save to this browser only.
+  </div>
+</div>
+
+<div class="footerBar">&copy; 2026 The Internet Rest Stop &middot; live test build</div>
+
+<script src="/baby-markus-pet.js"></script>
+</body>
+</html>

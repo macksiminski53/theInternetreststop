@@ -1,0 +1,470 @@
+// BABY MARKUS -- a separate, younger version of Markus (a "before he was in
+// MusicToDiscord" prequel character), living in a free-roam field instead
+// of a stat menu. Inspired by MeepCity / Chao Garden / Adopt Me: he wanders
+// on his own, you can drag him around, drag toys/food onto him, he grows
+// through real-time stages based on how well you care for him, and random
+// field events happen while you're around.
+
+(function () {
+  var STORAGE_KEY = 'reststop_baby_markus_v1';
+
+  var STAGES = ['baby', 'toddler', 'kid', 'tween'];
+  var STAGE_LABELS = { baby: 'Baby', toddler: 'Toddler', kid: 'Kid', tween: 'Tween' };
+  var STAGE_SCALE = { baby: 0.7, toddler: 0.85, kid: 1.0, tween: 1.15 };
+  // Minimum real days in a stage before he's even eligible to grow, and the
+  // average care score (0-100) needed over that window to actually advance.
+  // Poor care doesn't stop time, it just means he takes longer to grow up.
+  var STAGE_MIN_DAYS = { baby: 3, toddler: 4, kid: 5, tween: Infinity };
+  var STAGE_CARE_THRESHOLD = 55;
+
+  var FIELD_EVENTS = [
+    { key: 'toy', label: 'A toy rolled into the field!', chance: 0.05 },
+    { key: 'treat', label: 'Baby Markus found a treat!', chance: 0.05 },
+    { key: 'rain', label: 'It started raining!', chance: 0.03 },
+    { key: 'cold', label: 'Baby Markus caught a little cold.', chance: 0.015 },
+    { key: 'butterfly', label: 'A butterfly is fluttering by!', chance: 0.04 }
+  ];
+
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function daysBetween(aKey, bKey) {
+    var a = new Date(aKey + 'T00:00:00');
+    var b = new Date(bKey + 'T00:00:00');
+    return Math.round((b - a) / 86400000);
+  }
+
+  function defPet() {
+    var today = todayKey();
+    return {
+      name: 'Baby Markus',
+      stage: 'baby',
+      stageStartDate: today,
+      birthDate: today,
+      hunger: 80,
+      happiness: 85,
+      cleanliness: 100,
+      hasCold: false,
+      lastUpdate: Date.now(),
+      lastVisitDate: today,
+      careLog: [], // recent daily care-quality samples, used to compute the growth average
+      activeToy: false,
+      activeTreat: false,
+      raining: false,
+      x: 50, // field position, in percent
+      y: 60
+    };
+  }
+
+  function loadPet() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return Object.assign(defPet(), JSON.parse(raw));
+    } catch (e) { /* fall through */ }
+    return defPet();
+  }
+
+  function savePet() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pet)); } catch (e) { /* non-fatal */ }
+  }
+
+  var pet = loadPet();
+
+  function careScoreNow() {
+    // Simple average of the three core stats -- a rough "how well is he
+    // doing right now" number from 0-100, sampled once per day into
+    // careLog so growth can look at a window of recent days rather than
+    // a single lucky/unlucky moment.
+    return Math.round((pet.hunger + pet.happiness + pet.cleanliness) / 3);
+  }
+
+  function sampleCareForToday() {
+    var today = todayKey();
+    var already = pet.careLog.some(function (entry) { return entry.date === today; });
+    if (already) return;
+    pet.careLog.push({ date: today, score: careScoreNow() });
+    // Keep only the last 10 days of samples.
+    if (pet.careLog.length > 10) pet.careLog = pet.careLog.slice(-10);
+  }
+
+  function averageCareScore() {
+    if (pet.careLog.length === 0) return careScoreNow();
+    var sum = pet.careLog.reduce(function (acc, e) { return acc + e.score; }, 0);
+    return sum / pet.careLog.length;
+  }
+
+  function maybeGrow() {
+    var stageIndex = STAGES.indexOf(pet.stage);
+    if (stageIndex === STAGES.length - 1) return null; // already fully grown
+
+    var minDays = STAGE_MIN_DAYS[pet.stage];
+    var daysInStage = daysBetween(pet.stageStartDate, todayKey());
+    if (daysInStage < minDays) return null;
+
+    var avgCare = averageCareScore();
+    if (avgCare < STAGE_CARE_THRESHOLD) return null; // eligible by time, not by care yet
+
+    var nextStage = STAGES[stageIndex + 1];
+    pet.stage = nextStage;
+    pet.stageStartDate = todayKey();
+    pet.careLog = [];
+    return nextStage;
+  }
+
+  function updatePet() {
+    var now = Date.now();
+    var hoursElapsed = (now - pet.lastUpdate) / 3600000;
+
+    pet.hunger = Math.max(0, pet.hunger - hoursElapsed * 3);
+    pet.cleanliness = Math.max(0, pet.cleanliness - hoursElapsed * 2.2);
+    pet.happiness = Math.max(0, Math.min(100, (pet.hunger + pet.cleanliness) / 2));
+    if (pet.hasCold) pet.happiness = Math.max(0, pet.happiness - 10);
+
+    pet.lastUpdate = now;
+    sampleCareForToday();
+    pet.lastVisitDate = todayKey();
+    savePet();
+  }
+
+  function feedPet() {
+    pet.hunger = Math.min(100, pet.hunger + 22);
+    pet.happiness = Math.min(100, pet.happiness + 6);
+    sampleCareForToday();
+    savePet();
+  }
+
+  function cleanPet() {
+    pet.cleanliness = Math.min(100, pet.cleanliness + 30);
+    pet.happiness = Math.min(100, pet.happiness + 4);
+    if (pet.hasCold && pet.cleanliness > 70) pet.hasCold = false;
+    sampleCareForToday();
+    savePet();
+  }
+
+  function playWithPet() {
+    pet.happiness = Math.min(100, pet.happiness + 12);
+    sampleCareForToday();
+    savePet();
+  }
+
+  function renamePet(name) {
+    var n = String(name || '').trim().slice(0, 20);
+    if (n) { pet.name = n; savePet(); }
+  }
+
+  // ---------- Field wander AI ----------
+  var wanderTimer = null;
+  var isDragging = false;
+  var isMoving = false;
+
+  function startWander(fieldEl, creatureEl) {
+    function step() {
+      if (isDragging) return;
+      var targetX = 10 + Math.random() * 80;
+      var targetY = 35 + Math.random() * 55;
+      moveTo(fieldEl, creatureEl, targetX, targetY);
+    }
+    if (wanderTimer) clearInterval(wanderTimer);
+    wanderTimer = setInterval(step, 4500);
+  }
+
+  function moveTo(fieldEl, creatureEl, targetX, targetY) {
+    if (isDragging) return;
+    isMoving = true;
+    var facingLeft = targetX < pet.x;
+    creatureEl.style.transform = 'scaleX(' + (facingLeft ? -1 : 1) + ')';
+    creatureEl.classList.add('bm-walking');
+
+    pet.x = targetX;
+    pet.y = targetY;
+    positionCreature(creatureEl);
+    savePet();
+
+    setTimeout(function () {
+      isMoving = false;
+      creatureEl.classList.remove('bm-walking');
+    }, 1400);
+  }
+
+  function positionCreature(creatureEl) {
+    creatureEl.style.left = pet.x + '%';
+    creatureEl.style.top = pet.y + '%';
+  }
+
+  // ---------- Random field events ----------
+  function rollFieldEvent() {
+    if (pet.activeToy || pet.activeTreat || pet.raining) return null;
+    var roll = Math.random();
+    var acc = 0;
+    for (var i = 0; i < FIELD_EVENTS.length; i++) {
+      acc += FIELD_EVENTS[i].chance;
+      if (roll < acc) return FIELD_EVENTS[i];
+    }
+    return null;
+  }
+
+  function applyFieldEvent(evt, notifyFn) {
+    if (evt.key === 'toy') {
+      pet.activeToy = true;
+      savePet();
+      notifyFn(evt.label + ' Drag it to him!');
+    } else if (evt.key === 'treat') {
+      pet.activeTreat = true;
+      savePet();
+      notifyFn(evt.label + ' Drag it to him!');
+    } else if (evt.key === 'rain') {
+      pet.raining = true;
+      pet.happiness = Math.max(0, pet.happiness - 8);
+      savePet();
+      notifyFn(evt.label);
+      setTimeout(function () { pet.raining = false; savePet(); renderAll(); }, 12000);
+    } else if (evt.key === 'cold') {
+      pet.hasCold = true;
+      pet.cleanliness = Math.max(0, pet.cleanliness - 15);
+      savePet();
+      notifyFn(evt.label + ' Keep him clean to help him feel better.');
+    } else if (evt.key === 'butterfly') {
+      pet.happiness = Math.min(100, pet.happiness + 3);
+      savePet();
+      notifyFn(evt.label);
+    }
+  }
+
+  // ---------- Rendering ----------
+  var renderAllRef = null;
+  function renderAll() {
+    if (renderAllRef) renderAllRef();
+  }
+
+  function initBabyMarkus() {
+    updatePet();
+    var grown = maybeGrow();
+
+    var field = document.getElementById('bm-field');
+    var creature = document.getElementById('bm-creature');
+    var nameEl = document.getElementById('bm-name');
+    var stageEl = document.getElementById('bm-stage');
+    var hungerBar = document.getElementById('bm-hunger');
+    var cleanBar = document.getElementById('bm-clean');
+    var happyBar = document.getElementById('bm-happy');
+    var notifyEl = document.getElementById('bm-notify');
+    var toyEl = document.getElementById('bm-toy');
+    var treatEl = document.getElementById('bm-treat');
+    var rainEl = document.getElementById('bm-rain');
+    var coldEl = document.getElementById('bm-cold-badge');
+    var growthNote = document.getElementById('bm-growth-note');
+
+    function notify(msg) {
+      notifyEl.textContent = msg;
+      notifyEl.classList.add('show');
+      clearTimeout(notify._t);
+      notify._t = setTimeout(function () { notifyEl.classList.remove('show'); }, 4500);
+    }
+
+    function render() {
+      nameEl.textContent = pet.name;
+      stageEl.textContent = STAGE_LABELS[pet.stage];
+      hungerBar.style.width = pet.hunger + '%';
+      hungerBar.classList.toggle('low', pet.hunger < 30);
+      cleanBar.style.width = pet.cleanliness + '%';
+      cleanBar.classList.toggle('low', pet.cleanliness < 30);
+      happyBar.style.width = pet.happiness + '%';
+      happyBar.classList.toggle('low', pet.happiness < 30);
+
+      var scale = STAGE_SCALE[pet.stage];
+      creature.style.setProperty('--bm-scale', scale);
+      positionCreature(creature);
+
+      toyEl.style.display = pet.activeToy ? 'block' : 'none';
+      treatEl.style.display = pet.activeTreat ? 'block' : 'none';
+      rainEl.style.display = pet.raining ? 'block' : 'none';
+      coldEl.style.display = pet.hasCold ? 'inline' : 'none';
+
+      var daysInStage = daysBetween(pet.stageStartDate, todayKey());
+      var minDays = STAGE_MIN_DAYS[pet.stage];
+      if (pet.stage === 'tween') {
+        growthNote.textContent = 'Fully grown.';
+      } else if (daysInStage < minDays) {
+        growthNote.textContent = 'Growing up in ' + (minDays - daysInStage) + ' more day' + (minDays - daysInStage === 1 ? '' : 's') + ' (with good care).';
+      } else if (averageCareScore() < STAGE_CARE_THRESHOLD) {
+        growthNote.textContent = 'Ready to grow, but needs better care first.';
+      } else {
+        growthNote.textContent = 'About to grow up!';
+      }
+    }
+
+    renderAllRef = render;
+    render();
+
+    if (grown) {
+      notify(pet.name + ' grew into a ' + STAGE_LABELS[grown] + '!');
+    }
+
+    startWander(field, creature);
+
+    // ---- Drag baby Markus around ----
+    var dragOffset = null;
+    function startDrag(clientX, clientY) {
+      isDragging = true;
+      if (wanderTimer) clearInterval(wanderTimer);
+      creature.classList.add('bm-dragging');
+    }
+    function duringDrag(clientX, clientY) {
+      var rect = field.getBoundingClientRect();
+      var px = ((clientX - rect.left) / rect.width) * 100;
+      var py = ((clientY - rect.top) / rect.height) * 100;
+      px = Math.max(4, Math.min(96, px));
+      py = Math.max(20, Math.min(92, py));
+      pet.x = px;
+      pet.y = py;
+      positionCreature(creature);
+    }
+    function endDrag() {
+      if (!isDragging) return;
+      isDragging = false;
+      creature.classList.remove('bm-dragging');
+      savePet();
+      startWander(field, creature);
+    }
+
+    creature.addEventListener('mousedown', function (e) { e.preventDefault(); startDrag(e.clientX, e.clientY); });
+    document.addEventListener('mousemove', function (e) { if (isDragging) duringDrag(e.clientX, e.clientY); });
+    document.addEventListener('mouseup', endDrag);
+
+    creature.addEventListener('touchstart', function (e) {
+      var t = e.touches[0];
+      startDrag(t.clientX, t.clientY);
+    }, { passive: true });
+    document.addEventListener('touchmove', function (e) {
+      if (!isDragging) return;
+      var t = e.touches[0];
+      duringDrag(t.clientX, t.clientY);
+    }, { passive: true });
+    document.addEventListener('touchend', endDrag);
+
+    // ---- Drag toy/treat onto baby Markus ----
+    function wireDraggableItem(itemEl, onDeliver) {
+      var dragging = false;
+
+      function drop(clientX, clientY) {
+        var creatureRect = creature.getBoundingClientRect();
+        var dx = clientX - (creatureRect.left + creatureRect.width / 2);
+        var dy = clientY - (creatureRect.top + creatureRect.height / 2);
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 70) {
+          onDeliver();
+          itemEl.style.left = '';
+          itemEl.style.top = '';
+        }
+      }
+
+      itemEl.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        dragging = true;
+      });
+      document.addEventListener('mousemove', function (e) {
+        if (!dragging) return;
+        var rect = field.getBoundingClientRect();
+        itemEl.style.left = (((e.clientX - rect.left) / rect.width) * 100) + '%';
+        itemEl.style.top = (((e.clientY - rect.top) / rect.height) * 100) + '%';
+      });
+      document.addEventListener('mouseup', function (e) {
+        if (!dragging) return;
+        dragging = false;
+        drop(e.clientX, e.clientY);
+      });
+
+      itemEl.addEventListener('touchstart', function () { dragging = true; }, { passive: true });
+      document.addEventListener('touchmove', function (e) {
+        if (!dragging) return;
+        var t = e.touches[0];
+        var rect = field.getBoundingClientRect();
+        itemEl.style.left = (((t.clientX - rect.left) / rect.width) * 100) + '%';
+        itemEl.style.top = (((t.clientY - rect.top) / rect.height) * 100) + '%';
+      }, { passive: true });
+      document.addEventListener('touchend', function (e) {
+        if (!dragging) return;
+        dragging = false;
+        var t = e.changedTouches[0];
+        drop(t.clientX, t.clientY);
+      });
+    }
+
+    wireDraggableItem(toyEl, function () {
+      pet.activeToy = false;
+      playWithPet();
+      notify(pet.name + ' loved playing with the toy!');
+      render();
+    });
+    wireDraggableItem(treatEl, function () {
+      pet.activeTreat = false;
+      feedPet();
+      notify(pet.name + ' gobbled up the treat!');
+      render();
+    });
+
+    // ---- Buttons ----
+    document.getElementById('bm-feed-btn').addEventListener('click', function () {
+      feedPet();
+      notify(pet.name + ' is happily fed.');
+      render();
+    });
+    document.getElementById('bm-clean-btn').addEventListener('click', function () {
+      cleanPet();
+      notify(pet.name + ' is squeaky clean.');
+      render();
+    });
+    document.getElementById('bm-play-btn').addEventListener('click', function () {
+      playWithPet();
+      notify(pet.name + ' had fun playing!');
+      render();
+    });
+
+    var renameBtn = document.getElementById('bm-rename-btn');
+    renameBtn.addEventListener('click', function () {
+      var input = document.getElementById('bm-rename-input');
+      var confirmBtn = document.getElementById('bm-rename-confirm');
+      renameBtn.style.display = 'none';
+      input.value = pet.name;
+      input.style.display = '';
+      confirmBtn.style.display = '';
+      input.focus();
+      input.select();
+
+      function doRename() {
+        renamePet(input.value.trim());
+        input.style.display = 'none';
+        confirmBtn.style.display = 'none';
+        renameBtn.style.display = '';
+        render();
+      }
+      confirmBtn.onclick = doRename;
+      input.onkeydown = function (e) {
+        if (e.key === 'Enter') doRename();
+        if (e.key === 'Escape') {
+          input.style.display = 'none';
+          confirmBtn.style.display = 'none';
+          renameBtn.style.display = '';
+        }
+      };
+    });
+
+    // ---- Periodic loop: decay + random events ----
+    setInterval(function () {
+      updatePet();
+      var grown2 = maybeGrow();
+      if (grown2) notify(pet.name + ' grew into a ' + STAGE_LABELS[grown2] + '!');
+      render();
+    }, 20000);
+
+    setInterval(function () {
+      var evt = rollFieldEvent();
+      if (evt) applyFieldEvent(evt, notify);
+      render();
+    }, 25000);
+  }
+
+  document.addEventListener('DOMContentLoaded', initBabyMarkus);
+})();

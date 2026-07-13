@@ -1,0 +1,69 @@
+<svg viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bmAdWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fdf6ec"/>
+      <stop offset="100%" stop-color="#f3e6d3"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="680" height="400" fill="url(#bmAdWall)"/>
+  <rect x="0" y="0" width="680" height="245" fill="url(#bmAdWall)"/>
+
+  <rect x="30" y="20" width="130" height="200" fill="#ffffff" opacity="0.55" rx="4"/>
+  <rect x="500" y="20" width="150" height="200" fill="#ffffff" opacity="0.55" rx="4"/>
+
+  <rect x="0" y="245" width="680" height="155" fill="#7bb6de"/>
+
+  <ellipse cx="340" cy="392" rx="330" ry="40" fill="#b9b9b9"/>
+  <rect x="20" y="230" width="640" height="150" rx="34" fill="#e8e8e8"/>
+  <rect x="20" y="210" width="640" height="60" rx="28" fill="#f2f2f2"/>
+  <rect x="20" y="210" width="640" height="60" rx="28" fill="none" stroke="#d9d9d9" stroke-width="2"/>
+
+  <g transform="translate(255,175)">
+    <ellipse cx="0" cy="195" rx="75" ry="18" fill="#00000014"/>
+    <rect x="-55" y="20" width="110" height="160" rx="40" fill="#8a6d5c"/>
+    <circle cx="0" cy="-30" r="58" fill="#e3bfa0"/>
+    <path d="M -58 -42 Q 0 -100 58 -42 L 58 -5 Q 0 -38 -58 -5 Z" fill="#4a3324"/>
+    <path d="M -40 -68 Q -55 -30 -50 10" fill="none" stroke="#4a3324" stroke-width="10" stroke-linecap="round"/>
+    <path d="M 40 -68 Q 55 -30 50 10" fill="none" stroke="#4a3324" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(400,225)">
+    <ellipse cx="0" cy="115" rx="62" ry="15" fill="#00000014"/>
+    <circle cx="48" cy="10" r="27" fill="#a06a30"/>
+    <circle cx="92" cy="10" r="27" fill="#a06a30"/>
+    <circle cx="48" cy="10" r="14" fill="#c99a5f"/>
+    <circle cx="92" cy="10" r="14" fill="#c99a5f"/>
+    <ellipse cx="70" cy="58" rx="66" ry="60" fill="#a06a30"/>
+    <ellipse cx="70" cy="80" rx="33" ry="25" fill="#e0bd8f"/>
+    <ellipse cx="70" cy="70" rx="9.5" ry="7" fill="#2a1a0e"/>
+    <path d="M 56 90 Q 70 100 84 90" fill="none" stroke="#2a1a0e" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="44" cy="44" r="8" fill="#ffffff"/>
+    <circle cx="46.5" cy="45.5" r="4" fill="#2a1a0e"/>
+    <circle cx="96" cy="44" r="8" fill="#ffffff"/>
+    <circle cx="93.5" cy="45.5" r="4" fill="#2a1a0e"/>
+    <ellipse cx="28" cy="66" rx="10" ry="7" fill="#c99a5f" opacity="0.6"/>
+    <ellipse cx="112" cy="66" rx="10" ry="7" fill="#c99a5f" opacity="0.6"/>
+  </g>
+
+  <g transform="translate(238,265) rotate(-4)">
+    <rect x="0" y="0" width="120" height="80" rx="5" fill="#c0392b"/>
+    <rect x="5" y="5" width="110" height="70" rx="4" fill="#f4e9d8"/>
+    <line x1="14" y1="20" x2="106" y2="14" stroke="#c9c9c9" stroke-width="2"/>
+    <line x1="14" y1="34" x2="106" y2="28" stroke="#c9c9c9" stroke-width="2"/>
+    <line x1="14" y1="48" x2="106" y2="42" stroke="#c9c9c9" stroke-width="2"/>
+    <line x1="14" y1="62" x2="90" y2="56" stroke="#c9c9c9" stroke-width="2"/>
+  </g>
+
+  <g transform="translate(70,55) rotate(-6)">
+    <text x="0" y="0" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="46" fill="#2b4fd6">RAISE</text>
+    <text x="0" y="52" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="46" fill="#2b4fd6">BABY MARKUS</text>
+  </g>
+
+  <g transform="translate(430,55)">
+    <circle cx="0" cy="0" r="10" fill="#ffd93b"/>
+    <circle cx="34" cy="-14" r="7" fill="#ff6b9d"/>
+    <circle cx="-28" cy="18" r="6" fill="#35E38D"/>
+    <circle cx="20" cy="30" r="5" fill="#2b4fd6"/>
+  </g>
+</svg>

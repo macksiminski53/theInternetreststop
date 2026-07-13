@@ -61,6 +61,7 @@ VALUES
   ('whenwhere', 'the when & where', 'Browse', 'Live events in the Triangle — Raleigh, Durham, and Chapel Hill.', '/whenwhere-screenshot-home.png', 'https://thewhenandwhere.com', TRUE, TRUE, 20),
   ('mtd', 'MusicToDiscord', 'Browse', 'Show what you''re playing in Apple Music / iTunes as your Discord status.', '/mtd-logo.svg', 'https://github.com/macksiminski53/iTunes2Discord/releases/latest', TRUE, TRUE, 30),
   ('markus', 'Markus the Music Pet', 'Browse', 'A little bear who eats music instead of food. From MusicToDiscord.', '/markus-party.svg', '/markus.html', TRUE, TRUE, 40),
+  ('baby-markus', 'Baby Markus''s Field', 'Browse', 'A younger, separate version of Markus -- from before he grew up into the MusicToDiscord pet. Raise him in his own free-roam field.', null, '/baby-markus.html', FALSE, TRUE, 50),
   ('site-c', 'Placeholder Site C', 'Browse', 'Add a quirky corner of the web here.', null, null, FALSE, FALSE, 100),
   ('tool-b', 'Placeholder Tool B', 'Browse', 'Another useful utility goes here.', null, null, FALSE, FALSE, 110),
   ('tool-c', 'Placeholder Tool C', 'Browse', 'Save a slot for a handy site you use often.', null, null, FALSE, FALSE, 120),
