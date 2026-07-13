@@ -342,8 +342,112 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    padding: 3px 0 0;
   }
+
+  /* ===== ROBLOX-STYLE MINI PERSON (pure CSS) ===== */
+  .miniPerson {
+    display: inline-block;
+    position: relative;
+    width: 22px;
+    height: 26px;
+  }
+
+  .miniPerson .mpHead {
+    position: absolute;
+    top: 0;
+    left: 4px;
+    width: 14px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.35);
+  }
+
+  .miniPerson .mpTorso {
+    position: absolute;
+    top: 11px;
+    left: 2px;
+    width: 18px;
+    height: 12px;
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,0.35);
+  }
+
+  .miniPerson .mpArmL,
+  .miniPerson .mpArmR {
+    position: absolute;
+    top: 12px;
+    width: 4px;
+    height: 10px;
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,0.35);
+  }
+  .miniPerson .mpArmL { left: -2px; }
+  .miniPerson .mpArmR { right: -2px; }
+
+  /* size variant for header/picker (bigger, easier to click) */
+  .miniPerson.mpLg {
+    width: 30px;
+    height: 36px;
+  }
+  .miniPerson.mpLg .mpHead {
+    left: 6px;
+    width: 18px;
+    height: 16px;
+    border-radius: 4px;
+  }
+  .miniPerson.mpLg .mpTorso {
+    top: 15px;
+    left: 3px;
+    width: 24px;
+    height: 17px;
+    border-radius: 3px;
+  }
+  .miniPerson.mpLg .mpArmL,
+  .miniPerson.mpLg .mpArmR {
+    top: 16px;
+    width: 6px;
+    height: 14px;
+  }
+  .miniPerson.mpLg .mpArmL { left: -3px; }
+  .miniPerson.mpLg .mpArmR { right: -3px; }
+
+  /* avatar color themes */
+  .mp-traveler .mpHead, .mp-traveler .mpTorso, .mp-traveler .mpArmL, .mp-traveler .mpArmR { background: #f0c090; }
+  .mp-traveler .mpTorso { background: #3a6ea5; }
+
+  .mp-trucker .mpHead, .mp-trucker .mpArmL, .mp-trucker .mpArmR { background: #e8b382; }
+  .mp-trucker .mpTorso { background: #c9302c; }
+
+  .mp-raccoon .mpHead { background: #6b6b6b; }
+  .mp-raccoon .mpArmL, .mp-raccoon .mpArmR { background: #6b6b6b; }
+  .mp-raccoon .mpTorso { background: #333333; }
+
+  .mp-robot .mpHead { background: #b0b8c0; }
+  .mp-robot .mpArmL, .mp-robot .mpArmR { background: #8a94a0; }
+  .mp-robot .mpTorso { background: #5c7a99; }
+
+  .mp-ghost .mpHead, .mp-ghost .mpTorso, .mp-ghost .mpArmL, .mp-ghost .mpArmR { background: #eef0f5; }
+
+  .mp-cat .mpHead, .mp-cat .mpArmL, .mp-cat .mpArmR { background: #e8985e; }
+  .mp-cat .mpTorso { background: #d97b3f; }
+
+  .mp-alien .mpHead { background: #7fd490; }
+  .mp-alien .mpArmL, .mp-alien .mpArmR { background: #7fd490; }
+  .mp-alien .mpTorso { background: #4a9e5c; }
+
+  .mp-cowboy .mpHead, .mp-cowboy .mpArmL, .mp-cowboy .mpArmR { background: #e0a878; }
+  .mp-cowboy .mpTorso { background: #8b5a2b; }
+
+  /* random presence-only color variants (not tied to named avatars) */
+  .mp-rand1 .mpHead, .mp-rand1 .mpArmL, .mp-rand1 .mpArmR { background: #e8b382; }
+  .mp-rand1 .mpTorso { background: #7a3ba8; }
+  .mp-rand2 .mpHead, .mp-rand2 .mpArmL, .mp-rand2 .mpArmR { background: #f0c090; }
+  .mp-rand2 .mpTorso { background: #2c9e6f; }
+  .mp-rand3 .mpHead, .mp-rand3 .mpArmL, .mp-rand3 .mpArmR { background: #d99a6c; }
+  .mp-rand3 .mpTorso { background: #cc5c2e; }
+  .mp-rand4 .mpHead, .mp-rand4 .mpArmL, .mp-rand4 .mpArmR { background: #e8b382; }
+  .mp-rand4 .mpTorso { background: #d4b02c; }
 
   .savedTag {
     display: inline-block;
@@ -356,16 +460,16 @@
 
   /* ===== AVATAR / PROFILE ===== */
   .headerAvatar {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 30px;
     background: #ffffff;
     border: 1px solid #000000;
-    font-size: 15px;
     vertical-align: middle;
     margin-right: 4px;
+    padding-top: 2px;
   }
 
   #avatarPickerBtn {
@@ -388,16 +492,16 @@
   #avatarPicker.open { display: block; }
 
   #avatarPicker .avatarChoice {
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
     background: #ffffff;
     border: 1px solid #999999;
     margin: 2px;
     cursor: pointer;
+    padding-top: 3px;
   }
   #avatarPicker .avatarChoice:hover { border-color: #000080; background: #D4D0C8; }
   #avatarPicker .avatarChoice.selected { border-color: #000080; border-width: 2px; background: #D4D0C8; }
@@ -407,16 +511,16 @@
     margin: 6px 0;
   }
   .loginAvatarRow .avatarChoice {
-    display: inline-block;
-    width: 26px;
-    height: 26px;
-    line-height: 26px;
-    text-align: center;
-    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
     background: #ffffff;
     border: 1px solid #999999;
     margin: 2px;
     cursor: pointer;
+    padding-top: 2px;
   }
   .loginAvatarRow .avatarChoice.selected { border-color: #000080; border-width: 2px; background: #D4D0C8; }
 
@@ -653,7 +757,7 @@
     <tr>
       <td><span class="sitename">The Internet Rest Stop</span></td>
       <td align="right">
-        Logged in as: <span class="headerAvatar" id="headerAvatar">&#128100;</span><b id="whoAmI">Guest</b>
+        Logged in as: <span class="headerAvatar" id="headerAvatar"><span class="miniPerson mp-traveler"><span class="mpArmL"></span><span class="mpArmR"></span><span class="mpTorso"></span><span class="mpHead"></span></span></span><b id="whoAmI">Guest</b>
         <input type="button" value="Change" id="avatarPickerBtn">
         &nbsp; <a href="#" id="logoutLink">Log out</a>
         <div id="avatarPicker">
@@ -861,30 +965,42 @@
 </div>
 
 <script>
-  var presenceIcons = ["&#128100;","&#128121;","&#128123;","&#129302;","&#128119;","&#128120;","&#128018;","&#128049;"];
+  var presenceColorKeys = ["mp-traveler","mp-trucker","mp-raccoon","mp-robot","mp-ghost","mp-cat","mp-alien","mp-cowboy","mp-rand1","mp-rand2","mp-rand3","mp-rand4"];
   var currentCard = null; // holds data for whatever card is open in the modal
   var isRegisterMode = false;
 
-  // ---------- AVATARS ----------
-  var AVATAR_ICONS = {
-    traveler: '&#128100;',
-    trucker: '&#128119;',
-    raccoon: '&#129440;',
-    robot: '&#129302;',
-    ghost: '&#128123;',
-    cat: '&#128049;',
-    alien: '&#128125;',
-    cowboy: '&#129312;'
-  };
+  // ---------- AVATARS (little CSS-drawn Roblox-style people) ----------
+  var AVATAR_KEYS = ['traveler', 'trucker', 'raccoon', 'robot', 'ghost', 'cat', 'alien', 'cowboy'];
+
+  function miniPersonHtml(key, size) {
+    var sizeClass = size === 'lg' ? ' mpLg' : '';
+    return '<span class="miniPerson mp-' + key + sizeClass + '">' +
+      '<span class="mpArmL"></span>' +
+      '<span class="mpArmR"></span>' +
+      '<span class="mpTorso"></span>' +
+      '<span class="mpHead"></span>' +
+      '</span>';
+  }
+
+  function randomPersonHtml() {
+    var key = presenceColorKeys[Math.floor(Math.random() * presenceColorKeys.length)];
+    return '<span class="miniPerson ' + key + '">' +
+      '<span class="mpArmL"></span>' +
+      '<span class="mpArmR"></span>' +
+      '<span class="mpTorso"></span>' +
+      '<span class="mpHead"></span>' +
+      '</span>';
+  }
+
   var selectedRegisterAvatar = 'traveler';
   var currentUserAvatar = 'traveler';
 
   function buildAvatarChoices(container, onPick, selected) {
     container.innerHTML = '';
-    Object.keys(AVATAR_ICONS).forEach(function (key) {
+    AVATAR_KEYS.forEach(function (key) {
       var span = document.createElement('span');
       span.className = 'avatarChoice' + (key === selected ? ' selected' : '');
-      span.innerHTML = AVATAR_ICONS[key];
+      span.innerHTML = miniPersonHtml(key, 'lg');
       span.title = key;
       span.addEventListener('click', function () {
         container.querySelectorAll('.avatarChoice').forEach(function (el) { el.classList.remove('selected'); });
@@ -904,8 +1020,8 @@
   });
 
   function setHeaderAvatar(key) {
-    currentUserAvatar = key;
-    document.getElementById('headerAvatar').innerHTML = AVATAR_ICONS[key] || AVATAR_ICONS.traveler;
+    currentUserAvatar = AVATAR_KEYS.indexOf(key) !== -1 ? key : 'traveler';
+    document.getElementById('headerAvatar').innerHTML = miniPersonHtml(currentUserAvatar, 'sm');
   }
 
   function refreshHeaderAvatarPicker() {
@@ -1030,7 +1146,7 @@
     for (var i = 0; i < presenceCount; i++) {
       var av = document.createElement('div');
       av.className = 'presenceAvatar';
-      av.innerHTML = presenceIcons[Math.floor(Math.random() * presenceIcons.length)];
+      av.innerHTML = randomPersonHtml();
       grid.appendChild(av);
     }
 
