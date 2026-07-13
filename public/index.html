@@ -1015,13 +1015,13 @@
     <a href="#tools">Tool Shed</a>
     <a href="#picks">Ray's Picks</a>
     <a href="#mystops" id="myStopsNavLink">My Stops</a>
-    <a href="#" onclick="openMkChat(); return false;">MK Chat</a>
+    <a href="#" onclick="openModal('mk','MK','Fun Stops','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">MK Chat</a>
     <a href="#">About</a>
     <a href="#">Contact</a>
   </div>
 </td></tr>
 <tr><td>
-  <div class="mkBanner" onclick="openMkChat();">
+  <div class="mkBanner" onclick="openModal('mk','MK','Fun Stops','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com');">
     <div class="mkBannerInner">
       <div class="mkLogoCircle">MK</div>
       <div class="mkBannerText">online chatting<br>better than<br>discord???</div>
@@ -1056,17 +1056,17 @@
   <div class="adSlotWrap">
     <div class="adSlotLabel">Featured</div>
 
-    <div class="adCard activeAd" id="ad-mk" onclick="openMkChat();">
+    <div class="adCard activeAd" id="ad-mk" onclick="openModal('mk','MK','Fun Stops','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">
       <img src="/mk-screenshot-chat.png" alt="MK chat app">
       <div class="adCaption">MK &mdash; online chatting better than discord???</div>
     </div>
 
-    <div class="adCard" id="ad-whenwhere" onclick="openAdChat('whenwhere');">
+    <div class="adCard" id="ad-whenwhere" onclick="openModal('whenwhere','the when &amp; where','Fun Stops','Live events in the Triangle &mdash; Raleigh, Durham, and Chapel Hill.','1 hour ago','18 times','410 times','/whenwhere-screenshot-home.png','https://thewhenandwhere.com'); return false;">
       <img src="/whenwhere-screenshot-home.png" alt="the when and where">
       <div class="adCaption">the when &amp; where &mdash; live events in the Triangle</div>
     </div>
 
-    <div class="adCard" id="ad-mtd" onclick="openAdChat('mtd');">
+    <div class="adCard" id="ad-mtd" onclick="openModal('mtd','MusicToDiscord','Tool Shed','Show what you\'re playing in Apple Music / iTunes as your Discord status.','2 days ago','9 times','204 times','/addformusic2discord.png','https://github.com/macksiminski53/iTunes2Discord/releases/latest'); return false;">
       <img src="/addformusic2discord.png" alt="MusicToDiscord">
       <div class="adCaption">MusicToDiscord &mdash; show what you're playing as your Discord status</div>
     </div>
@@ -1119,12 +1119,12 @@
           <tr>
             <td>
               <div class="thumb" style="font-size:16px; font-weight:bold;">MK</div>
-              <div class="itemTitle"><a href="#" onclick="openMkChat(); return false;">MK</a></div>
+              <div class="itemTitle"><a href="#" onclick="openModal('mk','MK','Fun Stops','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">MK</a></div>
               <div class="itemDesc">Online chatting better than discord???</div>
             </td>
             <td>
               <div class="thumb">&#9819;</div>
-              <div class="itemTitle"><a href="#" onclick="openAdChat('whenwhere'); return false;">the when &amp; where</a></div>
+              <div class="itemTitle"><a href="#" onclick="openModal('whenwhere','the when &amp; where','Fun Stops','Live events in the Triangle &mdash; Raleigh, Durham, and Chapel Hill.','1 hour ago','18 times','410 times','/whenwhere-screenshot-home.png','https://thewhenandwhere.com'); return false;">the when &amp; where</a></div>
               <div class="itemDesc">Live events in the Triangle.</div>
             </td>
             <td>
@@ -1140,7 +1140,7 @@
           <tr>
             <td>
               <div class="thumb">&#9834;</div>
-              <div class="itemTitle"><a href="#" onclick="openAdChat('mtd'); return false;">MusicToDiscord</a></div>
+              <div class="itemTitle"><a href="#" onclick="openModal('mtd','MusicToDiscord','Tool Shed','Show what you\'re playing in Apple Music / iTunes as your Discord status.','2 days ago','9 times','204 times','/addformusic2discord.png','https://github.com/macksiminski53/iTunes2Discord/releases/latest'); return false;">MusicToDiscord</a></div>
               <div class="itemDesc">Show what you're playing as your Discord status.</div>
             </td>
             <td>
@@ -1169,7 +1169,11 @@
               <div class="itemTitle"><a href="#" onclick="openModal('pick-b','Placeholder Pick B','Ray\'s Picks','Another personal favorite slot.','4 hours ago','11 times','156 times','&#9834;'); return false;">Placeholder Pick B</a></div>
               <div class="itemDesc">Another favorite slot.</div>
             </td>
-            <td></td>
+            <td>
+              <div class="thumb">&#128058;</div>
+              <div class="itemTitle"><a href="#" onclick="openModal('markus','Markus the Music Pet','Ray\'s Picks','A little bear who eats music instead of food. From MusicToDiscord.','Just now','7 times','133 times','&#128058;','/markus.html'); return false;">Markus the Music Pet</a></div>
+              <div class="itemDesc">A bear who eats music instead of food.</div>
+            </td>
           </tr>
         </table>
 
@@ -1640,8 +1644,8 @@
   });
 
   // ---------- MODAL ----------
-  function openModal(cardId, title, category, desc, updated, favorited, visited, icon) {
-    currentCard = { cardId: cardId, title: title, category: category, desc: desc, icon: icon };
+  function openModal(cardId, title, category, desc, updated, favorited, visited, icon, url) {
+    currentCard = { cardId: cardId, title: title, category: category, desc: desc, icon: icon, url: url || '' };
 
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalCategory').textContent = category;
@@ -1650,7 +1654,28 @@
     document.getElementById('modalUpdated').textContent = updated;
     document.getElementById('modalFavorited').textContent = favorited;
     document.getElementById('modalVisited').textContent = visited;
-    document.getElementById('modalPreviewIcon').innerHTML = icon;
+
+    // "icon" can be a plain emoji/HTML char (short string) or an image URL
+    // (starts with "/" or "http") -- render an <img> for the latter so real
+    // app screenshots can be used as the preview instead of an icon glyph.
+    var previewEl = document.getElementById('modalPreviewIcon');
+    if (icon && (icon.indexOf('/') === 0 || icon.indexOf('http') === 0)) {
+      previewEl.innerHTML = '';
+      previewEl.style.fontSize = '0';
+      var img = document.createElement('img');
+      img.src = icon;
+      img.alt = title;
+      img.style.maxWidth = '100%';
+      img.style.maxHeight = '100%';
+      img.style.objectFit = 'contain';
+      previewEl.appendChild(img);
+    } else {
+      previewEl.style.fontSize = '';
+      previewEl.innerHTML = icon;
+    }
+
+    var visitBtn = document.getElementById('modalVisitBtn');
+    visitBtn.style.display = currentCard.url ? '' : 'none';
 
     var presenceCount = Math.floor(Math.random() * 6) + 1;
     var grid = document.getElementById('modalPresence');
@@ -1673,6 +1698,12 @@
   document.getElementById('modalOverlay').addEventListener('click', function (e) {
     if (e.target.id === 'modalOverlay') {
       document.getElementById('modalOverlay').classList.remove('open');
+    }
+  });
+
+  document.getElementById('modalVisitBtn').addEventListener('click', function () {
+    if (currentCard && currentCard.url) {
+      window.open(currentCard.url, '_blank', 'noopener');
     }
   });
 
