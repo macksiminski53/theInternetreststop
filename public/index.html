@@ -10,6 +10,72 @@
     max-width: 100%;
   }
 
+  /* ===== TORN CORNER -> MARKUS'S FIELD ===== */
+  #tornCornerLink {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    z-index: 4000;
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  #tornCornerPaper {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    clip-path: polygon(100% 100%, 100% 0%, 78% 6%, 66% 2%, 55% 10%, 44% 4%, 34% 14%, 22% 8%, 12% 18%, 0% 12%, 0% 100%);
+    box-shadow: -6px -6px 14px rgba(0,0,0,0.25);
+  }
+
+  #tornCornerField {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #8fd3f4 0%, #8fd3f4 35%, #6cc96a 35%, #4caf50 100%);
+    clip-path: polygon(100% 100%, 100% 0%, 78% 6%, 66% 2%, 55% 10%, 44% 4%, 34% 14%, 22% 8%, 12% 18%, 0% 12%, 0% 100%);
+    overflow: hidden;
+  }
+
+  #tornCornerLink:hover #tornCornerField {
+    background: linear-gradient(180deg, #a8e0fa 0%, #a8e0fa 35%, #7bd979 35%, #58bb5c 100%);
+  }
+
+  .tcCloud {
+    position: absolute;
+    background: #ffffff;
+    border-radius: 50%;
+    opacity: 0.85;
+  }
+  .tcCloud1 { width: 26px; height: 12px; top: 14px; left: 20px; }
+  .tcCloud2 { width: 18px; height: 9px; top: 24px; left: 55px; }
+
+  .tcMarkusPeek {
+    position: absolute;
+    bottom: 14px;
+    right: 30px;
+    animation: tcBob 2.6s ease-in-out infinite;
+  }
+
+  @keyframes tcBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  #tornCornerLabel {
+    position: absolute;
+    bottom: 6px;
+    right: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    pointer-events: none;
+  }
+
   body {
     margin: 0;
     background: #ffffff;
@@ -1304,6 +1370,29 @@
   </div>
 
 </div>
+
+<a href="/markus.html" id="tornCornerLink" title="Go raise Markus">
+  <div id="tornCornerPaper"></div>
+  <div id="tornCornerField">
+    <div class="tcCloud tcCloud1"></div>
+    <div class="tcCloud tcCloud2"></div>
+    <div class="tcMarkusPeek">
+      <svg viewBox="0 0 140 140" width="46" height="46">
+        <circle cx="38" cy="34" r="16" fill="#8a5a2b"/>
+        <circle cx="102" cy="34" r="16" fill="#8a5a2b"/>
+        <circle cx="38" cy="34" r="8" fill="#b3814f"/>
+        <circle cx="102" cy="34" r="8" fill="#b3814f"/>
+        <ellipse cx="70" cy="72" rx="46" ry="42" fill="#8a5a2b"/>
+        <ellipse cx="70" cy="88" rx="24" ry="18" fill="#d9b183"/>
+        <ellipse cx="70" cy="80" rx="7" ry="5" fill="#2a1a0e"/>
+        <path d="M 58 96 Q 70 104 82 96" fill="none" stroke="#2a1a0e" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="48" cy="63" r="2.5" fill="#2a1a0e"/>
+        <circle cx="92" cy="63" r="2.5" fill="#2a1a0e"/>
+      </svg>
+    </div>
+  </div>
+  <div id="tornCornerLabel">raise markus</div>
+</a>
 
 <script>
   var presenceColorKeys = ["mp-traveler","mp-trucker","mp-raccoon","mp-robot","mp-ghost","mp-cat","mp-alien","mp-cowboy","mp-rand1","mp-rand2","mp-rand3","mp-rand4"];

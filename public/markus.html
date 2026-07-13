@@ -66,22 +66,55 @@
   }
 
   .petFrame {
-    background: #12141a;
+    background: linear-gradient(180deg, #8fd3f4 0%, #b8e6fb 38%, #7bc96e 38%, #5cb85c 70%, #4a9e4a 100%);
     border: 1px solid #000000;
     border-radius: 4px;
     padding: 10px;
+    position: relative;
+    overflow: hidden;
   }
+
+  .pfCloud {
+    position: absolute;
+    background: #ffffff;
+    border-radius: 50%;
+    opacity: 0.9;
+  }
+  .pfCloud1 { width: 46px; height: 20px; top: 18px; left: 24px; }
+  .pfCloud2 { width: 32px; height: 15px; top: 34px; right: 30px; }
+  .pfCloud3 { width: 26px; height: 12px; top: 14px; right: 90px; }
+
+  .pfFlower {
+    position: absolute;
+    bottom: 14px;
+    width: 14px;
+    height: 14px;
+  }
+  .pfFlower::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, #ffd93b 0 30%, transparent 31%),
+      radial-gradient(circle at 50% 0%, #ff6b9d 0 45%, transparent 46%),
+      radial-gradient(circle at 100% 50%, #ff6b9d 0 45%, transparent 46%),
+      radial-gradient(circle at 50% 100%, #ff6b9d 0 45%, transparent 46%),
+      radial-gradient(circle at 0% 50%, #ff6b9d 0 45%, transparent 46%);
+  }
+  .pfFlower1 { left: 20px; }
+  .pfFlower2 { left: 250px; }
+  .pfFlower3 { left: 60px; bottom: 8px; }
+  .pfFlower4 { right: 40px; bottom: 10px; }
 
   /* ---- Markus the Music Pet (ported from MusicToDiscord's Electron build) ---- */
   :root {
-    --divider: #2A2E3A;
-    --indigo: #5865F2;
-    --bad: #ED4245;
-    --text-dim: #8E98AA;
-    --text: #ffffff;
+    --divider: rgba(255,255,255,0.5);
+    --indigo: #2b4fd6;
+    --bad: #c0392b;
+    --text-dim: #1a3d1a;
+    --text: #12240f;
     --good: #35E38D;
-    --bg2: #1c1f28;
-    --accent: #5865F2;
+    --bg2: #eafbe6;
+    --accent: #2b4fd6;
   }
 
   #view-pet {
@@ -91,6 +124,7 @@
     padding: 16px 12px;
     color: var(--text);
     font-family: Arial, Helvetica, sans-serif;
+    position: relative;
   }
 
   #pet-stage {
@@ -98,9 +132,10 @@
     width: 200px;
     height: 180px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     margin-bottom: 8px;
+    padding-bottom: 10px;
   }
   #pet-creature {
     animation: pet-bob 3s ease-in-out infinite;
@@ -265,6 +300,13 @@
   <div class="pageSub">A little bear who eats music instead of food. Feed him, clean up after him, and don't let the music stop.</div>
 
   <div class="petFrame">
+    <div class="pfCloud pfCloud1"></div>
+    <div class="pfCloud pfCloud2"></div>
+    <div class="pfCloud pfCloud3"></div>
+    <div class="pfFlower pfFlower1"></div>
+    <div class="pfFlower pfFlower2"></div>
+    <div class="pfFlower pfFlower3"></div>
+    <div class="pfFlower pfFlower4"></div>
     <div id="view-pet">
       <div id="pet-stage">
         <div id="pet-poop-layer"></div>
