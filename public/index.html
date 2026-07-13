@@ -458,14 +458,55 @@
     line-height: 1.25;
   }
 
-  .mkBannerCta {
+  .mkMarquee {
+    margin-top: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    border-top: 2px solid #5c1010;
+    border-bottom: 2px solid #5c1010;
+    padding: 8px 0;
+    position: relative;
+  }
+
+  .mkMarqueeTrack {
+    display: inline-block;
+    white-space: nowrap;
+    animation: mkScroll 14s linear infinite;
+  }
+
+  .mkMarqueeTrack .mkMarqueeItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 30px;
+  }
+
+  .mkMarqueeBadge {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #5c1010, #2b0505 80%);
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 900;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mkMarqueeText {
     color: #ffffff;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 900;
     font-size: 20px;
-    text-align: center;
-    margin-top: 10px;
     letter-spacing: 0.5px;
+  }
+
+  @keyframes mkScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
 
   /* ===== MK CHAT MODAL ===== */
@@ -639,7 +680,20 @@
       <div class="mkLogoCircle">MK</div>
       <div class="mkBannerText">online chatting<br>better than<br>discord???</div>
     </div>
-    <div class="mkBannerCta">ITS RIGHT HERE ON THE INTERNET RESTSTOP!!!!</div>
+    <div class="mkMarquee">
+      <div class="mkMarqueeTrack">
+        <span class="mkMarqueeItem">
+          <span class="mkMarqueeBadge">MK</span>
+          <span class="mkMarqueeText">ITS RIGHT HERE ON THE INTERNET RESTSTOP!!!!</span>
+          <span class="mkMarqueeBadge">MK</span>
+        </span>
+        <span class="mkMarqueeItem">
+          <span class="mkMarqueeBadge">MK</span>
+          <span class="mkMarqueeText">ITS RIGHT HERE ON THE INTERNET RESTSTOP!!!!</span>
+          <span class="mkMarqueeBadge">MK</span>
+        </span>
+      </div>
+    </div>
   </div>
 </td></tr>
 <tr><td class="mainbody">
