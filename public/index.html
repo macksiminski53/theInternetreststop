@@ -1175,70 +1175,15 @@
 
         <div class="sectionHead" id="fun">Browse</div>
 
-        <div class="bigItemRow">
-          <div class="bigThumb" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-logo.png','https://mk-app-1.onrender.com');"><img src="/mk-logo.png" alt="MK logo"></div>
-          <div class="bigItemInfo">
-            <div><a class="bigItemTitle" href="#" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">MK</a></div>
-            <div class="bigItemDesc">Online chatting better than discord???</div>
-          </div>
-        </div>
+        <div id="bigRowsContainer"></div>
 
-        <div class="bigItemRow">
-          <div class="bigThumb" onclick="openModal('whenwhere','the when &amp; where','Browse','Live events in the Triangle &mdash; Raleigh, Durham, and Chapel Hill.','1 hour ago','18 times','410 times','/whenwhere-screenshot-home.png','https://thewhenandwhere.com');"><img src="/whenwhere-screenshot-home.png" alt="the when and where"></div>
-          <div class="bigItemInfo">
-            <div><a class="bigItemTitle" href="#" onclick="openModal('whenwhere','the when &amp; where','Browse','Live events in the Triangle &mdash; Raleigh, Durham, and Chapel Hill.','1 hour ago','18 times','410 times','/whenwhere-screenshot-home.png','https://thewhenandwhere.com'); return false;">the when &amp; where</a></div>
-            <div class="bigItemDesc">Live events in the Triangle.</div>
-          </div>
-        </div>
-
-        <div class="bigItemRow">
-          <div class="bigThumb" onclick="openModal('mtd','MusicToDiscord','Browse','Show what you\'re playing in Apple Music / iTunes as your Discord status.','2 days ago','9 times','204 times','/mtd-logo.svg','https://github.com/macksiminski53/iTunes2Discord/releases/latest');"><img src="/mtd-logo.svg" alt="MusicToDiscord logo"></div>
-          <div class="bigItemInfo">
-            <div><a class="bigItemTitle" href="#" onclick="openModal('mtd','MusicToDiscord','Browse','Show what you\'re playing in Apple Music / iTunes as your Discord status.','2 days ago','9 times','204 times','/addformusic2discord.png','https://github.com/macksiminski53/iTunes2Discord/releases/latest'); return false;">MusicToDiscord</a></div>
-            <div class="bigItemDesc">Show what you're playing as your Discord status.</div>
-          </div>
-        </div>
-
-        <div class="bigItemRow">
-          <div class="bigThumb" onclick="openModal('markus','Markus the Music Pet','Browse','A little bear who eats music instead of food. From MusicToDiscord.','Just now','7 times','133 times','/markus-party.svg','/markus.html');"><img src="/markus-party.svg" alt="Markus the Music Pet"></div>
-          <div class="bigItemInfo">
-            <div><a class="bigItemTitle" href="#" onclick="openModal('markus','Markus the Music Pet','Browse','A little bear who eats music instead of food. From MusicToDiscord.','Just now','7 times','133 times','/markus-party.svg','/markus.html'); return false;">Markus the Music Pet</a></div>
-            <div class="bigItemDesc">A bear who eats music instead of food.</div>
-          </div>
-        </div>
-
-        <table class="itemTable">
-          <tr>
-            <td>
-              <div class="thumb">&#9731;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('site-c','Placeholder Site C','Browse','Add a quirky corner of the web here.','5 hours ago','3 times','98 times','&#9731;'); return false;">Placeholder Site C</a></div>
-              <div class="itemDesc">A quirky corner of the web.</div>
-            </td>
-            <td>
-              <div class="thumb">&#9881;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('tool-b','Placeholder Tool B','Browse','Another useful utility goes here.','6 hours ago','15 times','389 times','&#9881;'); return false;">Placeholder Tool B</a></div>
-              <div class="itemDesc">Another useful utility.</div>
-            </td>
-            <td>
-              <div class="thumb">&#9998;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('tool-c','Placeholder Tool C','Browse','Save a slot for a handy site you use often.','2 days ago','9 times','204 times','&#9998;'); return false;">Placeholder Tool C</a></div>
-              <div class="itemDesc">A handy site you use often.</div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="thumb">&#9733;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('pick-a','Placeholder Pick A','Browse','Your own project, social, or favorite link goes here.','1 hour ago','30 times','670 times','&#9733;'); return false;">Placeholder Pick A</a></div>
-              <div class="itemDesc">Your own project or link.</div>
-            </td>
-            <td>
-              <div class="thumb">&#9834;</div>
-              <div class="itemTitle"><a href="#" onclick="openModal('pick-b','Placeholder Pick B','Browse','Another personal favorite slot.','4 hours ago','11 times','156 times','&#9834;'); return false;">Placeholder Pick B</a></div>
-              <div class="itemDesc">Another favorite slot.</div>
-            </td>
-            <td></td>
-          </tr>
+        <table class="itemTable" id="gridCardsTable">
+          <tr id="gridCardsRowA"></tr>
         </table>
+
+        <div id="adminAddCardWrap" style="display:none; margin-bottom:14px;">
+          <input type="button" value="+ Add Card" id="adminAddCardBtn">
+        </div>
 
         <div class="sectionHead" id="mystops">My Stops</div>
         <div id="myStopsBox" style="border:1px solid #999999; padding:8px; font-size:11px; margin-bottom:10px;">
@@ -1319,7 +1264,7 @@
             </td>
             <td class="infoCell">
               <div class="infoHead" id="modalCategory">Category</div>
-              <div class="infoLine">Added by: <b>Ray</b></div>
+              <div class="infoLine">Added by: <b id="modalAddedBy">Ray</b></div>
               <div class="infoLine">Updated: <b id="modalUpdated">a while ago</b></div>
               <div class="infoLine">Favorited: <b id="modalFavorited">0 times</b></div>
               <div class="infoLine">Visited: <b id="modalVisited">0 times</b></div>
@@ -1332,6 +1277,28 @@
         <div class="modalSectionHead">Who's Here Now</div>
         <div class="presenceGrid" id="modalPresence"></div>
 
+      </div>
+    </div>
+  </div>
+
+  <div id="adminCardOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:3000;">
+    <div style="background:#ffffff; border:2px solid #000000; width:360px; max-width:90%; margin:60px auto; padding:14px; font-family:Arial, Helvetica, sans-serif; font-size:12px;">
+      <div style="font-weight:bold; font-size:13px; margin-bottom:10px;" id="adminCardFormTitle">Add Card</div>
+      <table style="width:100%;">
+        <tr><td>Card ID:</td><td><input type="text" id="acfCardId" style="width:100%;"></td></tr>
+        <tr><td>Title:</td><td><input type="text" id="acfTitle" style="width:100%;"></td></tr>
+        <tr><td>Category:</td><td><input type="text" id="acfCategory" value="Browse" style="width:100%;"></td></tr>
+        <tr><td>Description:</td><td><textarea id="acfDescription" style="width:100%; height:50px;"></textarea></td></tr>
+        <tr><td>Image URL:</td><td><input type="text" id="acfImageUrl" placeholder="/some-image.png" style="width:100%;"></td></tr>
+        <tr><td>Link URL:</td><td><input type="text" id="acfLinkUrl" placeholder="https://..." style="width:100%;"></td></tr>
+        <tr><td>Big row:</td><td><input type="checkbox" id="acfBigRow"></td></tr>
+        <tr><td>Sort order:</td><td><input type="number" id="acfSortOrder" value="500" style="width:80px;"></td></tr>
+      </table>
+      <div id="adminCardFormError" style="color:#800000; font-size:11px; margin-top:6px;"></div>
+      <div style="margin-top:10px; text-align:right;">
+        <input type="button" value="Delete" id="acfDeleteBtn" style="display:none;">
+        <input type="button" value="Cancel" id="acfCancelBtn">
+        <input type="button" value="Save" id="acfSaveBtn">
       </div>
     </div>
   </div>
@@ -1707,8 +1674,39 @@
   });
 
   // ---------- MODAL ----------
-  function openModal(cardId, title, category, desc, updated, favorited, visited, icon, url) {
-    currentCard = { cardId: cardId, title: title, category: category, desc: desc, icon: icon, url: url || '' };
+  // Cards fetched from /api/cards, keyed by card_id. Populated by
+  // loadCards() on page load. Cards not in the database yet (e.g. the ad
+  // slot's own promo cards, which intentionally use different marketing
+  // images) fall back to the literal args passed to openModal().
+  var CARDS_BY_ID = {};
+
+  function timeAgo(isoString) {
+    if (!isoString) return 'a while ago';
+    var then = new Date(isoString).getTime();
+    var diffMs = Date.now() - then;
+    var mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return mins + (mins === 1 ? ' minute ago' : ' minutes ago');
+    var hours = Math.floor(mins / 60);
+    if (hours < 24) return hours + (hours === 1 ? ' hour ago' : ' hours ago');
+    var days = Math.floor(hours / 24);
+    return days + (days === 1 ? ' day ago' : ' days ago');
+  }
+
+  function openModal(cardId, fallbackTitle, fallbackCategory, fallbackDesc, fallbackUpdated, fallbackFavorited, fallbackVisited, fallbackIcon, fallbackUrl) {
+    var real = CARDS_BY_ID[cardId];
+
+    var title = real ? real.title : fallbackTitle;
+    var category = real ? real.category : fallbackCategory;
+    var desc = real ? (real.description || '') : fallbackDesc;
+    var updated = real ? timeAgo(real.updated_at) : fallbackUpdated;
+    var favorited = real ? (real.favorited_count + (real.favorited_count === 1 ? ' time' : ' times')) : fallbackFavorited;
+    var visited = real ? (real.visit_count + (real.visit_count === 1 ? ' time' : ' times')) : fallbackVisited;
+    var icon = real ? (real.image_url || fallbackIcon) : fallbackIcon;
+    var url = real ? (real.link_url || '') : (fallbackUrl || '');
+    var addedBy = real && real.added_by_username ? real.added_by_username : 'Ray';
+
+    currentCard = { cardId: cardId, title: title, category: category, desc: desc, icon: icon, url: url };
 
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalCategory').textContent = category;
@@ -1717,6 +1715,7 @@
     document.getElementById('modalUpdated').textContent = updated;
     document.getElementById('modalFavorited').textContent = favorited;
     document.getElementById('modalVisited').textContent = visited;
+    document.getElementById('modalAddedBy').textContent = addedBy;
 
     // "icon" can be a plain emoji/HTML char (short string) or an image URL
     // (starts with "/" or "http") -- render an <img> for the latter so real
@@ -1751,6 +1750,20 @@
     }
 
     document.getElementById('modalOverlay').classList.add('open');
+
+    // Real visit tracking: bump the counter server-side, and reflect it
+    // immediately in the modal without waiting for a refetch.
+    if (real) {
+      fetch('/api/cards/' + encodeURIComponent(cardId) + '/visit', { method: 'POST' })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.ok) {
+            real.visit_count = data.visit_count;
+            document.getElementById('modalVisited').textContent = data.visit_count + (data.visit_count === 1 ? ' time' : ' times');
+          }
+        })
+        .catch(function () { /* non-fatal */ });
+    }
   }
 
   document.getElementById('modalCloseBtn').addEventListener('click', function (e) {
@@ -1932,6 +1945,236 @@
       // server not up yet locally; login screen just stays visible
     }
   })();
+
+  // ---------- REAL CARDS (Browse grid, driven by the database) ----------
+  var isAdminUser = false;
+
+  function cardThumbHtml(card) {
+    if (card.image_url) {
+      return '<img src="' + card.image_url + '" alt="' + escapeHtml(card.title) + '">';
+    }
+    return '&#128279;';
+  }
+
+  function renderBigRow(card) {
+    var row = document.createElement('div');
+    row.className = 'bigItemRow';
+
+    var thumb = document.createElement('div');
+    thumb.className = 'bigThumb';
+    thumb.innerHTML = cardThumbHtml(card);
+    thumb.onclick = function () { openModal(card.card_id, card.title, card.category, card.description, '', '', '', card.image_url, card.link_url); };
+
+    var info = document.createElement('div');
+    info.className = 'bigItemInfo';
+
+    var titleLine = document.createElement('div');
+    var titleLink = document.createElement('a');
+    titleLink.className = 'bigItemTitle';
+    titleLink.href = '#';
+    titleLink.textContent = card.title;
+    titleLink.onclick = function (e) {
+      e.preventDefault();
+      openModal(card.card_id, card.title, card.category, card.description, '', '', '', card.image_url, card.link_url);
+    };
+    titleLine.appendChild(titleLink);
+
+    var descLine = document.createElement('div');
+    descLine.className = 'bigItemDesc';
+    descLine.textContent = card.description || '';
+
+    info.appendChild(titleLine);
+    info.appendChild(descLine);
+    row.appendChild(thumb);
+    row.appendChild(info);
+
+    if (isAdminUser) {
+      var editBtn = document.createElement('a');
+      editBtn.href = '#';
+      editBtn.textContent = 'Edit';
+      editBtn.style.fontSize = '11px';
+      editBtn.style.marginLeft = '10px';
+      editBtn.onclick = function (e) { e.preventDefault(); openAdminCardForm(card); };
+      titleLine.appendChild(document.createTextNode(' '));
+      titleLine.appendChild(editBtn);
+    }
+
+    return row;
+  }
+
+  function renderGridCell(card) {
+    var td = document.createElement('td');
+
+    var thumb = document.createElement('div');
+    thumb.className = 'thumb';
+    thumb.innerHTML = cardThumbHtml(card);
+    if (card.image_url) { thumb.style.padding = '0'; thumb.style.overflow = 'hidden'; }
+
+    var titleDiv = document.createElement('div');
+    titleDiv.className = 'itemTitle';
+    var link = document.createElement('a');
+    link.href = '#';
+    link.textContent = card.title;
+    link.onclick = function (e) {
+      e.preventDefault();
+      openModal(card.card_id, card.title, card.category, card.description, '', '', '', card.image_url, card.link_url);
+    };
+    titleDiv.appendChild(link);
+    if (isAdminUser) {
+      var editBtn = document.createElement('a');
+      editBtn.href = '#';
+      editBtn.textContent = ' Edit';
+      editBtn.style.fontSize = '10px';
+      editBtn.onclick = function (e) { e.preventDefault(); openAdminCardForm(card); };
+      titleDiv.appendChild(editBtn);
+    }
+
+    var descDiv = document.createElement('div');
+    descDiv.className = 'itemDesc';
+    descDiv.textContent = card.description || '';
+
+    td.appendChild(thumb);
+    td.appendChild(titleDiv);
+    td.appendChild(descDiv);
+    return td;
+  }
+
+  async function loadCards() {
+    try {
+      const res = await fetch('/api/cards');
+      const data = await res.json();
+      if (!data.ok || !data.cards) return;
+
+      CARDS_BY_ID = {};
+      data.cards.forEach(function (c) { CARDS_BY_ID[c.card_id] = c; });
+
+      var bigContainer = document.getElementById('bigRowsContainer');
+      bigContainer.innerHTML = '';
+      data.cards.filter(function (c) { return c.big_row; }).forEach(function (c) {
+        bigContainer.appendChild(renderBigRow(c));
+      });
+
+      var gridCards = data.cards.filter(function (c) { return !c.big_row; });
+      var gridTable = document.getElementById('gridCardsTable');
+      gridTable.querySelectorAll('tr').forEach(function (tr) { tr.remove(); });
+      for (var i = 0; i < gridCards.length; i += 3) {
+        var tr = document.createElement('tr');
+        gridCards.slice(i, i + 3).forEach(function (c) { tr.appendChild(renderGridCell(c)); });
+        while (tr.children.length < 3) { tr.appendChild(document.createElement('td')); }
+        gridTable.appendChild(tr);
+      }
+    } catch (err) {
+      // server not reachable yet, quietly ignore -- grid stays empty
+    }
+  }
+
+  async function loadAdminStatus() {
+    try {
+      const res = await fetch('/api/me/is-admin');
+      const data = await res.json();
+      isAdminUser = !!data.isAdmin;
+      document.getElementById('adminAddCardWrap').style.display = isAdminUser ? 'block' : 'none';
+      if (isAdminUser) loadCards(); // re-render with Edit links visible
+    } catch (err) {
+      // non-fatal
+    }
+  }
+
+  document.getElementById('adminAddCardBtn').addEventListener('click', function () {
+    openAdminCardForm(null);
+  });
+
+  // ---------- ADMIN: add/edit card form ----------
+  var editingCardId = null; // null = creating a new card
+
+  function openAdminCardForm(card) {
+    editingCardId = card ? card.card_id : null;
+    document.getElementById('adminCardFormTitle').textContent = card ? 'Edit Card' : 'Add Card';
+    document.getElementById('acfCardId').value = card ? card.card_id : '';
+    document.getElementById('acfCardId').disabled = !!card;
+    document.getElementById('acfTitle').value = card ? card.title : '';
+    document.getElementById('acfCategory').value = card ? card.category : 'Browse';
+    document.getElementById('acfDescription').value = card ? (card.description || '') : '';
+    document.getElementById('acfImageUrl').value = card ? (card.image_url || '') : '';
+    document.getElementById('acfLinkUrl').value = card ? (card.link_url || '') : '';
+    document.getElementById('acfBigRow').checked = card ? !!card.big_row : false;
+    document.getElementById('acfSortOrder').value = card ? card.sort_order : 500;
+    document.getElementById('acfDeleteBtn').style.display = card ? '' : 'none';
+    document.getElementById('adminCardFormError').textContent = '';
+    document.getElementById('adminCardOverlay').style.display = 'block';
+  }
+
+  document.getElementById('acfCancelBtn').addEventListener('click', function () {
+    document.getElementById('adminCardOverlay').style.display = 'none';
+  });
+
+  document.getElementById('acfSaveBtn').addEventListener('click', async function () {
+    var cardId = document.getElementById('acfCardId').value.trim();
+    var title = document.getElementById('acfTitle').value.trim();
+    var errorEl = document.getElementById('adminCardFormError');
+
+    if (!cardId || !title) {
+      errorEl.textContent = 'Card ID and Title are required.';
+      return;
+    }
+
+    var payload = {
+      cardId: cardId,
+      title: title,
+      category: document.getElementById('acfCategory').value.trim() || 'Browse',
+      description: document.getElementById('acfDescription').value.trim(),
+      imageUrl: document.getElementById('acfImageUrl').value.trim(),
+      linkUrl: document.getElementById('acfLinkUrl').value.trim(),
+      bigRow: document.getElementById('acfBigRow').checked,
+      sortOrder: parseInt(document.getElementById('acfSortOrder').value, 10) || 500
+    };
+
+    try {
+      var res;
+      if (editingCardId) {
+        res = await fetch('/api/cards/' + encodeURIComponent(editingCardId), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } else {
+        res = await fetch('/api/cards', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      }
+      var data = await res.json();
+      if (!res.ok || !data.ok) {
+        errorEl.textContent = data.error || 'Could not save card.';
+        return;
+      }
+      document.getElementById('adminCardOverlay').style.display = 'none';
+      loadCards();
+    } catch (err) {
+      errorEl.textContent = 'Could not reach the server.';
+    }
+  });
+
+  document.getElementById('acfDeleteBtn').addEventListener('click', async function () {
+    if (!editingCardId) return;
+    if (!confirm('Delete this card? This cannot be undone.')) return;
+    try {
+      var res = await fetch('/api/cards/' + encodeURIComponent(editingCardId), { method: 'DELETE' });
+      var data = await res.json();
+      if (!data.ok) {
+        document.getElementById('adminCardFormError').textContent = data.error || 'Could not delete card.';
+        return;
+      }
+      document.getElementById('adminCardOverlay').style.display = 'none';
+      loadCards();
+    } catch (err) {
+      document.getElementById('adminCardFormError').textContent = 'Could not reach the server.';
+    }
+  });
+
+  loadCards();
+  loadAdminStatus();
 </script>
 
 </body>

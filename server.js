@@ -10,6 +10,7 @@ const pool = require('./db');
 const authRoutes = require('./routes/auth');
 const linkRoutes = require('./routes/links');
 const newsRoutes = require('./routes/news');
+const cardRoutes = require('./routes/cards');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,6 +47,7 @@ app.use(session({
 app.use('/api', authRoutes);
 app.use('/api', linkRoutes);
 app.use('/api', newsRoutes);
+app.use('/api', cardRoutes);
 
 // health check for Render
 app.get('/healthz', (req, res) => res.send('ok'));
