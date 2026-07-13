@@ -979,9 +979,15 @@
       <div class="adCaption">the when &amp; where &mdash; live events in the Triangle</div>
     </div>
 
+    <div class="adCard" id="ad-mtd" onclick="openAdChat('mtd');">
+      <img src="/addformusic2discord.png" alt="MusicToDiscord">
+      <div class="adCaption">MusicToDiscord &mdash; show what you're playing as your Discord status</div>
+    </div>
+
     <div class="adDots" id="adDots">
       <span class="activeDot" onclick="showAdSlide(0);"></span>
       <span onclick="showAdSlide(1);"></span>
+      <span onclick="showAdSlide(2);"></span>
     </div>
   </div>
 </td></tr>
@@ -1250,7 +1256,7 @@
   }
 
   // ---------- ROTATING AD SLOT ----------
-  var adSlideOrder = ['ad-mk', 'ad-whenwhere'];
+  var adSlideOrder = ['ad-mk', 'ad-whenwhere', 'ad-mtd'];
   var adSlideIndex = 0;
   var adRotateTimer = null;
 
@@ -1341,6 +1347,7 @@
     var frame = document.getElementById('adFrame');
     var fallback = document.getElementById('adFrameFallback');
     var shots = document.getElementById('adScreenshots');
+    var liveBtn = document.getElementById('adTabLiveBtn');
 
     document.getElementById('adTitle').textContent = ad.title;
     document.getElementById('adFallbackLink').href = ad.url;
@@ -1356,6 +1363,22 @@
       shots.appendChild(img);
       shots.appendChild(cap);
     });
+
+    if (ad.type === 'download') {
+      // Nothing to embed -- it's a downloadable app, not a website.
+      // Skip straight to screenshots and repurpose the "live" tab as
+      // a direct Download button instead of a dead iframe.
+      liveBtn.textContent = 'Download';
+      liveBtn.onclick = function () {
+        window.open(ad.url, '_blank', 'noopener');
+      };
+      showAdTab('screenshots');
+      document.getElementById('adOverlay').classList.add('open');
+      return;
+    }
+
+    liveBtn.textContent = 'Live Site';
+    liveBtn.onclick = function () { showAdTab('live'); };
 
     showAdTab('live');
     fallback.style.display = 'none';
