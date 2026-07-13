@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Simple in-memory cache so we don't hit the Perplexity API on every
+// Simple in-memory cache so we don't hit the Currents API on every
 // page load. Headlines are refreshed at most once every 30 minutes.
 const CACHE_MS = 30 * 60 * 1000;
 let cache = { headlines: [], fetchedAt: 0 };
@@ -10,53 +10,43 @@ const FALLBACK_HEADLINES = [
   { text: 'News ticker warming up — check back in a bit.', source: '' }
 ];
 
+// Currents API /latest-news pulls from established news outlets/wires
+// (not random blogs), which is the "reputable sourcing" bar for this ticker.
 async function fetchHeadlines() {
-  const apiKey = process.env.PERPLEXITY_API_KEY;
+  const apiKey = process.env.CURRENTS_API_KEY;
   if (!apiKey) {
-    console.warn('PERPLEXITY_API_KEY not set — news ticker will show fallback text.');
+    console.warn('CURRENTS_API_KEY not set — news ticker will show fallback text.');
     return FALLBACK_HEADLINES;
   }
 
-  const prompt = `Give me the 6 biggest, most important news stories from the last 24 hours, sourced only from reputable, well-established outlets (e.g. AP, Reuters, BBC, NPR, major national newspapers). Respond with ONLY a JSON array, no other text, in this exact format: [{"text": "short headline, under 100 characters", "source": "outlet name"}]. No commentary, no markdown, just the JSON array.`;
-
-  const response = await fetch('https://api.perplexity.ai/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'sonar',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.2
-    })
-  });
+  const url = `https://api.currentsapi.services/v1/latest-news?language=en&apiKey=${encodeURIComponent(apiKey)}`;
+  const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error(`Perplexity API error: ${response.status}`);
+    throw new Error(`Currents API error: ${response.status}`);
   }
 
   const data = await response.json();
-  const raw = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-  if (!raw) throw new Error('No content in Perplexity response');
-
-  // Strip any accidental markdown code fences before parsing.
-  const cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
-  const parsed = JSON.parse(cleaned);
-
-  if (!Array.isArray(parsed) || parsed.length === 0) {
-    throw new Error('Perplexity response was not a non-empty array');
+  if (data.status !== 'ok' || !Array.isArray(data.news)) {
+    throw new Error('Unexpected Currents API response shape');
   }
 
-  return parsed
-    .filter((item) => item && item.text)
-    .map((item) => ({
-      text: String(item.text).slice(0, 160),
-      source: item.source ? String(item.source).slice(0, 40) : ''
-    }));
+  return data.news
+    .filter((item) => item && item.title)
+    .slice(0, 12)
+    .map((item) => {
+      // `author` is often a byline or "@handle" rather than an outlet name,
+      // so only show it when it looks like a real attribution.
+      const author = item.author && item.author !== 'None' ? String(item.author).trim() : '';
+      const source = author && !author.startsWith('@') ? author.slice(0, 40) : '';
+      return {
+        text: String(item.title).slice(0, 160),
+        source
+      };
+    });
 }
 
-// GET /api/news - cached, fact-checked-outlet headlines for the homepage ticker
+// GET /api/news - cached, reputable-outlet headlines for the homepage ticker
 router.get('/news', async (req, res) => {
   const now = Date.now();
   if (cache.headlines.length > 0 && (now - cache.fetchedAt) < CACHE_MS) {
