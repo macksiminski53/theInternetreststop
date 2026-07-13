@@ -14,6 +14,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const IS_PROD = process.env.NODE_ENV === 'production';
 
+// Render (and most hosts) put the app behind a reverse proxy that terminates
+// HTTPS and forwards plain HTTP internally. Without this, Express thinks
+// every request is insecure, so it silently refuses to set cookies marked
+// "secure" -- which breaks logins right after they succeed.
+if (IS_PROD) {
+  app.set('trust proxy', 1);
+}
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 

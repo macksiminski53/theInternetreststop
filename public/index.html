@@ -718,6 +718,170 @@
     font-size: 11px;
     margin-bottom: 20px;
   }
+
+  /* ===== ROTATING AD SLOT ===== */
+  .adSlotWrap {
+    padding: 10px;
+    background: #EFEFEF;
+    border-bottom: 1px solid #999999;
+  }
+
+  .adSlotLabel {
+    font-size: 9px;
+    color: #888888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .adCard {
+    display: none;
+    border: 1px solid #999999;
+    cursor: pointer;
+    overflow: hidden;
+    background: #ffffff;
+  }
+  .adCard.activeAd { display: block; }
+
+  .adCard img {
+    display: block;
+    width: 100%;
+    max-height: 130px;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .adCard .adCaption {
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000000;
+    background: #f4f4f4;
+    border-top: 1px solid #cccccc;
+  }
+
+  .adDots {
+    text-align: center;
+    margin-top: 6px;
+  }
+  .adDots span {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #bbbbbb;
+    margin: 0 3px;
+    cursor: pointer;
+  }
+  .adDots span.activeDot { background: #000080; }
+
+  /* ===== GENERIC AD MODAL (reused for any promo) ===== */
+  #adOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 2500;
+  }
+  #adOverlay.open { display: block; }
+
+  #adModalBox {
+    width: 900px;
+    max-width: 95%;
+    height: 85vh;
+    margin: 3vh auto;
+    background: #000000;
+    border: 2px solid #ffffff;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #adModalBox .adTitleBar {
+    background: #000000;
+    color: #ffffff;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #333333;
+  }
+
+  #adModalBox .adTitleBar a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    border: 1px solid #ffffff;
+    padding: 0px 6px;
+  }
+
+  .adTabBar {
+    background: #000000;
+    border-bottom: 2px solid #333333;
+    display: flex;
+  }
+
+  .adTabBtn {
+    flex: 1;
+    background: #000000;
+    color: #999999;
+    border: none;
+    border-right: 1px solid #333333;
+    padding: 8px 0;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .adTabBtn:last-child { border-right: none; }
+  .adTabBtn.active {
+    background: #333333;
+    color: #ffffff;
+  }
+
+  #adFrame {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: #ffffff;
+  }
+
+  #adFrameFallback {
+    display: none;
+    flex: 1;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    padding: 20px;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  #adFrameFallback a { color: #99ccff; }
+
+  #adScreenshots {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    background: #111111;
+    padding: 16px;
+    text-align: center;
+  }
+
+  #adScreenshots img {
+    max-width: 100%;
+    border: 1px solid #333333;
+    margin-bottom: 16px;
+  }
+
+  #adScreenshots .adShotCaption {
+    color: #cccccc;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    margin-bottom: 20px;
+  }
 </style>
 </head>
 <body>
@@ -798,6 +962,26 @@
           <span class="mkMarqueeBadge">MK</span>
         </span>
       </div>
+    </div>
+  </div>
+</td></tr>
+<tr><td>
+  <div class="adSlotWrap">
+    <div class="adSlotLabel">Featured</div>
+
+    <div class="adCard activeAd" id="ad-mk" onclick="openMkChat();">
+      <img src="/mk-screenshot-chat.png" alt="MK chat app">
+      <div class="adCaption">MK &mdash; online chatting better than discord???</div>
+    </div>
+
+    <div class="adCard" id="ad-whenwhere" onclick="openAdChat('whenwhere');">
+      <img src="/whenwhere-screenshot-home.png" alt="the when and where">
+      <div class="adCaption">the when &amp; where &mdash; live events in the Triangle</div>
+    </div>
+
+    <div class="adDots" id="adDots">
+      <span class="activeDot" onclick="showAdSlide(0);"></span>
+      <span onclick="showAdSlide(1);"></span>
     </div>
   </div>
 </td></tr>
@@ -926,6 +1110,26 @@
     </div>
   </div>
 
+  <div id="adOverlay">
+    <div id="adModalBox">
+      <div class="adTitleBar">
+        <span id="adTitle">Ad</span>
+        <a href="#" id="adCloseBtn">Close X</a>
+      </div>
+      <div class="adTabBar">
+        <button type="button" class="adTabBtn active" id="adTabLiveBtn" onclick="showAdTab('live');">Live Site</button>
+        <button type="button" class="adTabBtn" id="adTabShotsBtn" onclick="showAdTab('screenshots');">Screenshots</button>
+      </div>
+      <iframe id="adFrame" src="about:blank" title="Ad preview"></iframe>
+      <div id="adFrameFallback">
+        <span id="adFallbackText">This site wouldn't load in a window here &mdash; it might be blocking embedding.</span>
+        <br><br>
+        <a id="adFallbackLink" href="#" target="_blank" rel="noopener">Open in a new tab instead</a>
+      </div>
+      <div id="adScreenshots"></div>
+    </div>
+  </div>
+
   <div id="modalOverlay">
     <div id="modalBox">
       <div class="modalTitleBar">
@@ -1044,6 +1248,151 @@
       }
     }, currentUserAvatar);
   }
+
+  // ---------- ROTATING AD SLOT ----------
+  var adSlideOrder = ['ad-mk', 'ad-whenwhere'];
+  var adSlideIndex = 0;
+  var adRotateTimer = null;
+
+  function showAdSlide(index) {
+    adSlideIndex = index;
+    adSlideOrder.forEach(function (id, i) {
+      document.getElementById(id).classList.toggle('activeAd', i === index);
+    });
+    var dots = document.getElementById('adDots').querySelectorAll('span');
+    dots.forEach(function (dot, i) {
+      dot.classList.toggle('activeDot', i === index);
+    });
+  }
+
+  function startAdRotation() {
+    if (adRotateTimer) clearInterval(adRotateTimer);
+    adRotateTimer = setInterval(function () {
+      showAdSlide((adSlideIndex + 1) % adSlideOrder.length);
+    }, 6000);
+  }
+  startAdRotation();
+
+  // dots/cards call showAdSlide() directly via onclick in the HTML; clicking
+  // a slide to open its ad shouldn't also trigger a slide change, so nothing
+  // else needed here.
+
+  // ---------- GENERIC AD MODAL (for ads other than MK) ----------
+  // type "embed" tries to load the site live in an iframe (with a
+  // screenshots fallback). type "download" skips the iframe entirely
+  // since there's nothing to embed -- it's a downloadable app, not a
+  // website -- and just shows screenshots plus a download button.
+  var AD_LIBRARY = {
+    whenwhere: {
+      type: 'embed',
+      title: 'the when & where — live events in the Triangle',
+      url: 'https://thewhenandwhere.com',
+      screenshots: [
+        { src: '/whenwhere-screenshot-home.png', caption: 'Tonight’s events on the homepage' },
+        { src: '/whenwhere-screenshot-venues.png', caption: 'Browsing venues around Raleigh, Durham, and Chapel Hill' }
+      ]
+    },
+    mtd: {
+      type: 'download',
+      title: 'MusicToDiscord — show what you\'re playing as your Discord status',
+      url: 'https://github.com/macksiminski53/iTunes2Discord/releases/latest',
+      screenshots: [
+        { src: '/addformusic2discord.png', caption: 'Connects Apple Music / iTunes to your Discord status' },
+        { src: '/mtd-screenshot-app.png', caption: 'The app in action — live countdown timer and track info' }
+      ]
+    }
+  };
+
+  var adLoaded = {};
+  var adFallbackTimer = null;
+  var currentAdKey = null;
+
+  function showAdTab(tab) {
+    var frame = document.getElementById('adFrame');
+    var fallback = document.getElementById('adFrameFallback');
+    var shots = document.getElementById('adScreenshots');
+    var liveBtn = document.getElementById('adTabLiveBtn');
+    var shotsBtn = document.getElementById('adTabShotsBtn');
+
+    if (tab === 'screenshots') {
+      shots.style.display = 'block';
+      frame.style.display = 'none';
+      fallback.style.display = 'none';
+      shotsBtn.classList.add('active');
+      liveBtn.classList.remove('active');
+    } else {
+      shots.style.display = 'none';
+      liveBtn.classList.add('active');
+      shotsBtn.classList.remove('active');
+      if (currentAdKey && adLoaded[currentAdKey]) {
+        frame.style.display = 'block';
+        fallback.style.display = 'none';
+      } else {
+        frame.style.display = 'block';
+      }
+    }
+  }
+
+  function openAdChat(key) {
+    var ad = AD_LIBRARY[key];
+    if (!ad) return;
+
+    currentAdKey = key;
+    var frame = document.getElementById('adFrame');
+    var fallback = document.getElementById('adFrameFallback');
+    var shots = document.getElementById('adScreenshots');
+
+    document.getElementById('adTitle').textContent = ad.title;
+    document.getElementById('adFallbackLink').href = ad.url;
+
+    shots.innerHTML = '';
+    ad.screenshots.forEach(function (shot) {
+      var img = document.createElement('img');
+      img.src = shot.src;
+      img.alt = ad.title + ' screenshot';
+      var cap = document.createElement('div');
+      cap.className = 'adShotCaption';
+      cap.textContent = shot.caption;
+      shots.appendChild(img);
+      shots.appendChild(cap);
+    });
+
+    showAdTab('live');
+    fallback.style.display = 'none';
+    frame.style.display = 'block';
+
+    if (!adLoaded[key]) {
+      frame.src = ad.url;
+      if (adFallbackTimer) clearTimeout(adFallbackTimer);
+      adFallbackTimer = setTimeout(function () {
+        if (!adLoaded[key]) {
+          frame.style.display = 'none';
+          fallback.style.display = 'flex';
+        }
+      }, 4000);
+    }
+
+    document.getElementById('adOverlay').classList.add('open');
+  }
+
+  document.getElementById('adFrame').addEventListener('load', function () {
+    var frame = document.getElementById('adFrame');
+    if (currentAdKey && AD_LIBRARY[currentAdKey] && frame.src.indexOf(AD_LIBRARY[currentAdKey].url.replace('https://', '')) !== -1) {
+      adLoaded[currentAdKey] = true;
+      if (adFallbackTimer) clearTimeout(adFallbackTimer);
+    }
+  });
+
+  document.getElementById('adCloseBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('adOverlay').classList.remove('open');
+  });
+
+  document.getElementById('adOverlay').addEventListener('click', function (e) {
+    if (e.target.id === 'adOverlay') {
+      document.getElementById('adOverlay').classList.remove('open');
+    }
+  });
 
   // ---------- MK CHAT ----------
   var MK_URL = 'https://mk-app-1.onrender.com';
