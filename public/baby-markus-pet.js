@@ -258,8 +258,19 @@
   }
 
   function positionCreature(creatureEl) {
-    creatureEl.style.left = pet.x + '%';
-    creatureEl.style.top = pet.y + '%';
+    // If pet.x/pet.y ever end up NaN or missing (e.g. stale/corrupted saved
+    // data from an old bug), "left: NaN%" is invalid CSS and gets silently
+    // ignored, which leaves the element at its default static position --
+    // the container's top-left corner. Guard against that so a bad save
+    // can't strand him there permanently.
+    var x = Number(pet.x);
+    var y = Number(pet.y);
+    if (!isFinite(x)) x = 50;
+    if (!isFinite(y)) y = 60;
+    pet.x = x;
+    pet.y = y;
+    creatureEl.style.left = x + '%';
+    creatureEl.style.top = y + '%';
   }
 
   // ---------- Random field events ----------
@@ -382,6 +393,7 @@
 
     renderAllRef = render;
     render();
+    savePet(); // persist any x/y correction positionCreature() just made
 
     if (grown) {
       notify(pet.name + ' grew into a ' + STAGE_LABELS[grown] + '!');
