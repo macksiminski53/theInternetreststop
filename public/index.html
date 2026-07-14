@@ -127,14 +127,12 @@
 
   @keyframes zoomIntoField {
     0% {
-      clip-path: polygon(100% 100%, 100% 0%, 78% 6%, 66% 2%, 55% 10%, 44% 4%, 34% 14%, 22% 8%, 12% 18%, 0% 12%, 0% 100%);
+      clip-path: polygon(100% 100%, 100% 0%, 84% 5%, 72% 0%, 62% 9%, 50% 2%, 40% 13%, 28% 3%, 18% 15%, 8% 5%, 0% 13%, 0% 100%);
       transform: scale(1);
-      transform-origin: bottom right;
     }
     100% {
       clip-path: polygon(100% 100%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 0% 0%, 0% 100%);
       transform: scale(8);
-      transform-origin: bottom right;
     }
   }
 
@@ -2338,10 +2336,19 @@
   loadAdminStatus();
 
   // ---------- TORN CORNER ZOOM TRANSITION ----------
+  // The torn corner now sits inline on the page (not a fixed viewport
+  // corner), so the zoom-in overlay's transform-origin has to match
+  // wherever the element actually is, or the animation looks like it's
+  // exploding out of the bottom-right of the screen instead of out of
+  // the tear the person just clicked.
   document.getElementById('tornCornerLink').addEventListener('click', function (e) {
     e.preventDefault();
     var dest = this.href;
+    var rect = this.getBoundingClientRect();
+    var originX = rect.left + rect.width / 2;
+    var originY = rect.top + rect.height / 2;
     var overlay = document.getElementById('zoomTransitionOverlay');
+    overlay.style.transformOrigin = originX + 'px ' + originY + 'px';
     overlay.classList.add('zooming');
     setTimeout(function () {
       window.location.href = dest;
