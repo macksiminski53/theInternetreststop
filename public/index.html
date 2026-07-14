@@ -2325,4 +2325,35 @@
 
   document.getElementById('acfDeleteBtn').addEventListener('click', async function () {
     if (!editingCardId) return;
-    if (!confirm('Del
+    if (!confirm('Delete this card? This cannot be undone.')) return;
+    try {
+      var res = await fetch('/api/cards/' + encodeURIComponent(editingCardId), { method: 'DELETE' });
+      var data = await res.json();
+      if (!data.ok) {
+        document.getElementById('adminCardFormError').textContent = data.error || 'Could not delete card.';
+        return;
+      }
+      document.getElementById('adminCardOverlay').style.display = 'none';
+      loadCards();
+    } catch (err) {
+      document.getElementById('adminCardFormError').textContent = 'Could not reach the server.';
+    }
+  });
+
+  loadCards();
+  loadAdminStatus();
+
+  // ---------- TORN CORNER ZOOM TRANSITION ----------
+  document.getElementById('tornCornerLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    var dest = this.href;
+    var overlay = document.getElementById('zoomTransitionOverlay');
+    overlay.classList.add('zooming');
+    setTimeout(function () {
+      window.location.href = dest;
+    }, 650);
+  });
+</script>
+
+</body>
+</html>
