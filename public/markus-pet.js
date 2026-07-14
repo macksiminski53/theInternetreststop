@@ -302,4 +302,87 @@
     if (contour === 'wobble') {
       osc.frequency.setValueAtTime(f0, startAt);
       osc.frequency.linearRampToValueAtTime(f0 * 0.85, startAt + dur * 0.5);
-      osc.frequency.linearRampToValueA
+      osc.frequency.linearRampToValueAtTime(f0, startAt + dur);
+    } else {
+      osc.frequency.linearRampToValueAtTime(f1, startAt + dur);
+    }
+
+    gain.gain.setValueAtTime(0.0001, startAt);
+    gain.gain.linearRampToValueAtTime(0.18, startAt + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startAt + dur);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(startAt);
+    osc.stop(startAt + dur + 0.02);
+  }
+
+  function petSound(mood) {
+    if (!mood) return;
+    var spec = MOOD_TONES[mood];
+    if (!spec) return;
+    try {
+      var ctx = getAudioCtx();
+      ctx.resume().then(function () {
+        var t = ctx.currentTime;
+        var notes = spec.notes || 1;
+        for (var i = 0; i < notes; i++) {
+          playTone(spec.freq, spec.type, spec.contour, spec.dur, t + i * (spec.dur * 0.85));
+        }
+      });
+    } catch (e) { /* audio not critical */ }
+  }
+
+  // ---- Wire-up ----
+  function initPet() {
+    updatePet();
+    renderPet();
+
+    var cleanBtn = document.getElementById('pet-clean-btn');
+    var playBtn = document.getElementById('pet-play-btn');
+    var renameBtn = document.getElementById('pet-rename-btn');
+
+    if (cleanBtn) cleanBtn.addEventListener('click', function () { petClean(); renderPet(); });
+    if (playBtn) playBtn.addEventListener('click', function () { petFeed(); renderPet(); });
+
+    if (renameBtn) {
+      renameBtn.addEventListener('click', function () {
+        var input = document.getElementById('pet-rename-input');
+        var confirmBtn = document.getElementById('pet-rename-confirm');
+        var nameSpan = document.getElementById('pet-name');
+        renameBtn.style.display = 'none';
+        input.value = nameSpan.textContent || '';
+        input.style.display = '';
+        confirmBtn.style.display = '';
+        input.focus();
+        input.select();
+
+        function doRename() {
+          var name = input.value.trim();
+          input.style.display = 'none';
+          confirmBtn.style.display = 'none';
+          renameBtn.style.display = '';
+          if (name) { petRename(name); renderPet(); }
+        }
+
+        confirmBtn.onclick = doRename;
+        input.onkeydown = function (e) {
+          if (e.key === 'Enter') doRename();
+          if (e.key === 'Escape') {
+            input.style.display = 'none';
+            confirmBtn.style.display = 'none';
+            renameBtn.style.display = '';
+          }
+        };
+      });
+    }
+
+    // Passive re-render loop so stat bars visibly decay while the page is open.
+    setInterval(function () {
+      updatePet();
+      renderPet();
+    }, 15000);
+  }
+
+  document.addEventListener('DOMContentLoaded', initPet);
+})();

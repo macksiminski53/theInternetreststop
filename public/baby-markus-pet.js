@@ -442,4 +442,235 @@
           onDeliver();
           itemEl.style.left = '';
           itemEl.style.top = '';
-      
+        }
+      }
+
+      itemEl.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        dragging = true;
+      });
+      document.addEventListener('mousemove', function (e) {
+        if (!dragging) return;
+        var rect = field.getBoundingClientRect();
+        itemEl.style.left = (((e.clientX - rect.left) / rect.width) * 100) + '%';
+        itemEl.style.top = (((e.clientY - rect.top) / rect.height) * 100) + '%';
+      });
+      document.addEventListener('mouseup', function (e) {
+        if (!dragging) return;
+        dragging = false;
+        drop(e.clientX, e.clientY);
+      });
+
+      itemEl.addEventListener('touchstart', function () { dragging = true; }, { passive: true });
+      document.addEventListener('touchmove', function (e) {
+        if (!dragging) return;
+        var t = e.touches[0];
+        var rect = field.getBoundingClientRect();
+        itemEl.style.left = (((t.clientX - rect.left) / rect.width) * 100) + '%';
+        itemEl.style.top = (((t.clientY - rect.top) / rect.height) * 100) + '%';
+      }, { passive: true });
+      document.addEventListener('touchend', function (e) {
+        if (!dragging) return;
+        dragging = false;
+        var t = e.changedTouches[0];
+        drop(t.clientX, t.clientY);
+      });
+    }
+
+    wireDraggableItem(toyEl, function () {
+      pet.activeToy = false;
+      playWithPet();
+      notify(pet.name + ' loved playing with the toy!');
+      render();
+    });
+    wireDraggableItem(treatEl, function () {
+      pet.activeTreat = false;
+      feedPet();
+      notify(pet.name + ' gobbled up the treat!');
+      render();
+    });
+
+    // ---- Brush cleaning (Talking-Tom style: drag the brush over dirt spots) ----
+    var brushDragging = false;
+
+    function moveBrushTo(clientX, clientY) {
+      var rect = field.getBoundingClientRect();
+      brushEl.style.left = (((clientX - rect.left) / rect.width) * 100) + '%';
+      brushEl.style.top = (((clientY - rect.top) / rect.height) * 100) + '%';
+
+      // Check overlap against every rendered dirt spot's DOM position.
+      var brushRect = brushEl.getBoundingClientRect();
+      var bx = brushRect.left + brushRect.width / 2;
+      var by = brushRect.top + brushRect.height / 2;
+      var dirtEls = dirtLayer.querySelectorAll('.bm-dirt');
+      for (var i = 0; i < dirtEls.length; i++) {
+        var dRect = dirtEls[i].getBoundingClientRect();
+        var dx = dRect.left + dRect.width / 2;
+        var dy = dRect.top + dRect.height / 2;
+        var dist = Math.sqrt((bx - dx) * (bx - dx) + (by - dy) * (by - dy));
+        if (dist < 26) {
+          var id = parseInt(dirtEls[i].dataset.dirtId, 10);
+          if (scrubDirt(id)) {
+            notify('Scrubbing ' + pet.name + ' clean!');
+            render();
+          }
+        }
+      }
+    }
+
+    brushEl.addEventListener('mousedown', function (e) { e.preventDefault(); brushDragging = true; brushEl.classList.add('active'); });
+    document.addEventListener('mousemove', function (e) { if (brushDragging) moveBrushTo(e.clientX, e.clientY); });
+    document.addEventListener('mouseup', function () { brushDragging = false; brushEl.classList.remove('active'); });
+
+    brushEl.addEventListener('touchstart', function () { brushDragging = true; brushEl.classList.add('active'); }, { passive: true });
+    document.addEventListener('touchmove', function (e) {
+      if (!brushDragging) return;
+      var t = e.touches[0];
+      moveBrushTo(t.clientX, t.clientY);
+    }, { passive: true });
+    document.addEventListener('touchend', function () { brushDragging = false; brushEl.classList.remove('active'); });
+
+    // ---- Shop ----
+    function renderShop() {
+      var foodList = document.getElementById('bm-shop-food');
+      var toyList = document.getElementById('bm-shop-toys');
+      var inventoryList = document.getElementById('bm-inventory');
+
+      foodList.innerHTML = '';
+      SHOP_FOOD.forEach(function (item) {
+        var row = document.createElement('div');
+        row.className = 'bm-shop-row';
+        row.innerHTML = '<span class="bm-shop-emoji">' + item.emoji + '</span>' +
+          '<span class="bm-shop-name">' + item.label + '</span>' +
+          '<span class="bm-shop-cost">' + item.cost + ' coins</span>' +
+          '<input type="button" value="Buy" class="bm-buy-btn">';
+        row.querySelector('.bm-buy-btn').addEventListener('click', function () {
+          var result = buyFood(item.key);
+          if (result.ok) {
+            notify('Fed ' + pet.name + ' a ' + item.label + '!');
+            render();
+            renderShop();
+          } else {
+            notify(result.error);
+          }
+        });
+        foodList.appendChild(row);
+      });
+
+      toyList.innerHTML = '';
+      SHOP_TOYS.forEach(function (item) {
+        var owned = pet.ownedToys.indexOf(item.key) !== -1;
+        var row = document.createElement('div');
+        row.className = 'bm-shop-row';
+        row.innerHTML = '<span class="bm-shop-emoji">' + item.emoji + '</span>' +
+          '<span class="bm-shop-name">' + item.label + '</span>' +
+          '<span class="bm-shop-cost">' + (owned ? 'Owned' : item.cost + ' coins') + '</span>' +
+          (owned ? '' : '<input type="button" value="Buy" class="bm-buy-btn">');
+        if (!owned) {
+          row.querySelector('.bm-buy-btn').addEventListener('click', function () {
+            var result = buyToy(item.key);
+            if (result.ok) {
+              notify('Bought a ' + item.label + '!');
+              renderShop();
+            } else {
+              notify(result.error);
+            }
+          });
+        }
+        toyList.appendChild(row);
+      });
+
+      inventoryList.innerHTML = '';
+      if (pet.ownedToys.length === 0) {
+        inventoryList.innerHTML = '<span style="font-size:11px; color:#777;">No toys yet -- buy some from the Toys tab!</span>';
+      }
+      pet.ownedToys.forEach(function (key) {
+        var item = SHOP_TOYS.filter(function (t) { return t.key === key; })[0];
+        if (!item) return;
+        var btn = document.createElement('input');
+        btn.type = 'button';
+        btn.value = item.emoji + ' Play with ' + item.label;
+        btn.className = 'bm-inventory-btn';
+        btn.addEventListener('click', function () {
+          useOwnedToy(key);
+          notify(pet.name + ' had fun with the ' + item.label + '!');
+          render();
+        });
+        inventoryList.appendChild(btn);
+      });
+    }
+
+    document.getElementById('bm-shop-btn').addEventListener('click', function () {
+      renderShop();
+      document.getElementById('bm-shop-overlay').style.display = 'flex';
+    });
+    document.getElementById('bm-shop-close').addEventListener('click', function () {
+      document.getElementById('bm-shop-overlay').style.display = 'none';
+    });
+    document.querySelectorAll('.bm-shop-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('.bm-shop-tab').forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        var target = tab.dataset.tab;
+        document.querySelectorAll('.bm-shop-panel').forEach(function (p) { p.style.display = 'none'; });
+        document.getElementById('bm-shop-panel-' + target).style.display = 'block';
+      });
+    });
+
+    // ---- Games menu ----
+    document.getElementById('bm-games-btn').addEventListener('click', function () {
+      window.BabyMarkusGames.open({
+        onReward: function (coinAmount) {
+          addCoins(coinAmount);
+          coinsEl.textContent = pet.coins;
+          notify('Earned ' + coinAmount + ' coins!');
+        }
+      });
+    });
+
+    var renameBtn = document.getElementById('bm-rename-btn');
+    renameBtn.addEventListener('click', function () {
+      var input = document.getElementById('bm-rename-input');
+      var confirmBtn = document.getElementById('bm-rename-confirm');
+      renameBtn.style.display = 'none';
+      input.value = pet.name;
+      input.style.display = '';
+      confirmBtn.style.display = '';
+      input.focus();
+      input.select();
+
+      function doRename() {
+        renamePet(input.value.trim());
+        input.style.display = 'none';
+        confirmBtn.style.display = 'none';
+        renameBtn.style.display = '';
+        render();
+      }
+      confirmBtn.onclick = doRename;
+      input.onkeydown = function (e) {
+        if (e.key === 'Enter') doRename();
+        if (e.key === 'Escape') {
+          input.style.display = 'none';
+          confirmBtn.style.display = 'none';
+          renameBtn.style.display = '';
+        }
+      };
+    });
+
+    // ---- Periodic loop: decay + random events ----
+    setInterval(function () {
+      updatePet();
+      var grown2 = maybeGrow();
+      if (grown2) notify(pet.name + ' grew into a ' + STAGE_LABELS[grown2] + '!');
+      render();
+    }, 20000);
+
+    setInterval(function () {
+      var evt = rollFieldEvent();
+      if (evt) applyFieldEvent(evt, notify);
+      render();
+    }, 25000);
+  }
+
+  document.addEventListener('DOMContentLoaded', initBabyMarkus);
+})();

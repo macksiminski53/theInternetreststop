@@ -2316,4 +2316,16 @@
   loadAdminStatus();
 
   // ---------- TORN CORNER ZOOM TRANSITION ----------
-  document.getElementById('
+  document.getElementById('tornCornerLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    var dest = this.href;
+    var overlay = document.getElementById('zoomTransitionOverlay');
+    overlay.classList.add('zooming');
+    setTimeout(function () {
+      window.location.href = dest;
+    }, 650);
+  });
+</script>
+
+</body>
+</html>
