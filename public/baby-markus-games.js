@@ -6,7 +6,7 @@
 // reports coins earned back through onReward().
 
 (function () {
-  var overlay, menuView, gameView, onRewardCb;
+  var overlay, menuView, gameView, onRewardCb, getCoinsCb, spendCoinsCb;
 
   function buildDom() {
     if (document.getElementById('bmg-overlay')) return;
@@ -37,6 +37,11 @@
       '        <div class="bmg-game-icon">&#127814;</div>' +
       '        <div class="bmg-game-name">Snack Catcher</div>' +
       '        <div class="bmg-game-desc">Catch falling snacks, dodge the rocks!</div>' +
+      '      </div>' +
+      '      <div class="bmg-game-card" data-game="duckrace">' +
+      '        <div class="bmg-game-icon">&#129737;</div>' +
+      '        <div class="bmg-game-name">Duck Race</div>' +
+      '        <div class="bmg-game-desc">Bet coins on a duck. Watch them race!</div>' +
       '      </div>' +
       '    </div>' +
       '    <div id="bmg-game-area" style="display:none;"></div>' +
@@ -381,11 +386,136 @@
     raf = requestAnimationFrame(tick);
   }
 
+  // ---------------- GAME 5: Duck Race (betting) ----------------
+  // Four ducks with different odds race down a short track on their own --
+  // you pick one and a wager amount, then watch. Payout is wager * odds if
+  // your duck wins, otherwise the wager is lost. Odds are fixed per duck
+  // (not secretly rigged against the player) so a cautious bettor can always
+  // pick the favorite for a small, likely payout, or gamble on a longspot
+  // for a bigger one.
+  var DUCK_RACERS = [
+    { name: 'Speedy',   color: '#ffd93b', odds: 2 },
+    { name: 'Lucky',    color: '#7bd979', odds: 3 },
+    { name: 'Grandpa',  color: '#8fa7d6', odds: 5 },
+    { name: 'Mystery',  color: '#e08ac9', odds: 8 }
+  ];
+
+  function startDuckRaceGame() {
+    var area = showGameArea('Duck Race');
+    var wager = 10;
+    var pickedIndex = null;
+
+    function renderBetScreen() {
+      var coins = getCoinsCb();
+      var html = '<div class="bmg-hud">Your coins: ' + coins + '</div>';
+      html += '<div class="bmg-duck-picks">';
+      DUCK_RACERS.forEach(function (duck, i) {
+        html += '<div class="bmg-duck-pick' + (pickedIndex === i ? ' picked' : '') + '" data-duck="' + i + '">' +
+          '<div class="bmg-duck-swatch" style="background:' + duck.color + ';"></div>' +
+          '<div class="bmg-duck-pick-name">' + duck.name + '</div>' +
+          '<div class="bmg-duck-pick-odds">' + duck.odds + 'x</div>' +
+        '</div>';
+      });
+      html += '</div>';
+      html += '<div class="bmg-hud" style="margin-top:10px;">Wager: ' + wager + ' coins ' +
+        '<input type="button" value="-5" id="bmg-wager-down" style="margin-left:8px;font-size:11px;padding:2px 8px;"> ' +
+        '<input type="button" value="+5" id="bmg-wager-up" style="font-size:11px;padding:2px 8px;">' +
+        '</div>';
+      html += '<input type="button" value="Place Bet & Race!" id="bmg-duck-go" style="margin-top:10px;">';
+      html += '<div class="bmg-hud-note">Pick a duck, set your wager, and see if he crosses first.</div>';
+      area.innerHTML = html;
+
+      area.querySelectorAll('.bmg-duck-pick').forEach(function (el) {
+        el.addEventListener('click', function () {
+          pickedIndex = Number(el.dataset.duck);
+          renderBetScreen();
+        });
+      });
+      document.getElementById('bmg-wager-down').addEventListener('click', function () {
+        wager = Math.max(5, wager - 5);
+        renderBetScreen();
+      });
+      document.getElementById('bmg-wager-up').addEventListener('click', function () {
+        wager = Math.min(getCoinsCb(), wager + 5);
+        renderBetScreen();
+      });
+      document.getElementById('bmg-duck-go').addEventListener('click', function () {
+        if (pickedIndex === null) return;
+        if (wager > getCoinsCb()) return;
+        if (wager <= 0) return;
+        spendCoinsCb(wager);
+        runRace(pickedIndex, wager);
+      });
+    }
+
+    function runRace(pickedIndex, wager) {
+      var TRACK_LEN = 100;
+      var lanes = DUCK_RACERS.map(function (duck) {
+        return { duck: duck, pos: 0, speedBias: 0.7 + Math.random() * 0.6 };
+      });
+
+      var html = '<div class="bmg-hud">Wager: ' + wager + ' coins on ' + DUCK_RACERS[pickedIndex].name + '</div>';
+      html += '<div id="bmg-duck-track">';
+      lanes.forEach(function (lane, i) {
+        html += '<div class="bmg-duck-lane">' +
+          '<div class="bmg-duck-lane-name">' + lane.duck.name + '</div>' +
+          '<div class="bmg-duck-lane-track"><div class="bmg-duck-runner" id="bmg-duck-runner-' + i + '" style="background:' + lane.duck.color + ';">&#129737;</div></div>' +
+        '</div>';
+      });
+      html += '</div>';
+      area.innerHTML = html;
+
+      var finished = false;
+      var raceInterval = setInterval(function () {
+        if (finished) return;
+        lanes.forEach(function (lane, i) {
+          if (lane.pos >= TRACK_LEN) return;
+          lane.pos += lane.speedBias * (2 + Math.random() * 4);
+          if (lane.pos > TRACK_LEN) lane.pos = TRACK_LEN;
+          var runnerEl = document.getElementById('bmg-duck-runner-' + i);
+          if (runnerEl) runnerEl.style.left = lane.pos + '%';
+        });
+
+        var winnerIdx = lanes.findIndex(function (lane) { return lane.pos >= TRACK_LEN; });
+        if (winnerIdx !== -1 && !finished) {
+          finished = true;
+          clearInterval(raceInterval);
+          setTimeout(function () { showResult(winnerIdx, pickedIndex, wager); }, 500);
+        }
+      }, 120);
+    }
+
+    function showResult(winnerIdx, pickedIndex, wager) {
+      var won = winnerIdx === pickedIndex;
+      var winnerDuck = DUCK_RACERS[winnerIdx];
+      var html = '<div class="bmg-result">' + winnerDuck.name + ' wins the race!</div>';
+      if (won) {
+        var payout = Math.round(wager * winnerDuck.odds);
+        reward(payout);
+        html += '<div class="bmg-result">You won ' + payout + ' coins! (' + winnerDuck.odds + 'x on ' + wager + ')</div>';
+      } else {
+        html += '<div class="bmg-result">Your duck didn\'t make it. Lost ' + wager + ' coins.</div>';
+      }
+      html += '<input type="button" value="Race Again" id="bmg-duck-again" class="bmg-back-btn">' +
+        '<input type="button" value="Back to Games" class="bmg-back-btn" id="bmg-back-menu">';
+      area.innerHTML = html;
+      document.getElementById('bmg-duck-again').addEventListener('click', function () {
+        pickedIndex = null;
+        wager = 10;
+        renderBetScreen();
+      });
+      document.getElementById('bmg-back-menu').addEventListener('click', showMenu);
+    }
+
+    renderBetScreen();
+  }
+
   var GAME_STARTERS = {
     whack: startWhackGame,
     timing: startTimingGame,
     memory: startMemoryGame,
-    dodger: startDodgerGame
+    dodger: startDodgerGame,
+    duckrace: startDuckRaceGame
   };
 
   function wireMenu() {
@@ -408,6 +538,8 @@
 
   function open(opts) {
     onRewardCb = (opts && opts.onReward) || null;
+    getCoinsCb = (opts && opts.getCoins) || function () { return 0; };
+    spendCoinsCb = (opts && opts.onSpend) || function () {};
     buildDom();
     if (!buildDom._wired) {
       wireMenu();

@@ -844,6 +844,13 @@
           addCoins(coinAmount);
           coinsEl.textContent = pet.coins;
           notify('Earned ' + coinAmount + ' coins!');
+        },
+        getCoins: function () {
+          return pet.coins;
+        },
+        onSpend: function (coinAmount) {
+          addCoins(-coinAmount);
+          coinsEl.textContent = pet.coins;
         }
       });
     });
