@@ -240,6 +240,13 @@
   }
 
   /* ---------- Dirt spots + brush ---------- */
+  #bm-dirt-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+
   .bm-dirt {
     position: absolute;
     width: 18px;
@@ -536,7 +543,7 @@
     <div id="bm-treat" title="Drag to Baby Markus">&#127853;</div>
 
     <div id="bm-dirt-layer"></div>
-    <div id="bm-brush" title="Drag over dirt to scrub it off">&#129692;</div>
+    <div id="bm-brush" title="Drag over dirt to scrub it off">&#128396;&#65039;</div>
 
     <div id="bm-creature">
       <svg viewBox="0 0 140 140" width="90" height="90">
@@ -610,9 +617,4 @@
       <div id="bm-inventory"></div>
     </div>
   </div>
-</div>
-
-<script src="/baby-markus-pet.js"></script>
-<script src="/baby-markus-games.js"></script>
-</body>
-</html>
+</

@@ -508,7 +508,7 @@
         var dx = dRect.left + dRect.width / 2;
         var dy = dRect.top + dRect.height / 2;
         var dist = Math.sqrt((bx - dx) * (bx - dx) + (by - dy) * (by - dy));
-        if (dist < 26) {
+        if (dist < 42) {
           var id = parseInt(dirtEls[i].dataset.dirtId, 10);
           if (scrubDirt(id)) {
             notify('Scrubbing ' + pet.name + ' clean!');
