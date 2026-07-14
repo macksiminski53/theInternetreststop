@@ -34,19 +34,38 @@
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
   }
 
+  /* A slightly darker, offset copy of the same jagged edge sitting just
+     under the field layer -- reads as the shadowed, frayed underside of
+     the torn paper lip instead of a clean cut. */
+  #tornCornerShadow {
+    position: absolute;
+    inset: 0;
+    top: 3px;
+    background: rgba(0,0,0,0.18);
+    clip-path: polygon(
+      0% 38%, 3% 47%, 6% 30%, 9% 44%, 12% 22%, 15% 40%, 19% 27%,
+      22% 46%, 26% 20%, 29% 35%, 33% 16%, 36% 41%, 40% 24%, 43% 33%,
+      47% 12%, 50% 44%, 54% 19%, 57% 37%, 61% 15%, 64% 42%, 68% 21%,
+      71% 34%, 75% 11%, 78% 45%, 82% 18%, 85% 39%, 89% 14%, 92% 30%,
+      95% 20%, 100% 33%,
+      100% 100%, 0% 100%
+    );
+  }
+
   #tornCornerField {
     position: absolute;
     inset: 0;
     background: linear-gradient(180deg, #8fd3f4 0%, #8fd3f4 35%, #6cc96a 35%, #4caf50 100%);
     overflow: hidden;
-    /* Jagged torn-paper edge along the top, deep enough to actually read as
-       a rip at this wide/short banner size (was tuned for a small 150x150
-       corner square before and barely showed at this aspect ratio). */
+    /* Irregular, uneven tear -- deep gouges and shallow nicks at
+       inconsistent widths so it reads as ripped paper rather than a
+       decorative zigzag. Amplitude and spacing deliberately don't repeat. */
     clip-path: polygon(
-      0% 32%, 4% 22%, 8% 30%, 12% 18%, 16% 26%, 20% 14%, 24% 24%,
-      28% 12%, 32% 20%, 36% 10%, 40% 22%, 44% 16%, 48% 28%, 52% 14%,
-      56% 24%, 60% 12%, 64% 20%, 68% 10%, 72% 22%, 76% 16%, 80% 26%,
-      84% 14%, 88% 24%, 92% 12%, 96% 20%, 100% 15%,
+      0% 30%, 3% 41%, 6% 24%, 9% 36%, 12% 15%, 15% 33%, 19% 20%,
+      22% 40%, 26% 12%, 29% 27%, 33% 8%, 36% 31%, 40% 17%, 43% 25%,
+      47% 5%, 50% 36%, 54% 11%, 57% 29%, 61% 7%, 64% 34%, 68% 13%,
+      71% 26%, 75% 3%, 78% 37%, 82% 10%, 85% 31%, 89% 6%, 92% 22%,
+      95% 12%, 100% 25%,
       100% 100%, 0% 100%
     );
   }
@@ -1258,6 +1277,7 @@
   <div class="tornCornerWrap">
     <a href="/baby-markus.html" id="tornCornerLink" title="Go raise Baby Markus">
       <div id="tornCornerPaper"></div>
+      <div id="tornCornerShadow"></div>
       <div id="tornCornerField">
         <div class="tcCloud tcCloud1"></div>
         <div class="tcCloud tcCloud2"></div>
@@ -2305,23 +2325,4 @@
 
   document.getElementById('acfDeleteBtn').addEventListener('click', async function () {
     if (!editingCardId) return;
-    if (!confirm('Delete this card? This cannot be undone.')) return;
-    try {
-      var res = await fetch('/api/cards/' + encodeURIComponent(editingCardId), { method: 'DELETE' });
-      var data = await res.json();
-      if (!data.ok) {
-        document.getElementById('adminCardFormError').textContent = data.error || 'Could not delete card.';
-        return;
-      }
-      document.getElementById('adminCardOverlay').style.display = 'none';
-      loadCards();
-    } catch (err) {
-      document.getElementById('adminCardFormError').textContent = 'Could not reach the server.';
-    }
-  });
-
-  loadCards();
-  loadAdminStatus();
-
-  // ---------- TORN CORNER ZOOM TRANSITION ----------
-  document.getElementById('tornCornerLink').addEventListener('c
+    if (!confirm('Del
