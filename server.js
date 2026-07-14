@@ -28,6 +28,21 @@ if (IS_PROD) {
 }
 
 app.use(express.json());
+
+// HTML pages carry all the interactive JS inline, so a stale cached copy of
+// one of these means every button on the page can silently stop working
+// (old script, but nothing visibly "broken" about the markup) -- force
+// browsers/proxies to always revalidate these instead of trusting ETags.
+// Images/SVGs/etc. are unaffected and keep normal static caching.
+app.use((req, res, next) => {
+  if (req.path === '/' || req.path.endsWith('.html')) {
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+  }
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
