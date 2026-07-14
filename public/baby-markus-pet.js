@@ -71,7 +71,8 @@
       y: 60,
       coins: 20, // small starting balance so the shop isn't empty on day one
       ownedToys: [], // keys from SHOP_TOYS the player has bought
-      dirtSpots: [] // [{id, x, y}] scrubbable dirt marks, in percent relative to the creature sprite
+      dirtSpots: [], // [{id, x, y}] scrubbable dirt marks, in percent relative to the creature sprite
+      graduated: false // true once he's reached tween and walked off to college
     };
   }
 
@@ -397,20 +398,58 @@
     render();
     savePet(); // persist any x/y correction positionCreature() just made
 
-    if (grown) {
+    var collegeCard = document.getElementById('bm-college-card');
+    var collegeSub = document.getElementById('bm-college-sub');
+
+    // ---- Off to college: the final "growth" moment ----
+    // Reaching tween is the last stage the normal growth system supports, so
+    // instead of just another "grew up!" toast, treat it as the character's
+    // send-off: he walks toward the field edge, fades out, and a title-card
+    // takes over -- a soft narrative stop rather than an ordinary level-up,
+    // since after this he's "the Markus from MusicToDiscord" and this
+    // younger side-story is done.
+    function sendToCollege() {
+      pet.graduated = true;
+      savePet();
+      if (wanderTimer) clearInterval(wanderTimer);
+      isDragging = false;
+
+      var edgeX = pet.x < 50 ? 6 : 94;
+      creature.classList.add('bm-leaving');
+      moveTo(field, creature, edgeX, 30);
+
+      collegeSub.textContent = pet.name + ' is all grown up and just left for college. This is where his story catches up to the Markus you know from MusicToDiscord.';
+
+      setTimeout(function () {
+        collegeCard.classList.add('show');
+      }, 3200);
+    }
+
+    if (pet.graduated) {
+      // Returning after he already graduated in a past visit -- skip the
+      // walk-off animation and just show the card immediately.
+      creature.classList.add('bm-leaving');
+      collegeSub.textContent = pet.name + ' graduated and headed off to college. This is where his story catches up to the Markus you know from MusicToDiscord.';
+      collegeCard.classList.add('show');
+    } else if (grown === 'tween') {
+      notify(pet.name + ' is all grown up!');
+      setTimeout(sendToCollege, 900);
+    } else if (grown) {
       notify(pet.name + ' grew into a ' + STAGE_LABELS[grown] + '!');
     }
 
-    startWander(field, creature);
+    if (!pet.graduated) startWander(field, creature);
 
     // ---- Drag baby Markus around ----
     var dragOffset = null;
     function startDrag(clientX, clientY) {
+      if (pet.graduated) return;
       isDragging = true;
       if (wanderTimer) clearInterval(wanderTimer);
       creature.classList.add('bm-dragging');
     }
     function duringDrag(clientX, clientY) {
+      if (pet.graduated) return;
       var rect = field.getBoundingClientRect();
       var px = ((clientX - rect.left) / rect.width) * 100;
       var py = ((clientY - rect.top) / rect.height) * 100;
@@ -425,7 +464,7 @@
       isDragging = false;
       creature.classList.remove('bm-dragging');
       savePet();
-      startWander(field, creature);
+      if (!pet.graduated) startWander(field, creature);
     }
 
     creature.addEventListener('mousedown', function (e) { e.preventDefault(); startDrag(e.clientX, e.clientY); });
@@ -673,13 +712,20 @@
 
     // ---- Periodic loop: decay + random events ----
     setInterval(function () {
+      if (pet.graduated) return;
       updatePet();
       var grown2 = maybeGrow();
-      if (grown2) notify(pet.name + ' grew into a ' + STAGE_LABELS[grown2] + '!');
+      if (grown2 === 'tween') {
+        notify(pet.name + ' is all grown up!');
+        setTimeout(sendToCollege, 900);
+      } else if (grown2) {
+        notify(pet.name + ' grew into a ' + STAGE_LABELS[grown2] + '!');
+      }
       render();
     }, 20000);
 
     setInterval(function () {
+      if (pet.graduated) return;
       var evt = rollFieldEvent();
       if (evt) applyFieldEvent(evt, notify);
       render();
