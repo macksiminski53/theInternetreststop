@@ -258,15 +258,17 @@
   }
 
   function positionCreature(creatureEl) {
-    // If pet.x/pet.y ever end up NaN or missing (e.g. stale/corrupted saved
-    // data from an old bug), "left: NaN%" is invalid CSS and gets silently
-    // ignored, which leaves the element at its default static position --
-    // the container's top-left corner. Guard against that so a bad save
-    // can't strand him there permanently.
+    // If pet.x/pet.y ever end up NaN, missing, or just some stale value
+    // sitting right at/near a corner (e.g. an old 0/0 from a past bug),
+    // clamp back into the field's real usable area. "left: NaN%" alone is
+    // invalid CSS and gets silently dropped (leaving the element at its
+    // default static position, i.e. the container's top-left corner), but
+    // a valid-yet-wrong 0/0 slips right past a simple isFinite check --
+    // clamping to the same range the wander AI uses closes that gap too.
     var x = Number(pet.x);
     var y = Number(pet.y);
-    if (!isFinite(x)) x = 50;
-    if (!isFinite(y)) y = 60;
+    if (!isFinite(x) || x < 4 || x > 96) x = 50;
+    if (!isFinite(y) || y < 20 || y > 96) y = 60;
     pet.x = x;
     pet.y = y;
     creatureEl.style.left = x + '%';

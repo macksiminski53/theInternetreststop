@@ -33,9 +33,14 @@ app.use(express.json());
 // one of these means every button on the page can silently stop working
 // (old script, but nothing visibly "broken" about the markup) -- force
 // browsers/proxies to always revalidate these instead of trusting ETags.
-// Images/SVGs/etc. are unaffected and keep normal static caching.
+// Also applies to .js files: several pages (baby-markus.html, index.html)
+// load their logic from separate script files, and a stale cached .js is
+// the exact same failure mode as stale inline HTML -- a bug fix can be
+// deployed and confirmed live, but a browser still quietly running the old
+// script sees no change at all. Images/SVGs/etc. are unaffected and keep
+// normal static caching.
 app.use((req, res, next) => {
-  if (req.path === '/' || req.path.endsWith('.html')) {
+  if (req.path === '/' || req.path.endsWith('.html') || req.path.endsWith('.js')) {
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
