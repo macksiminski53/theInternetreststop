@@ -25,6 +25,110 @@
     { key: 'butterfly', label: 'A butterfly is fluttering by!', chance: 0.04 }
   ];
 
+  // Where-are-they-now montage shown after Baby Markus graduates to college --
+  // original stylized scenes (no real likenesses or copyrighted characters),
+  // captions carry the pop-culture nods as jokes.
+  var COLLEGE_MONTAGE = [
+    { caption: `Dropped out of college immediately. Started wearing a backpack with teddy bears on it. Sound familiar?`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
+    <rect width="280" height="160" fill="#2b2b2b"/>
+    <rect x="10" y="10" width="260" height="90" fill="#1f3d2e" stroke="#0f2419" stroke-width="3"/>
+    <rect x="20" y="20" width="120" height="10" fill="#e8e0c8" opacity="0.5"/>
+    <rect x="20" y="40" width="80" height="10" fill="#e8e0c8" opacity="0.35"/>
+    <circle cx="140" cy="120" r="26" fill="#a4703a"/>
+    <circle cx="130" cy="112" r="4" fill="#2a1a0e"/>
+    <circle cx="150" cy="112" r="4" fill="#2a1a0e"/>
+    <ellipse cx="140" cy="128" rx="10" ry="6" fill="#e0bd8f"/>
+    <rect x="120" y="140" width="40" height="14" rx="3" fill="#8a5a2b"/>
+    <polygon points="140,86 108,100 140,114 172,100" fill="#111111"/>
+    <rect x="137" y="100" width="6" height="18" fill="#111111"/>
+    <circle cx="140" cy="120" r="2.5" fill="#ffd93b"/>
+  </svg>` },
+    { caption: `Walked a gold carpet at some big music awards show. Didn't win anything. Still counts.`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
+    <rect width="280" height="160" fill="#120a1e"/>
+    <polygon points="60,0 220,0 260,160 20,160" fill="#7a5b1a" opacity="0.6"/>
+    <polygon points="90,0 190,0 210,160 70,160" fill="#c9a227" opacity="0.55"/>
+    <circle cx="140" cy="40" r="34" fill="#ffe9a8" opacity="0.25"/>
+    <circle cx="140" cy="112" r="22" fill="#a4703a"/>
+    <circle cx="131" cy="106" r="3.4" fill="#2a1a0e"/>
+    <circle cx="149" cy="106" r="3.4" fill="#2a1a0e"/>
+    <ellipse cx="140" cy="120" rx="8" ry="5" fill="#e0bd8f"/>
+    <rect x="122" y="132" width="36" height="16" rx="3" fill="#111111"/>
+    <rect x="128" y="126" width="4" height="10" fill="#111111"/>
+    <rect x="148" y="126" width="4" height="10" fill="#111111"/>
+    <text x="140" y="20" text-anchor="middle" font-size="11" fill="#ffd93b" font-family="Arial, sans-serif" font-weight="bold">* AWARDS NIGHT *</text>
+  </svg>` },
+    { caption: `Learned the moonwalk from a guy in a sparkly glove. Still can't do it backwards.`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
+    <rect width="280" height="160" fill="#0d0d18"/>
+    <circle cx="140" cy="60" r="46" fill="#ffffff" opacity="0.06"/>
+    <rect x="0" y="128" width="280" height="32" fill="#1c1c2a"/>
+    <circle cx="90" cy="16" r="1.6" fill="#ffffff" opacity="0.8"/>
+    <circle cx="200" cy="26" r="1.4" fill="#ffffff" opacity="0.7"/>
+    <circle cx="230" cy="10" r="1.2" fill="#ffffff" opacity="0.6"/>
+    <circle cx="140" cy="102" r="24" fill="#a4703a"/>
+    <circle cx="132" cy="96" r="3.6" fill="#2a1a0e"/>
+    <circle cx="148" cy="96" r="3.6" fill="#2a1a0e"/>
+    <ellipse cx="140" cy="112" rx="8" ry="5" fill="#e0bd8f"/>
+    <rect x="120" y="122" width="40" height="16" rx="3" fill="#1a1a1a"/>
+    <circle cx="118" cy="118" r="7" fill="#ffffff"/>
+    <path d="M112 112 L124 124 M124 112 L112 124" stroke="#dddddd" stroke-width="1"/>
+    <path d="M110 145 Q140 135 170 145" fill="none" stroke="#a4703a" stroke-width="4" stroke-linecap="round"/>
+  </svg>` },
+    { caption: `Visited a pineapple under the sea. The guy who lives there wasn't home, but the snail said hi.`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
+    <rect width="280" height="160" fill="#0f5f8c"/>
+    <rect y="120" width="280" height="40" fill="#d8c27a"/>
+    <circle cx="40" cy="30" r="4" fill="#bfe6ff" opacity="0.6"/>
+    <circle cx="60" cy="50" r="3" fill="#bfe6ff" opacity="0.5"/>
+    <circle cx="220" cy="24" r="5" fill="#bfe6ff" opacity="0.6"/>
+    <circle cx="240" cy="60" r="3" fill="#bfe6ff" opacity="0.5"/>
+    <path d="M40 120 Q45 95 55 120 Z" fill="#e0714a"/>
+    <path d="M220 120 Q228 90 238 120 Z" fill="#e0714a"/>
+    <ellipse cx="150" cy="105" rx="26" ry="30" fill="#e8c144"/>
+    <path d="M150 75 Q140 60 150 50 Q160 60 150 75" fill="#3f8f3f"/>
+    <path d="M130 90 L170 90 M130 100 L170 100 M130 110 L170 110" stroke="#c9a227" stroke-width="2"/>
+    <rect x="140" y="112" width="20" height="18" fill="#8a5a2b"/>
+    <circle cx="95" cy="128" r="12" fill="#a4703a"/>
+    <circle cx="90" cy="124" r="2.2" fill="#2a1a0e"/>
+    <circle cx="100" cy="124" r="2.2" fill="#2a1a0e"/>
+    <path d="M55 150 Q60 140 68 150" fill="none" stroke="#9c6b3a" stroke-width="3"/>
+  </svg>` },
+    { caption: `Took a selfie with an extremely muscular, eyebrow-raising gentleman in a wrestling ring. He could not smell what Markus was cooking.`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
+    <rect width="280" height="160" fill="#1a1a1a"/>
+    <rect x="10" y="20" width="260" height="6" fill="#e6e6e6"/>
+    <rect x="10" y="50" width="260" height="6" fill="#e6e6e6"/>
+    <rect x="10" y="80" width="260" height="6" fill="#e6e6e6"/>
+    <rect x="0" y="110" width="280" height="50" fill="#3a1f1f"/>
+    <path d="M180 158 L200 90 Q205 78 195 68 L185 58 Q175 55 165 62 L160 90 L150 158 Z" fill="#111111" opacity="0.85"/>
+    <circle cx="180" cy="52" r="16" fill="#111111" opacity="0.85"/>
+    <circle cx="90" cy="120" r="20" fill="#a4703a"/>
+    <circle cx="82" cy="113" r="3.4" fill="#2a1a0e"/>
+    <circle cx="98" cy="113" r="3.4" fill="#2a1a0e"/>
+    <ellipse cx="90" cy="127" rx="7" ry="5" fill="#e0bd8f"/>
+    <rect x="60" y="60" width="14" height="60" rx="6" fill="#a4703a" transform="rotate(-18 67 90)"/>
+    <circle cx="55" cy="55" r="9" fill="#c9c9c9"/>
+    <rect x="50" y="50" width="10" height="6" fill="#888888"/>
+  </svg>` },
+    { caption: `Eventually settled down in Buffalo, New York. Great wings. Rough winters. Good place to write music.`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
+    <rect width="280" height="160" fill="#dceaf5"/>
+    <rect y="130" width="280" height="30" fill="#eef6fb"/>
+    <circle cx="40" cy="30" r="4" fill="#ffffff"/>
+    <circle cx="90" cy="18" r="3" fill="#ffffff"/>
+    <circle cx="220" cy="26" r="4" fill="#ffffff"/>
+    <circle cx="60" cy="60" r="2" fill="#ffffff"/>
+    <circle cx="200" cy="55" r="2.4" fill="#ffffff"/>
+    <rect x="90" y="90" width="100" height="50" fill="#b5451f"/>
+    <polygon points="80,90 200,90 140,55" fill="#5a2e13"/>
+    <rect x="120" y="105" width="18" height="35" fill="#5a3418"/>
+    <rect x="150" y="100" width="16" height="16" fill="#dceaf5" stroke="#5a3418" stroke-width="2"/>
+    <circle cx="70" cy="125" r="14" fill="#a4703a"/>
+    <circle cx="65" cy="120" r="2.4" fill="#2a1a0e"/>
+    <circle cx="75" cy="120" r="2.4" fill="#2a1a0e"/>
+    <ellipse cx="70" cy="130" rx="5" ry="3.5" fill="#e0bd8f"/>
+    <rect x="30" y="140" width="60" height="14" rx="2" fill="#ffffff" stroke="#999999" stroke-width="1"/>
+    <text x="60" y="150" text-anchor="middle" font-size="8" fill="#333333" font-family="Arial, sans-serif" font-weight="bold">BUFFALO, NY</text>
+  </svg>` }
+  ];
+
+
   function todayKey() {
     var d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -399,7 +503,70 @@
     savePet(); // persist any x/y correction positionCreature() just made
 
     var collegeCard = document.getElementById('bm-college-card');
+    var collegeIntro = document.getElementById('bm-college-intro');
     var collegeSub = document.getElementById('bm-college-sub');
+    var collegeContinueBtn = document.getElementById('bm-college-continue');
+    var montageEl = document.getElementById('bm-montage');
+    var montageFrame = document.getElementById('bm-montage-frame');
+    var montageCaption = document.getElementById('bm-montage-caption');
+    var montageDots = document.getElementById('bm-montage-dots');
+    var montageSkipBtn = document.getElementById('bm-montage-skip');
+
+    // ---- Where-are-they-now montage ----
+    // A short slideshow of stylized, original-art scenes (no real likenesses
+    // or copyrighted characters -- just silhouettes/generic stand-ins with
+    // the jokes carried entirely by the captions) that plays after the
+    // college send-off, then lands on the same "To be continued..." beat.
+    var montageIndex = 0;
+    var montageTimer = null;
+
+    function renderMontageDots() {
+      montageDots.innerHTML = '';
+      COLLEGE_MONTAGE.forEach(function (_, i) {
+        var dot = document.createElement('span');
+        if (i === montageIndex) dot.className = 'active';
+        montageDots.appendChild(dot);
+      });
+    }
+
+    function showMontageSlide(i) {
+      montageIndex = i;
+      var scene = COLLEGE_MONTAGE[montageIndex];
+      montageFrame.innerHTML = scene.svg;
+      montageCaption.textContent = scene.caption;
+      renderMontageDots();
+    }
+
+    function finishMontage() {
+      clearTimeout(montageTimer);
+      montageEl.classList.remove('show');
+      collegeIntro.classList.remove('hide');
+      collegeSub.textContent = pet.name + ' settled down, and this is where his story catches up to the Markus you know from MusicToDiscord.';
+      var continued = document.createElement('div');
+      continued.className = 'bmcContinued';
+      continued.textContent = 'To be continued\u2026';
+      collegeIntro.appendChild(continued);
+      collegeContinueBtn.style.display = 'none';
+    }
+
+    function advanceMontage() {
+      if (montageIndex >= COLLEGE_MONTAGE.length - 1) {
+        finishMontage();
+        return;
+      }
+      showMontageSlide(montageIndex + 1);
+      montageTimer = setTimeout(advanceMontage, 2600);
+    }
+
+    function startMontage() {
+      collegeIntro.classList.add('hide');
+      montageEl.classList.add('show');
+      showMontageSlide(0);
+      montageTimer = setTimeout(advanceMontage, 2600);
+    }
+
+    collegeContinueBtn.addEventListener('click', startMontage);
+    montageSkipBtn.addEventListener('click', finishMontage);
 
     // ---- Off to college: the final "growth" moment ----
     // Reaching tween is the last stage the normal growth system supports, so

@@ -138,7 +138,7 @@
     display: none;
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.75);
+    background: rgba(0,0,0,0.82);
     color: #ffffff;
     align-items: center;
     justify-content: center;
@@ -164,6 +164,57 @@
     font-style: italic;
     color: #ffd93b;
     letter-spacing: 0.5px;
+  }
+  #bm-college-continue {
+    margin-top: 16px;
+    font-size: 12px;
+    padding: 6px 16px;
+  }
+  #bm-college-intro.hide { display: none; }
+
+  /* ---------- Where-are-they-now montage ---------- */
+  #bm-montage {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+  #bm-montage.show { display: flex; }
+  #bm-montage-frame {
+    width: 280px;
+    height: 160px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #111111;
+    border: 1px solid #444444;
+    margin-bottom: 10px;
+  }
+  #bm-montage-caption {
+    font-size: 13px;
+    color: #f2f2f2;
+    max-width: 300px;
+    min-height: 32px;
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  #bm-montage-dots {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  #bm-montage-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #555555;
+  }
+  #bm-montage-dots span.active { background: #ffd93b; }
+  #bm-montage-skip {
+    font-size: 11px;
+    color: #aaaaaa;
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
   }
 
   #bm-toy, #bm-treat {
@@ -578,9 +629,18 @@
     <div id="bm-notify"></div>
 
     <div id="bm-college-card">
-      <div class="bmcTitle">&#127891; Off to college!</div>
-      <div class="bmcSub" id="bm-college-sub">Baby Markus is all grown up and just left for college. This is where his story catches up to the Markus you know from MusicToDiscord.</div>
-      <div class="bmcContinued">To be continued&hellip;</div>
+      <div id="bm-college-intro">
+        <div class="bmcTitle">&#127891; Off to college!</div>
+        <div class="bmcSub" id="bm-college-sub">Baby Markus is all grown up and just left for college. This is where his story catches up to the Markus you know from MusicToDiscord.</div>
+        <input type="button" value="See what he's been up to" id="bm-college-continue">
+      </div>
+
+      <div id="bm-montage">
+        <div id="bm-montage-frame"></div>
+        <div id="bm-montage-caption"></div>
+        <div id="bm-montage-dots"></div>
+        <button id="bm-montage-skip">Skip to the end</button>
+      </div>
     </div>
 
     <div id="bm-toy" title="Drag to Baby Markus">&#9967;</div>
