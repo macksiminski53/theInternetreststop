@@ -547,20 +547,76 @@
 
     <div id="bm-creature">
       <svg viewBox="0 0 140 140" width="90" height="90">
-        <circle cx="34" cy="40" r="19" fill="#a06a30"/>
-        <circle cx="106" cy="40" r="19" fill="#a06a30"/>
-        <circle cx="34" cy="40" r="10" fill="#c99a5f"/>
-        <circle cx="106" cy="40" r="10" fill="#c99a5f"/>
-        <ellipse cx="70" cy="80" rx="52" ry="48" fill="#a06a30"/>
-        <ellipse cx="70" cy="98" rx="26" ry="20" fill="#e0bd8f"/>
-        <ellipse cx="70" cy="90" rx="8" ry="6" fill="#2a1a0e"/>
-        <path d="M 60 104 Q 70 111 80 104" fill="none" stroke="#2a1a0e" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="50" cy="70" r="6" fill="#ffffff"/>
-        <circle cx="52" cy="71" r="3" fill="#2a1a0e"/>
-        <circle cx="90" cy="70" r="6" fill="#ffffff"/>
-        <circle cx="88" cy="71" r="3" fill="#2a1a0e"/>
-        <ellipse cx="40" cy="86" rx="7" ry="5" fill="#c99a5f" opacity="0.6"/>
-        <ellipse cx="100" cy="86" rx="7" ry="5" fill="#c99a5f" opacity="0.6"/>
+        <defs>
+          <radialGradient id="bmFurBody" cx="42%" cy="32%" r="75%">
+            <stop offset="0%" stop-color="#c89a5e"/>
+            <stop offset="55%" stop-color="#a4703a"/>
+            <stop offset="100%" stop-color="#7a4f24"/>
+          </radialGradient>
+          <radialGradient id="bmFurEarOuter" cx="40%" cy="30%" r="80%">
+            <stop offset="0%" stop-color="#b8875088"/>
+            <stop offset="100%" stop-color="#7a4f24"/>
+          </radialGradient>
+          <radialGradient id="bmFurEarInner" cx="45%" cy="35%" r="75%">
+            <stop offset="0%" stop-color="#f0d5a8"/>
+            <stop offset="100%" stop-color="#c99a5f"/>
+          </radialGradient>
+          <radialGradient id="bmSnout" cx="45%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#f5e2bd"/>
+            <stop offset="100%" stop-color="#dcb885"/>
+          </radialGradient>
+          <radialGradient id="bmBelly" cx="50%" cy="25%" r="80%">
+            <stop offset="0%" stop-color="#f2ddb2"/>
+            <stop offset="100%" stop-color="#e0bd8f"/>
+          </radialGradient>
+          <radialGradient id="bmCheek" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#e8836b" stop-opacity="0.75"/>
+            <stop offset="100%" stop-color="#e8836b" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="bmEye" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#e6e6e6"/>
+          </linearGradient>
+        </defs>
+
+        <ellipse cx="70" cy="132" rx="34" ry="7" fill="#000000" opacity="0.18"/>
+
+        <ellipse cx="70" cy="80" rx="52" ry="48" fill="url(#bmFurBody)"/>
+        <path d="M 22 78 Q 18 100 34 122 Q 30 96 30 80 Z" fill="#000000" opacity="0.14"/>
+        <path d="M 118 78 Q 122 100 106 122 Q 110 96 110 80 Z" fill="#000000" opacity="0.14"/>
+        <path d="M 26 46 Q 20 70 26 96" fill="none" stroke="#6b4520" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+        <path d="M 114 46 Q 120 70 114 96" fill="none" stroke="#6b4520" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+        <path d="M 50 34 Q 70 26 90 34" fill="none" stroke="#d9b183" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+
+        <ellipse cx="112" cy="52" rx="14" ry="10" fill="#000000" opacity="0.1"/>
+
+        <circle cx="34" cy="40" r="19" fill="url(#bmFurEarOuter)"/>
+        <circle cx="106" cy="40" r="19" fill="url(#bmFurEarOuter)"/>
+        <circle cx="34" cy="40" r="10" fill="url(#bmFurEarInner)"/>
+        <circle cx="106" cy="40" r="10" fill="url(#bmFurEarInner)"/>
+        <path d="M 27 34 Q 34 30 41 34" fill="none" stroke="#a4703a" stroke-width="1" opacity="0.5"/>
+        <path d="M 99 34 Q 106 30 113 34" fill="none" stroke="#a4703a" stroke-width="1" opacity="0.5"/>
+
+        <ellipse cx="40" cy="86" rx="8" ry="6" fill="url(#bmCheek)"/>
+        <ellipse cx="100" cy="86" rx="8" ry="6" fill="url(#bmCheek)"/>
+
+        <ellipse cx="70" cy="98" rx="26" ry="20" fill="url(#bmBelly)"/>
+        <ellipse cx="70" cy="90" rx="8" ry="6" fill="#3a2515"/>
+        <ellipse cx="68" cy="88" rx="3" ry="2" fill="#7a5a3c" opacity="0.7"/>
+        <path d="M 60 104 Q 70 111 80 104" fill="none" stroke="#3a2515" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 70 96 L 70 102" stroke="#3a2515" stroke-width="2" stroke-linecap="round"/>
+
+        <circle cx="50" cy="70" r="6.5" fill="url(#bmEye)" stroke="#3a2515" stroke-width="0.6"/>
+        <circle cx="52" cy="71" r="3.2" fill="#2a1a0e"/>
+        <circle cx="53" cy="69.5" r="1.1" fill="#ffffff"/>
+        <circle cx="90" cy="70" r="6.5" fill="url(#bmEye)" stroke="#3a2515" stroke-width="0.6"/>
+        <circle cx="88" cy="71" r="3.2" fill="#2a1a0e"/>
+        <circle cx="89" cy="69.5" r="1.1" fill="#ffffff"/>
+
+        <ellipse cx="42" cy="120" rx="9" ry="6" fill="url(#bmBelly)"/>
+        <ellipse cx="98" cy="120" rx="9" ry="6" fill="url(#bmBelly)"/>
+        <path d="M 38 121 Q 42 124 46 121" fill="none" stroke="#c9a06a" stroke-width="1" opacity="0.6"/>
+        <path d="M 94 121 Q 98 124 102 121" fill="none" stroke="#c9a06a" stroke-width="1" opacity="0.6"/>
       </svg>
     </div>
   </div>
