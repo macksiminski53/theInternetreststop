@@ -31,7 +31,6 @@
     position: absolute;
     inset: 0;
     background: #ffffff;
-    clip-path: polygon(100% 100%, 100% 0%, 96% 4%, 91% 1%, 86% 6%, 80% 2%, 75% 8%, 69% 4%, 64% 9%, 59% 3%, 0% 3%, 0% 100%);
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
   }
 
@@ -39,8 +38,17 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(180deg, #8fd3f4 0%, #8fd3f4 35%, #6cc96a 35%, #4caf50 100%);
-    clip-path: polygon(100% 100%, 100% 0%, 96% 4%, 91% 1%, 86% 6%, 80% 2%, 75% 8%, 69% 4%, 64% 9%, 59% 3%, 0% 3%, 0% 100%);
     overflow: hidden;
+    /* Jagged torn-paper edge along the top, deep enough to actually read as
+       a rip at this wide/short banner size (was tuned for a small 150x150
+       corner square before and barely showed at this aspect ratio). */
+    clip-path: polygon(
+      0% 32%, 4% 22%, 8% 30%, 12% 18%, 16% 26%, 20% 14%, 24% 24%,
+      28% 12%, 32% 20%, 36% 10%, 40% 22%, 44% 16%, 48% 28%, 52% 14%,
+      56% 24%, 60% 12%, 64% 20%, 68% 10%, 72% 22%, 76% 16%, 80% 26%,
+      84% 14%, 88% 24%, 92% 12%, 96% 20%, 100% 15%,
+      100% 100%, 0% 100%
+    );
   }
 
   #tornCornerLink:hover #tornCornerField {
@@ -2316,16 +2324,4 @@
   loadAdminStatus();
 
   // ---------- TORN CORNER ZOOM TRANSITION ----------
-  document.getElementById('tornCornerLink').addEventListener('click', function (e) {
-    e.preventDefault();
-    var dest = this.href;
-    var overlay = document.getElementById('zoomTransitionOverlay');
-    overlay.classList.add('zooming');
-    setTimeout(function () {
-      window.location.href = dest;
-    }, 650);
-  });
-</script>
-
-</body>
-</html>
+  document.getElementById('tornCornerLink').addEventListener('c
