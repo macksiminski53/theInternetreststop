@@ -13,6 +13,7 @@ const newsRoutes = require('./routes/news');
 const cardRoutes = require('./routes/cards');
 const settingsRoutes = require('./routes/settings');
 const uploadRoutes = require('./routes/upload');
+const localBizRoutes = require('./routes/local-biz');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -75,6 +76,7 @@ app.use('/api', newsRoutes);
 app.use('/api', cardRoutes);
 app.use('/api', settingsRoutes);
 app.use('/api', uploadRoutes);
+app.use('/api', localBizRoutes);
 
 app.get('/healthz', (req, res) => res.send('ok'));
 

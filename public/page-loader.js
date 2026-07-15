@@ -67,35 +67,62 @@
   }
 
   function showLoader(destLabel, onDone) {
-    injectStyles();
-    injectMarkup();
-    var overlay = document.getElementById('pl-overlay');
-    var bar = document.getElementById('pl-barInner');
-    var pct = document.getElementById('pl-pct');
-    var tipEl = document.getElementById('pl-tip');
-    var destEl = document.getElementById('pl-dest');
-
-    destEl.textContent = destLabel || '';
-    tipEl.textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
-    bar.style.width = '0%';
-    pct.textContent = '0%';
-    overlay.classList.add('show');
-
-    var duration = 650 + Math.random() * 550;
-    var start = null;
-    function tick(ts) {
-      if (!start) start = ts;
-      var elapsed = ts - start;
-      var progress = Math.min(100, Math.round((elapsed / duration) * 100));
-      bar.style.width = progress + '%';
-      pct.textContent = progress + '%';
-      if (progress < 100) {
-        requestAnimationFrame(tick);
-      } else {
-        setTimeout(onDone, 120);
-      }
+    // Guard the whole thing: this is a cosmetic flourish, and if anything
+    // here throws (a missing element, a rAF issue, whatever), the caller
+    // still needs onDone to fire so navigation actually happens instead of
+    // leaving whatever overlay was already showing frozen on screen forever.
+    var done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      onDone();
     }
-    requestAnimationFrame(tick);
+    // Absolute worst-case backstop, independent of everything below.
+    var hardTimeout = setTimeout(finish, 3000);
+
+    try {
+      injectStyles();
+      injectMarkup();
+      var overlay = document.getElementById('pl-overlay');
+      var bar = document.getElementById('pl-barInner');
+      var pct = document.getElementById('pl-pct');
+      var tipEl = document.getElementById('pl-tip');
+      var destEl = document.getElementById('pl-dest');
+
+      if (!overlay || !bar || !pct || !tipEl || !destEl) {
+        finish();
+        return;
+      }
+
+      destEl.textContent = destLabel || '';
+      tipEl.textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
+      bar.style.width = '0%';
+      pct.textContent = '0%';
+      overlay.classList.add('show');
+
+      var duration = 650 + Math.random() * 550;
+      var start = null;
+      function tick(ts) {
+        try {
+          if (!start) start = ts;
+          var elapsed = ts - start;
+          var progress = Math.min(100, Math.round((elapsed / duration) * 100));
+          bar.style.width = progress + '%';
+          pct.textContent = progress + '%';
+          if (progress < 100) {
+            requestAnimationFrame(tick);
+          } else {
+            clearTimeout(hardTimeout);
+            setTimeout(finish, 120);
+          }
+        } catch (err) {
+          finish();
+        }
+      }
+      requestAnimationFrame(tick);
+    } catch (err) {
+      finish();
+    }
   }
 
   function wireInternalLinks() {

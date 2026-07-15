@@ -1035,6 +1035,70 @@
   }
   .adDots span.activeDot { background: #000080; }
 
+  /* Local business slides get a deliberately different, homemade look --
+     dashed border, warm background, hand-drawn-ish "LOCAL FIND" tag --
+     so they read as a shoutout to an actual small business, not another
+     slick corporate slot in the same rotation. */
+  .adCard.localBizCard {
+    border: 2px dashed #b5651d;
+    background: #fff8ee;
+  }
+  .adCard.localBizCard img {
+    background: #fff8ee;
+    height: 130px;
+  }
+  .adCard.localBizCard .adCaption {
+    background: #fff1dc;
+    border-top: 2px dashed #b5651d;
+    color: #5c3a00;
+  }
+  .localBizTag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    background: #b5651d;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+    transform: rotate(-2deg);
+  }
+
+  /* ===== FOOTER LOCAL BUSINESS STRIP ===== */
+  #footerLocalBizStrip {
+    display: none;
+    border-top: 2px dashed #b5651d;
+    border-bottom: 2px dashed #b5651d;
+    background: #fff8ee;
+    padding: 8px 14px;
+    margin: 14px 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: #5c3a00;
+    align-items: center;
+    gap: 10px;
+  }
+  #footerLocalBizStrip.hasEntries { display: flex; }
+  #footerLocalBizStrip img {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #b5651d;
+    flex-shrink: 0;
+  }
+  #footerLocalBizStrip a {
+    color: #5c3a00;
+    text-decoration: none;
+  }
+  #footerLocalBizStrip a:hover { text-decoration: underline; }
+  #footerLocalBizStrip .localBizTag {
+    transform: none;
+    margin-bottom: 0;
+    margin-right: 2px;
+  }
+
   /* ===== GENERIC AD MODAL (reused for any promo) ===== */
   #adOverlay {
     display: none;
@@ -1257,6 +1321,12 @@
       <div class="adCaption">Baby Markus's Field &mdash; raise him from a little guy</div>
     </div>
 
+    <!-- Local business slides get appended here at runtime by
+         loadLocalBiz() -- number of entries is admin-controlled, so this
+         starts empty and the dots below are rebuilt to match once they
+         load in. -->
+    <div id="localBizAdSlot"></div>
+
     <div class="adDots" id="adDots">
       <span class="activeDot" onclick="showAdSlide(0);"></span>
       <span onclick="showAdSlide(1);"></span>
@@ -1337,6 +1407,7 @@
         <div id="adminAddCardWrap" style="display:none; margin-bottom:14px;">
           <input type="button" value="+ Add Card" id="adminAddCardBtn">
           <input type="button" value="Edit Site Banner" id="adminEditBannerBtn">
+          <input type="button" value="Local Businesses" id="adminLocalBizBtn">
         </div>
 
         <div class="sectionHead" id="mystops">My Stops</div>
@@ -1348,6 +1419,9 @@
       </td>
     </tr>
   </table>
+</td></tr>
+<tr><td>
+  <div id="footerLocalBizStrip"></div>
 </td></tr>
 <tr><td class="footerBar">
   &copy; 2026 The Internet Rest Stop &middot; live test build &middot; best viewed at 1024x768
@@ -1578,6 +1652,9 @@
   }
 
   // ---------- ROTATING AD SLOT ----------
+  // Base slides are fixed; local-biz slides get appended to this array
+  // once loadLocalBiz() fetches them, and rebuildAdDots() keeps the dot
+  // row in sync with however many total slides exist at that point.
   var adSlideOrder = ['ad-mk', 'ad-whenwhere', 'ad-mtd', 'ad-babymarkus'];
   var adSlideIndex = 0;
   var adRotateTimer = null;
@@ -1585,11 +1662,23 @@
   function showAdSlide(index) {
     adSlideIndex = index;
     adSlideOrder.forEach(function (id, i) {
-      document.getElementById(id).classList.toggle('activeAd', i === index);
+      var el = document.getElementById(id);
+      if (el) el.classList.toggle('activeAd', i === index);
     });
     var dots = document.getElementById('adDots').querySelectorAll('span');
     dots.forEach(function (dot, i) {
       dot.classList.toggle('activeDot', i === index);
+    });
+  }
+
+  function rebuildAdDots() {
+    var dotsWrap = document.getElementById('adDots');
+    dotsWrap.innerHTML = '';
+    adSlideOrder.forEach(function (id, i) {
+      var dot = document.createElement('span');
+      if (i === adSlideIndex) dot.className = 'activeDot';
+      dot.addEventListener('click', function () { showAdSlide(i); });
+      dotsWrap.appendChild(dot);
     });
   }
 
@@ -1600,6 +1689,48 @@
     }, 6000);
   }
   startAdRotation();
+
+  // ---------- LOCAL BUSINESS SHOUTOUTS (indie, non-corporate ad slots) ----------
+  function escapeAttr(str) {
+    return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  }
+
+  async function loadLocalBiz() {
+    try {
+      const res = await fetch('/api/local-biz');
+      const data = await res.json();
+      if (!data.ok || !data.businesses || !data.businesses.length) return;
+
+      var slot = document.getElementById('localBizAdSlot');
+      data.businesses.forEach(function (biz, i) {
+        var elId = 'ad-localbiz-' + biz.biz_id;
+        var card = document.createElement('div');
+        card.className = 'adCard localBizCard';
+        card.id = elId;
+        var caption = escapeHtml(biz.name) + (biz.tagline ? ' \u2014 ' + escapeHtml(biz.tagline) : '');
+        card.innerHTML =
+          '<img src="' + escapeAttr(biz.image_url || '') + '" alt="' + escapeAttr(biz.name) + '">' +
+          '<div class="adCaption"><span class="localBizTag">LOCAL FIND</span><br>' + caption + '</div>';
+        card.addEventListener('click', function () {
+          if (biz.link_url) window.open(biz.link_url, '_blank');
+        });
+        slot.appendChild(card);
+        adSlideOrder.push(elId);
+      });
+      rebuildAdDots();
+
+      var footerStrip = document.getElementById('footerLocalBizStrip');
+      var footerBiz = data.businesses[Math.floor(Math.random() * data.businesses.length)];
+      footerStrip.innerHTML =
+        '<span class="localBizTag">LOCAL FIND</span>' +
+        '<img src="' + escapeAttr(footerBiz.image_url || '') + '" alt="' + escapeAttr(footerBiz.name) + '">' +
+        '<span><a href="' + escapeAttr(footerBiz.link_url || '#') + '" target="_blank">' + escapeHtml(footerBiz.name) + '</a>' +
+        (footerBiz.tagline ? ' \u2014 ' + escapeHtml(footerBiz.tagline) : '') + '</span>';
+      footerStrip.classList.add('hasEntries');
+    } catch (err) {
+      // non-fatal -- the rest of the homepage still works without this
+    }
+  }
 
   // ---------- VERIFIED NEWS TICKER ----------
   function escapeHtml(str) {
@@ -2517,6 +2648,7 @@
   loadCards();
   loadAdminStatus();
   loadSiteSettings();
+  loadLocalBiz();
 
   // ---------- TORN CORNER ZOOM TRANSITION ----------
   // The torn corner now sits inline on the page (not a fixed viewport
@@ -2533,17 +2665,35 @@
     var overlay = document.getElementById('zoomTransitionOverlay');
     overlay.style.transformOrigin = originX + 'px ' + originY + 'px';
     overlay.classList.add('zooming');
+
+    // Safety net: if anything in the loader hand-off below breaks (loader
+    // script failed to load, threw partway through its animation loop,
+    // etc.) the zoom overlay's `forwards` fill-mode leaves a solid green
+    // screen covering everything with no way off it. This guarantees the
+    // actual navigation happens no matter what, even if the fancy
+    // transition misbehaves -- whichever fires first wins, and the
+    // duplicate is harmless since navigating away cancels the other timer.
+    var navigated = false;
+    function goNow() {
+      if (navigated) return;
+      navigated = true;
+      window.location.href = dest;
+    }
+    setTimeout(goNow, 2500);
+
     setTimeout(function () {
       // Hand off from the zoom-in visual to the fake loading screen rather
       // than navigating immediately -- the zoom already sold "diving into
       // the field," the loader sells "now it's actually loading" (it
       // isn't, but that's the bit).
-      if (window.RestStopLoader) {
-        window.RestStopLoader.show('Heading to baby-markus', function () {
-          window.location.href = dest;
-        });
-      } else {
-        window.location.href = dest;
+      try {
+        if (window.RestStopLoader) {
+          window.RestStopLoader.show('Heading to baby-markus', goNow);
+        } else {
+          goNow();
+        }
+      } catch (err) {
+        goNow();
       }
     }, 650);
   });

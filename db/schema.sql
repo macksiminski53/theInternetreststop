@@ -82,3 +82,25 @@ INSERT INTO site_settings (key, value) VALUES
   ('mk_marquee_text', 'ITS RIGHT HERE ON THE INTERNET RESTSTOP!!!!'),
   ('mk_logo_url', '/mk-logo.png')
 ON CONFLICT (key) DO NOTHING;
+
+-- Small ad slots for actual indie/local businesses, kept separate from the
+-- main cards table since these are meant to look and feel different from
+-- the corporate rotation (MK, when&where, MusicToDiscord) -- a homemade
+-- "shoutout" spot rather than another Browse card. Admin-editable via
+-- /api/local-biz, shown in both the rotating ad carousel and a small
+-- footer strip.
+CREATE TABLE IF NOT EXISTS local_biz_ads (
+  id SERIAL PRIMARY KEY,
+  biz_id VARCHAR(50) UNIQUE NOT NULL,
+  name VARCHAR(200) NOT NULL,
+  tagline TEXT,
+  image_url TEXT,
+  link_url TEXT,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  added_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_local_biz_ads_sort ON local_biz_ads(sort_order);
