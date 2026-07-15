@@ -61,3 +61,9 @@ ON CONFLICT (card_id) DO NOTHING;
 
 UPDATE cards SET image_url = '/baby-markus-ad.svg'
 WHERE card_id = 'baby-markus' AND image_url IS NULL;
+
+-- Grant admin to Mak's account. Guarded with is_admin = FALSE so this is a
+-- one-time grant on deploy -- it won't re-run or fight anyone who later
+-- revokes admin from this account on purpose.
+UPDATE users SET is_admin = TRUE
+WHERE username = 'Mak' AND is_admin = FALSE;
