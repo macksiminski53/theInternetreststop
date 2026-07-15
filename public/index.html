@@ -1524,6 +1524,97 @@
     margin: 0 1px;
     text-shadow: 0 0 4px #00ff00;
   }
+
+  /* ===== GUESTBOOK ===== */
+  #guestbookWrap {
+    background: #ffffff;
+    border: 1px solid #999999;
+    margin: 10px 0;
+    padding: 8px 10px 10px;
+  }
+
+  #guestbookWrap h4 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: #000080;
+  }
+
+  #guestbookForm {
+    margin-bottom: 10px;
+  }
+
+  #guestbookMessageInput {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    padding: 4px;
+    resize: vertical;
+    min-height: 40px;
+  }
+
+  #guestbookForm .gbFormRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+  }
+
+  #guestbookCharCount {
+    font-size: 10px;
+    color: #888888;
+  }
+
+  #guestbookError {
+    color: #cc0000;
+    font-size: 11px;
+    margin-top: 4px;
+    min-height: 14px;
+  }
+
+  #guestbookEntries {
+    max-height: 220px;
+    overflow-y: auto;
+    border-top: 1px dashed #cccccc;
+    padding-top: 6px;
+  }
+
+  .gbEntry {
+    padding: 5px 4px;
+    border-bottom: 1px dotted #dddddd;
+    font-size: 12px;
+  }
+
+  .gbEntry:last-child { border-bottom: none; }
+
+  .gbEntryHead {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    color: #333333;
+  }
+
+  .gbEntryHead .gbUser { color: #000080; }
+
+  .gbEntryHead .gbTime {
+    font-weight: normal;
+    color: #999999;
+    font-size: 10px;
+  }
+
+  .gbEntryMsg {
+    margin-top: 2px;
+    color: #222222;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+
+  #guestbookEmpty {
+    font-size: 11px;
+    color: #888888;
+    padding: 6px 0;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -1721,6 +1812,21 @@
 </td></tr>
 <tr><td>
   <div id="footerLocalBizStrip"></div>
+</td></tr>
+<tr><td>
+  <div id="guestbookWrap">
+    <h4>Guestbook</h4>
+    <form id="guestbookForm">
+      <textarea id="guestbookMessageInput" maxlength="500" placeholder="Leave a note for other travelers..."></textarea>
+      <div class="gbFormRow">
+        <span id="guestbookCharCount">500 left</span>
+        <input type="submit" value="Sign the guestbook">
+      </div>
+      <div id="guestbookError"></div>
+    </form>
+    <div id="guestbookEntries"></div>
+    <div id="guestbookEmpty" style="display:none;">No one has signed yet. Be the first!</div>
+  </div>
 </td></tr>
 <tr><td>
   <div id="visitorCounterWrap">
@@ -3274,6 +3380,106 @@
     }
   }
 
+  // ---------- GUESTBOOK ----------
+  var GB_MAX_LEN = 500;
+
+  function gbFormatTime(isoString) {
+    try {
+      var d = new Date(isoString);
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' ' +
+        d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    } catch (err) {
+      return '';
+    }
+  }
+
+  function renderGuestbookEntries(entries) {
+    var list = document.getElementById('guestbookEntries');
+    var empty = document.getElementById('guestbookEmpty');
+    list.innerHTML = '';
+    if (!entries || entries.length === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    entries.forEach(function (entry) {
+      var row = document.createElement('div');
+      row.className = 'gbEntry';
+
+      var head = document.createElement('div');
+      head.className = 'gbEntryHead';
+
+      var user = document.createElement('span');
+      user.className = 'gbUser';
+      user.textContent = entry.username;
+
+      var time = document.createElement('span');
+      time.className = 'gbTime';
+      time.textContent = gbFormatTime(entry.created_at);
+
+      head.appendChild(user);
+      head.appendChild(time);
+
+      var msg = document.createElement('div');
+      msg.className = 'gbEntryMsg';
+      msg.textContent = entry.message;
+
+      row.appendChild(head);
+      row.appendChild(msg);
+      list.appendChild(row);
+    });
+  }
+
+  async function loadGuestbook() {
+    try {
+      const res = await fetch('/api/guestbook');
+      const data = await res.json();
+      if (data.ok) renderGuestbookEntries(data.entries);
+    } catch (err) {
+      // non-fatal -- guestbook just stays empty if this fails
+    }
+  }
+
+  var gbMessageInput = document.getElementById('guestbookMessageInput');
+  var gbCharCount = document.getElementById('guestbookCharCount');
+  if (gbMessageInput) {
+    gbMessageInput.addEventListener('input', function () {
+      var remaining = GB_MAX_LEN - gbMessageInput.value.length;
+      gbCharCount.textContent = remaining + ' left';
+    });
+  }
+
+  var guestbookForm = document.getElementById('guestbookForm');
+  if (guestbookForm) {
+    guestbookForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var errorEl = document.getElementById('guestbookError');
+      errorEl.textContent = '';
+      var message = gbMessageInput.value.trim();
+      if (!message) {
+        errorEl.textContent = 'Write something first.';
+        return;
+      }
+      try {
+        const res = await fetch('/api/guestbook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: message })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          errorEl.textContent = data.error || 'Could not sign the guestbook.';
+          return;
+        }
+        gbMessageInput.value = '';
+        gbCharCount.textContent = GB_MAX_LEN + ' left';
+        loadGuestbook();
+      } catch (err) {
+        errorEl.textContent = 'Could not reach the server.';
+      }
+    });
+  }
+
   loadCards();
   loadAdminStatus();
   loadSiteSettings();
@@ -3281,6 +3487,7 @@
   loadMaintenanceStatus();
   loadThemeSelect();
   bumpVisitorCounter();
+  loadGuestbook();
 
 </script>
 
