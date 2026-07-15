@@ -1563,6 +1563,44 @@
     </div>
   </div>
 
+  <div id="adminLocalBizListOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:3000;">
+    <div style="background:#ffffff; border:2px solid #000000; width:460px; max-width:92%; margin:50px auto; padding:14px; font-family:Arial, Helvetica, sans-serif; font-size:12px; max-height:80vh; overflow-y:auto;">
+      <div style="font-weight:bold; font-size:13px; margin-bottom:10px;">Local Businesses</div>
+      <div style="font-size:10px; color:#666666; margin-bottom:10px;">Indie/local shoutout slots shown in the ad carousel and footer strip -- separate from the corporate cards.</div>
+      <table style="width:100%; border-collapse:collapse;" id="localBizAdminTable"></table>
+      <div style="margin-top:10px;">
+        <input type="button" value="+ Add Business" id="lbAddBtn">
+      </div>
+      <div style="margin-top:10px; text-align:right;">
+        <input type="button" value="Close" id="lbListCloseBtn">
+      </div>
+    </div>
+  </div>
+
+  <div id="adminLocalBizFormOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:3100;">
+    <div style="background:#ffffff; border:2px solid #000000; width:380px; max-width:90%; margin:70px auto; padding:14px; font-family:Arial, Helvetica, sans-serif; font-size:12px;">
+      <div style="font-weight:bold; font-size:13px; margin-bottom:10px;" id="lbFormTitle">Add Business</div>
+      <table style="width:100%;">
+        <tr><td>Business ID:</td><td><input type="text" id="lbfBizId" style="width:100%;"></td></tr>
+        <tr><td>Name:</td><td><input type="text" id="lbfName" style="width:100%;"></td></tr>
+        <tr><td>Tagline:</td><td><input type="text" id="lbfTagline" style="width:100%;" placeholder="What makes them worth a shoutout"></td></tr>
+        <tr><td>Image URL:</td><td>
+          <input type="text" id="lbfImageUrl" placeholder="/some-image.png" style="width:70%;">
+          <input type="button" value="Upload..." id="lbfUploadBtn" style="width:26%;">
+        </td></tr>
+        <tr><td>Link URL:</td><td><input type="text" id="lbfLinkUrl" placeholder="https://..." style="width:100%;"></td></tr>
+        <tr><td>Active:</td><td><input type="checkbox" id="lbfActive" checked></td></tr>
+        <tr><td>Sort order:</td><td><input type="number" id="lbfSortOrder" value="500" style="width:80px;"></td></tr>
+      </table>
+      <div id="lbFormError" style="color:#800000; font-size:11px; margin-top:6px;"></div>
+      <div style="margin-top:10px; text-align:right;">
+        <input type="button" value="Delete" id="lbfDeleteBtn" style="display:none; background:#8b0000; color:#ffffff;">
+        <input type="button" value="Cancel" id="lbfCancelBtn">
+        <input type="button" value="Save" id="lbfSaveBtn" style="font-weight:bold; background:#2e7d32; color:#ffffff; border-color:#1b5e20;">
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div id="zoomTransitionOverlay">
@@ -1732,6 +1770,177 @@
       // non-fatal -- the rest of the homepage still works without this
     }
   }
+
+  // ---------- ADMIN: manage local business shoutouts ----------
+  var editingBizId = null; // null = creating a new entry
+
+  function renderLocalBizAdminTable(businesses) {
+    var table = document.getElementById('localBizAdminTable');
+    table.innerHTML = '';
+    if (!businesses.length) {
+      var emptyRow = document.createElement('tr');
+      var emptyCell = document.createElement('td');
+      emptyCell.textContent = 'No local businesses added yet.';
+      emptyCell.style.color = '#666666';
+      emptyCell.style.padding = '8px 0';
+      emptyRow.appendChild(emptyCell);
+      table.appendChild(emptyRow);
+      return;
+    }
+    businesses.forEach(function (biz) {
+      var tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid #eeeeee';
+
+      var imgTd = document.createElement('td');
+      imgTd.style.padding = '6px 6px 6px 0';
+      var img = document.createElement('img');
+      img.src = biz.image_url || '';
+      img.style.cssText = 'width:32px; height:32px; object-fit:cover; border:1px solid #cccccc; border-radius:3px;';
+      imgTd.appendChild(img);
+      tr.appendChild(imgTd);
+
+      var infoTd = document.createElement('td');
+      infoTd.style.padding = '6px 6px';
+      var nameLine = document.createElement('div');
+      nameLine.style.fontWeight = 'bold';
+      nameLine.textContent = biz.name + (biz.active ? '' : ' (inactive)');
+      if (!biz.active) nameLine.style.color = '#999999';
+      var taglineLine = document.createElement('div');
+      taglineLine.style.fontSize = '10px';
+      taglineLine.style.color = '#666666';
+      taglineLine.textContent = biz.tagline || '';
+      infoTd.appendChild(nameLine);
+      infoTd.appendChild(taglineLine);
+      tr.appendChild(infoTd);
+
+      var editTd = document.createElement('td');
+      editTd.style.padding = '6px 0';
+      editTd.style.textAlign = 'right';
+      editTd.style.whiteSpace = 'nowrap';
+      var editBtn = document.createElement('input');
+      editBtn.type = 'button';
+      editBtn.value = 'Edit';
+      editBtn.addEventListener('click', function () { openLocalBizForm(biz); });
+      editTd.appendChild(editBtn);
+      tr.appendChild(editTd);
+
+      table.appendChild(tr);
+    });
+  }
+
+  async function loadLocalBizAdminList() {
+    try {
+      const res = await fetch('/api/local-biz/all');
+      const data = await res.json();
+      if (data.ok) renderLocalBizAdminTable(data.businesses || []);
+    } catch (err) {
+      var table = document.getElementById('localBizAdminTable');
+      table.innerHTML = '<tr><td style="color:#800000;">Could not load businesses.</td></tr>';
+    }
+  }
+
+  function openLocalBizForm(biz) {
+    editingBizId = biz ? biz.biz_id : null;
+    document.getElementById('lbFormTitle').textContent = biz ? 'Edit Business' : 'Add Business';
+    document.getElementById('lbFormError').textContent = '';
+    document.getElementById('lbfBizId').value = biz ? biz.biz_id : '';
+    document.getElementById('lbfBizId').disabled = !!biz;
+    document.getElementById('lbfName').value = biz ? biz.name : '';
+    document.getElementById('lbfTagline').value = biz ? (biz.tagline || '') : '';
+    document.getElementById('lbfImageUrl').value = biz ? (biz.image_url || '') : '';
+    document.getElementById('lbfLinkUrl').value = biz ? (biz.link_url || '') : '';
+    document.getElementById('lbfActive').checked = biz ? !!biz.active : true;
+    document.getElementById('lbfSortOrder').value = biz ? biz.sort_order : 500;
+    document.getElementById('lbfDeleteBtn').style.display = biz ? 'inline-block' : 'none';
+    document.getElementById('adminLocalBizFormOverlay').style.display = 'block';
+  }
+
+  document.getElementById('adminLocalBizBtn').addEventListener('click', function () {
+    document.getElementById('adminLocalBizListOverlay').style.display = 'block';
+    loadLocalBizAdminList();
+  });
+
+  document.getElementById('lbListCloseBtn').addEventListener('click', function () {
+    document.getElementById('adminLocalBizListOverlay').style.display = 'none';
+  });
+
+  document.getElementById('lbAddBtn').addEventListener('click', function () {
+    openLocalBizForm(null);
+  });
+
+  document.getElementById('lbfCancelBtn').addEventListener('click', function () {
+    document.getElementById('adminLocalBizFormOverlay').style.display = 'none';
+  });
+
+  document.getElementById('lbfSaveBtn').addEventListener('click', async function () {
+    var errorEl = document.getElementById('lbFormError');
+    errorEl.textContent = '';
+    var bizId = document.getElementById('lbfBizId').value.trim();
+    var name = document.getElementById('lbfName').value.trim();
+    if (!editingBizId && !bizId) {
+      errorEl.textContent = 'Business ID is required.';
+      return;
+    }
+    if (!name) {
+      errorEl.textContent = 'Name is required.';
+      return;
+    }
+    var payload = {
+      name: name,
+      tagline: document.getElementById('lbfTagline').value,
+      imageUrl: document.getElementById('lbfImageUrl').value,
+      linkUrl: document.getElementById('lbfLinkUrl').value,
+      active: document.getElementById('lbfActive').checked,
+      sortOrder: Number(document.getElementById('lbfSortOrder').value) || 500
+    };
+    try {
+      var res;
+      if (editingBizId) {
+        res = await fetch('/api/local-biz/' + encodeURIComponent(editingBizId), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } else {
+        payload.bizId = bizId;
+        res = await fetch('/api/local-biz', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      }
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        errorEl.textContent = data.error || 'Could not save business.';
+        return;
+      }
+      document.getElementById('adminLocalBizFormOverlay').style.display = 'none';
+      loadLocalBizAdminList();
+      // Local businesses shown on the homepage itself only refresh on page
+      // load (they're appended into the carousel once, not re-fetched
+      // live), so a fresh save here won't show up in the carousel until
+      // the next reload -- acceptable for how often these change.
+    } catch (err) {
+      errorEl.textContent = 'Could not reach the server.';
+    }
+  });
+
+  document.getElementById('lbfDeleteBtn').addEventListener('click', async function () {
+    if (!editingBizId) return;
+    if (!window.confirm('Delete this business entry? This cannot be undone.')) return;
+    try {
+      const res = await fetch('/api/local-biz/' + encodeURIComponent(editingBizId), { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        document.getElementById('lbFormError').textContent = data.error || 'Could not delete business.';
+        return;
+      }
+      document.getElementById('adminLocalBizFormOverlay').style.display = 'none';
+      loadLocalBizAdminList();
+    } catch (err) {
+      document.getElementById('lbFormError').textContent = 'Could not reach the server.';
+    }
+  });
 
   // ---------- VERIFIED NEWS TICKER ----------
   function escapeHtml(str) {
@@ -2535,6 +2744,9 @@
   });
   document.getElementById('abfUploadBtn').addEventListener('click', function () {
     openFilePickerFor('abfLogoUrl');
+  });
+  document.getElementById('lbfUploadBtn').addEventListener('click', function () {
+    openFilePickerFor('lbfImageUrl');
   });
 
   document.getElementById('adminEditBannerBtn').addEventListener('click', async function () {
