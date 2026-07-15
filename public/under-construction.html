@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Under Construction &mdash; The Internet Rest Stop</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Comic Sans MS", "Comic Sans", cursive, Arial, sans-serif;
+    background: #fff200;
+    background-image: repeating-linear-gradient(
+      45deg,
+      #fff200 0px, #fff200 40px,
+      #111111 40px, #111111 80px
+    );
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .ucBox {
+    background: #ffffff;
+    border: 4px double #000000;
+    max-width: 480px;
+    width: 100%;
+    padding: 24px 28px 28px;
+    text-align: center;
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.25);
+  }
+
+  .ucCone {
+    font-size: 54px;
+    animation: ucWobble 1.6s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  @keyframes ucWobble {
+    0%, 100% { transform: rotate(-6deg); }
+    50% { transform: rotate(6deg); }
+  }
+
+  .ucTitle {
+    font-size: 24px;
+    font-weight: bold;
+    color: #cc0000;
+    text-shadow: 2px 2px 0 #ffe066;
+    margin: 10px 0 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .ucBlink {
+    animation: ucBlink 1s step-start infinite;
+    color: #0000cc;
+    font-weight: bold;
+  }
+
+  @keyframes ucBlink {
+    50% { opacity: 0; }
+  }
+
+  .ucMsg {
+    font-size: 14px;
+    color: #333333;
+    line-height: 1.5;
+    margin: 10px 0 16px;
+  }
+
+  .ucTape {
+    background: repeating-linear-gradient(
+      45deg,
+      #fff200 0px, #fff200 20px,
+      #111111 20px, #111111 40px
+    );
+    height: 18px;
+    margin: 16px -28px;
+    border-top: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+  }
+
+  .ucFooter {
+    font-size: 10px;
+    color: #888888;
+    margin-top: 14px;
+  }
+
+  .ucBackLink {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 11px;
+    color: #0000cc;
+  }
+</style>
+</head>
+<body>
+
+  <div class="ucBox">
+    <div class="ucCone">&#128679;</div>
+    <div class="ucTitle">Under Construction</div>
+    <div class="ucMsg">
+      The Internet Rest Stop is closed for a bit while we work on some stuff
+      behind the scenes.<br>
+      <span class="ucBlink">Please pull back onto the highway and try again later.</span>
+    </div>
+    <div class="ucTape"></div>
+    <div class="ucMsg" style="margin-top:16px;">
+      Baby Markus is still in there somewhere, probably wondering where
+      everyone went.
+    </div>
+    <div class="ucFooter">
+      &copy; 2026 The Internet Rest Stop &middot; best viewed at 1024x768 &middot; site under maintenance
+    </div>
+  </div>
+
+</body>
+</html>

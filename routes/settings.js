@@ -8,7 +8,7 @@ const router = express.Router();
 // the scrolling marquee message. Keeping this generic (rather than two
 // one-off columns somewhere) means new editable strings can be added later
 // without another migration.
-const ALLOWED_KEYS = ['mk_banner_text', 'mk_marquee_text', 'mk_logo_url'];
+const ALLOWED_KEYS = ['mk_banner_text', 'mk_marquee_text', 'mk_logo_url', 'maintenance_mode', 'site_theme'];
 
 async function requireAdmin(req, res, next) {
   if (!req.session || !req.session.userId) {

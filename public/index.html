@@ -1408,6 +1408,7 @@
           <input type="button" value="+ Add Card" id="adminAddCardBtn">
           <input type="button" value="Edit Site Banner" id="adminEditBannerBtn">
           <input type="button" value="Local Businesses" id="adminLocalBizBtn">
+          <input type="button" value="Maintenance Mode: OFF" id="adminMaintenanceBtn" style="background:#e8e8e8;">
         </div>
 
         <div class="sectionHead" id="mystops">My Stops</div>
@@ -2429,6 +2430,53 @@
     }
   }
 
+  // ---------- MAINTENANCE MODE TOGGLE ----------
+  function updateMaintenanceBtn(isOn) {
+    var btn = document.getElementById('adminMaintenanceBtn');
+    if (!btn) return;
+    btn.value = 'Maintenance Mode: ' + (isOn ? 'ON' : 'OFF');
+    btn.style.background = isOn ? '#cc0000' : '#e8e8e8';
+    btn.style.color = isOn ? '#ffffff' : '#000000';
+  }
+
+  async function loadMaintenanceStatus() {
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      var isOn = !!(data.ok && data.settings && data.settings.maintenance_mode === 'true');
+      updateMaintenanceBtn(isOn);
+    } catch (err) {
+      // non-fatal
+    }
+  }
+
+  var maintenanceBtnEl = document.getElementById('adminMaintenanceBtn');
+  if (maintenanceBtnEl) {
+    maintenanceBtnEl.addEventListener('click', async function () {
+      var currentlyOn = maintenanceBtnEl.value.indexOf('ON') !== -1;
+      var turningOn = !currentlyOn;
+      var confirmMsg = turningOn
+        ? 'Turn maintenance mode ON? Everyone except admins will see the under-construction page instead of the real site until you turn this back off.'
+        : 'Turn maintenance mode OFF? The real site will be visible to everyone again.';
+      if (!window.confirm(confirmMsg)) return;
+      try {
+        const res = await fetch('/api/settings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ maintenance_mode: turningOn ? 'true' : 'false' })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          alert(data.error || 'Could not update maintenance mode.');
+          return;
+        }
+        updateMaintenanceBtn(turningOn);
+      } catch (err) {
+        alert('Could not reach the server.');
+      }
+    });
+  }
+
   // ---------- IMAGE UPLOAD (shared file-picker flow for card + banner forms) ----------
   // A single hidden <input type="file"> gets reused for whichever "Upload..."
   // button was clicked -- it remembers which text field to fill in once the
@@ -2649,6 +2697,7 @@
   loadAdminStatus();
   loadSiteSettings();
   loadLocalBiz();
+  loadMaintenanceStatus();
 
   // ---------- TORN CORNER ZOOM TRANSITION ----------
   // The torn corner now sits inline on the page (not a fixed viewport

@@ -51,8 +51,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(session({
   store: new pgSession({
     pool,
@@ -69,6 +67,50 @@ app.use(session({
     sameSite: 'lax'
   }
 }));
+
+// Maintenance mode: when the maintenance_mode site_setting is 'true', every
+// non-admin visitor gets the under-construction page instead of the real
+// site, while admins can keep browsing normally to actually work on
+// whatever needed the site taken down in the first place. Checked before
+// the static file server so it can intercept page loads; API routes for
+// auth/settings still work underneath so an admin's session and the
+// toggle itself keep functioning while this is on. Runs on every request,
+// which costs one extra tiny DB read while maintenance mode is on -- fine
+// for a site this size, and it's already off (the common case) most of
+// the time so this mostly no-ops.
+async function maintenanceGate(req, res, next) {
+  // Never gate the API, the under-construction page itself, or static
+  // assets the under-construction page needs -- only gate actual page
+  // navigations so the toggle and admin login keep working underneath.
+  if (req.path.startsWith('/api/') || req.path === '/under-construction.html' || req.path === '/healthz') {
+    return next();
+  }
+  var isPageRequest = req.path === '/' || req.path.endsWith('.html');
+  if (!isPageRequest) {
+    return next();
+  }
+  try {
+    const result = await pool.query(
+      "SELECT value FROM site_settings WHERE key = 'maintenance_mode'"
+    );
+    const isOn = result.rows.length > 0 && result.rows[0].value === 'true';
+    if (!isOn) return next();
+
+    if (req.session && req.session.userId) {
+      const adminCheck = await pool.query('SELECT is_admin FROM users WHERE id = $1', [req.session.userId]);
+      if (adminCheck.rows.length > 0 && adminCheck.rows[0].is_admin) {
+        return next();
+      }
+    }
+    res.sendFile(path.join(__dirname, 'public', 'under-construction.html'));
+  } catch (err) {
+    console.error('Maintenance gate check error:', err);
+    next();
+  }
+}
+app.use(maintenanceGate);
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', authRoutes);
 app.use('/api', linkRoutes);

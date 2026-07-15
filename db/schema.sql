@@ -80,7 +80,9 @@ CREATE TABLE IF NOT EXISTS site_settings (
 INSERT INTO site_settings (key, value) VALUES
   ('mk_banner_text', 'online chatting<br>better than<br>discord???'),
   ('mk_marquee_text', 'ITS RIGHT HERE ON THE INTERNET RESTSTOP!!!!'),
-  ('mk_logo_url', '/mk-logo.png')
+  ('mk_logo_url', '/mk-logo.png'),
+  ('maintenance_mode', 'false'),
+  ('site_theme', 'classic')
 ON CONFLICT (key) DO NOTHING;
 
 -- Small ad slots for actual indie/local businesses, kept separate from the
