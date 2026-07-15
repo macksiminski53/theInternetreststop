@@ -94,6 +94,53 @@
     font-size: 11px;
     color: #0000cc;
   }
+
+  /* Deliberately low-key -- this is a way for an admin to get back in
+     without needing the real homepage's login form, not something meant
+     to invite regular visitors to poke at. */
+  .ucStaffLink {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 10px;
+    color: #999999;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  #ucLoginBox {
+    display: none;
+    margin-top: 14px;
+    text-align: left;
+    border-top: 1px dashed #cccccc;
+    padding-top: 14px;
+  }
+  #ucLoginBox.open { display: block; }
+  #ucLoginBox label {
+    display: block;
+    font-size: 11px;
+    color: #555555;
+    margin-bottom: 2px;
+  }
+  #ucLoginBox input[type="text"],
+  #ucLoginBox input[type="password"] {
+    width: 100%;
+    font-size: 12px;
+    padding: 4px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+  }
+  #ucLoginBox input[type="submit"] {
+    width: 100%;
+    padding: 6px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  #ucLoginError {
+    color: #cc0000;
+    font-size: 11px;
+    margin-bottom: 8px;
+    min-height: 14px;
+  }
 </style>
 </head>
 <body>
@@ -114,7 +161,54 @@
     <div class="ucFooter">
       &copy; 2026 The Internet Rest Stop &middot; best viewed at 1024x768 &middot; site under maintenance
     </div>
+
+    <div class="ucStaffLink" id="ucStaffLink">staff login</div>
+    <div id="ucLoginBox">
+      <div id="ucLoginError"></div>
+      <form id="ucLoginForm">
+        <label for="ucUsername">Username</label>
+        <input type="text" id="ucUsername" autocomplete="username">
+        <label for="ucPassword">Password</label>
+        <input type="password" id="ucPassword" autocomplete="current-password">
+        <input type="submit" value="Log in">
+      </form>
+    </div>
   </div>
 
+  <script>
+    document.getElementById('ucStaffLink').addEventListener('click', function () {
+      document.getElementById('ucLoginBox').classList.toggle('open');
+    });
+
+    document.getElementById('ucLoginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var errorEl = document.getElementById('ucLoginError');
+      errorEl.textContent = '';
+      var username = document.getElementById('ucUsername').value;
+      var password = document.getElementById('ucPassword').value;
+      if (!username || !password) {
+        errorEl.textContent = 'Enter both a username and password.';
+        return;
+      }
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: username, password: password })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          errorEl.textContent = data.error || 'Could not log in.';
+          return;
+        }
+        // Logged in -- reload so the maintenance gate re-checks admin
+        // status server-side and lets an admin session through to the
+        // real site instead of this page.
+        window.location.href = '/';
+      } catch (err) {
+        errorEl.textContent = 'Could not reach the server.';
+      }
+    });
+  </script>
 </body>
 </html>
