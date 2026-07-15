@@ -12,6 +12,7 @@ const linkRoutes = require('./routes/links');
 const newsRoutes = require('./routes/news');
 const cardRoutes = require('./routes/cards');
 const settingsRoutes = require('./routes/settings');
+const uploadRoutes = require('./routes/upload');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -73,6 +74,7 @@ app.use('/api', linkRoutes);
 app.use('/api', newsRoutes);
 app.use('/api', cardRoutes);
 app.use('/api', settingsRoutes);
+app.use('/api', uploadRoutes);
 
 app.get('/healthz', (req, res) => res.send('ok'));
 
