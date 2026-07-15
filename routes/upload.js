@@ -1,37 +1,33 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
-const crypto = require('crypto');
 const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
 const pool = require('../db');
 
 const router = express.Router();
 
-const UPLOAD_DIR = path.join(__dirname, '..', 'public', 'uploads');
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-
-const ALLOWED_TYPES = {
-  'image/png': '.png',
-  'image/jpeg': '.jpg',
-  'image/gif': '.gif',
-  'image/svg+xml': '.svg',
-  'image/webp': '.webp'
-};
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, UPLOAD_DIR);
-  },
-  filename: function (req, file, cb) {
-    const ext = ALLOWED_TYPES[file.mimetype] || path.extname(file.originalname).toLowerCase();
-    const randomName = crypto.randomBytes(12).toString('hex');
-    cb(null, randomName + ext);
-  }
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+const ALLOWED_TYPES = {
+  'image/png': true,
+  'image/jpeg': true,
+  'image/gif': true,
+  'image/svg+xml': true,
+  'image/webp': true
+};
+
+// Keep uploads in memory rather than writing to local disk -- Render's
+// default web service filesystem is ephemeral (wiped on every redeploy or
+// restart), so anything written to public/uploads/ would silently vanish
+// the next time the site deployed. Uploading straight to Cloudinary instead
+// means the image survives redeploys without needing a paid Render plan +
+// persistent disk just for this.
 const upload = multer({
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB -- plenty for logos/screenshots, keeps the disk from filling up
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: function (req, file, cb) {
     if (!ALLOWED_TYPES[file.mimetype]) {
       return cb(new Error('Only PNG, JPG, GIF, SVG, and WEBP images are allowed.'));
@@ -56,24 +52,41 @@ async function requireAdmin(req, res, next) {
   }
 }
 
+function uploadBufferToCloudinary(buffer) {
+  return new Promise(function (resolve, reject) {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'reststop-uploads', resource_type: 'image' },
+      function (err, result) {
+        if (err) return reject(err);
+        resolve(result);
+      }
+    );
+    stream.end(buffer);
+  });
+}
+
 // POST /api/upload - admin-only image upload for card images and the site
-// banner graphic. Returns a URL under /uploads/... that can be dropped
-// straight into an Image URL field.
-//
-// Note: Render's default web service filesystem is ephemeral -- files
-// written here can be wiped on redeploy or restart unless a persistent
-// disk is attached to the service. This is fine for quick iteration, but
-// for anything meant to stick around long-term, attach a Render Disk
-// mounted at this uploads directory (or move to real object storage).
+// banner graphic. Uploads straight to Cloudinary (no local disk write) and
+// returns the resulting hosted URL, which drops straight into an Image URL
+// field just like a hand-typed path would.
 router.post('/upload', requireAdmin, function (req, res) {
-  upload.single('image')(req, res, function (err) {
+  upload.single('image')(req, res, async function (err) {
     if (err) {
       return res.status(400).json({ error: err.message || 'Upload failed.' });
     }
     if (!req.file) {
       return res.status(400).json({ error: 'No file was uploaded.' });
     }
-    res.json({ ok: true, url: '/uploads/' + req.file.filename });
+    if (!process.env.CLOUDINARY_CLOUD_NAME) {
+      return res.status(500).json({ error: 'Image hosting is not configured on the server yet.' });
+    }
+    try {
+      const result = await uploadBufferToCloudinary(req.file.buffer);
+      res.json({ ok: true, url: result.secure_url });
+    } catch (uploadErr) {
+      console.error('Cloudinary upload error:', uploadErr);
+      res.status(502).json({ error: 'Could not reach the image host. Try again in a moment.' });
+    }
   });
 });
 
