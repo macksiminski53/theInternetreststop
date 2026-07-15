@@ -2403,6 +2403,17 @@
         errorEl.textContent = data.error || 'Could not save banner settings.';
         return;
       }
+      // Sanity check: if the server's confirmed value doesn't match what we
+      // just sent, show that plainly instead of silently applying whatever
+      // came back -- easier to spot a save mismatch this way than digging
+      // through DevTools.
+      var savedLogo = (data.settings && data.settings.mk_logo_url) || '';
+      if (payload.mk_logo_url && savedLogo !== payload.mk_logo_url) {
+        errorEl.style.color = '#800000';
+        errorEl.textContent = 'Saved, but the server kept a different logo URL than what was sent. Sent: ' + payload.mk_logo_url + ' | Server has: ' + savedLogo;
+        applySiteSettings(data.settings);
+        return;
+      }
       applySiteSettings(data.settings);
       document.getElementById('adminBannerOverlay').style.display = 'none';
     } catch (err) {
