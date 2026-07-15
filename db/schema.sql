@@ -67,3 +67,17 @@ WHERE card_id = 'baby-markus' AND image_url IS NULL;
 -- revokes admin from this account on purpose.
 UPDATE users SET is_admin = TRUE
 WHERE username = 'Mak' AND is_admin = FALSE;
+
+-- Simple key/value settings table for small editable bits of site copy that
+-- don't need their own dedicated table (the MK hero banner text and the
+-- scrolling marquee message). Admin-editable via /api/settings.
+CREATE TABLE IF NOT EXISTS site_settings (
+  key VARCHAR(50) PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO site_settings (key, value) VALUES
+  ('mk_banner_text', 'online chatting<br>better than<br>discord???'),
+  ('mk_marquee_text', 'ITS RIGHT HERE ON THE INTERNET RESTSTOP!!!!')
+ON CONFLICT (key) DO NOTHING;

@@ -1205,7 +1205,7 @@
   <div class="mkBanner" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com');">
     <div class="mkBannerInner">
       <div class="mkLogoCircle"><img src="/mk-logo.png" alt="MK logo"></div>
-      <div class="mkBannerText">online chatting<br>better than<br>discord???</div>
+      <div class="mkBannerText" id="mkBannerText">online chatting<br>better than<br>discord???</div>
     </div>
     <div class="mkMarquee">
       <div class="mkMarqueeTrack">
@@ -1336,6 +1336,7 @@
 
         <div id="adminAddCardWrap" style="display:none; margin-bottom:14px;">
           <input type="button" value="+ Add Card" id="adminAddCardBtn">
+          <input type="button" value="Edit Site Banner" id="adminEditBannerBtn">
         </div>
 
         <div class="sectionHead" id="mystops">My Stops</div>
@@ -1452,6 +1453,27 @@
         <input type="button" value="Delete" id="acfDeleteBtn" style="display:none;">
         <input type="button" value="Cancel" id="acfCancelBtn">
         <input type="button" value="Save" id="acfSaveBtn">
+      </div>
+    </div>
+  </div>
+
+  <div id="adminBannerOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:3000;">
+    <div style="background:#ffffff; border:2px solid #000000; width:380px; max-width:90%; margin:60px auto; padding:14px; font-family:Arial, Helvetica, sans-serif; font-size:12px;">
+      <div style="font-weight:bold; font-size:13px; margin-bottom:10px;">Edit Site Banner</div>
+      <table style="width:100%;">
+        <tr><td style="vertical-align:top; padding-top:4px;">Hero text:</td><td>
+          <textarea id="abfBannerText" style="width:100%; height:60px;"></textarea>
+          <div style="font-size:10px; color:#666666; margin-top:2px;">Use &lt;br&gt; for line breaks, like the current "online chatting&lt;br&gt;better than&lt;br&gt;discord???"</div>
+        </td></tr>
+        <tr><td style="vertical-align:top; padding-top:8px;">Marquee text:</td><td>
+          <input type="text" id="abfMarqueeText" style="width:100%; margin-top:8px;">
+          <div style="font-size:10px; color:#666666; margin-top:2px;">The scrolling message under the banner.</div>
+        </td></tr>
+      </table>
+      <div id="adminBannerFormError" style="color:#800000; font-size:11px; margin-top:6px;"></div>
+      <div style="margin-top:10px; text-align:right;">
+        <input type="button" value="Cancel" id="abfCancelBtn">
+        <input type="button" value="Save" id="abfSaveBtn">
       </div>
     </div>
   </div>
@@ -2239,6 +2261,70 @@
     }
   }
 
+  // ---------- SITE SETTINGS (editable MK banner + marquee) ----------
+  function applySiteSettings(settings) {
+    if (settings.mk_banner_text) {
+      document.getElementById('mkBannerText').innerHTML = settings.mk_banner_text;
+    }
+    if (settings.mk_marquee_text) {
+      document.querySelectorAll('.mkMarqueeText').forEach(function (el) {
+        el.textContent = settings.mk_marquee_text;
+      });
+    }
+  }
+
+  async function loadSiteSettings() {
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      if (data.ok) applySiteSettings(data.settings);
+    } catch (err) {
+      // non-fatal -- banner just keeps whatever's baked into the HTML
+    }
+  }
+
+  document.getElementById('adminEditBannerBtn').addEventListener('click', async function () {
+    document.getElementById('adminBannerFormError').textContent = '';
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      document.getElementById('abfBannerText').value = (data.settings && data.settings.mk_banner_text) || '';
+      document.getElementById('abfMarqueeText').value = (data.settings && data.settings.mk_marquee_text) || '';
+    } catch (err) {
+      // leave fields blank if the fetch fails, admin can still type fresh values
+    }
+    document.getElementById('adminBannerOverlay').style.display = 'block';
+  });
+
+  document.getElementById('abfCancelBtn').addEventListener('click', function () {
+    document.getElementById('adminBannerOverlay').style.display = 'none';
+  });
+
+  document.getElementById('abfSaveBtn').addEventListener('click', async function () {
+    var errorEl = document.getElementById('adminBannerFormError');
+    errorEl.textContent = '';
+    var payload = {
+      mk_banner_text: document.getElementById('abfBannerText').value,
+      mk_marquee_text: document.getElementById('abfMarqueeText').value
+    };
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        errorEl.textContent = data.error || 'Could not save banner settings.';
+        return;
+      }
+      applySiteSettings(data.settings);
+      document.getElementById('adminBannerOverlay').style.display = 'none';
+    } catch (err) {
+      errorEl.textContent = 'Could not reach the server.';
+    }
+  });
+
   document.getElementById('adminAddCardBtn').addEventListener('click', function () {
     openAdminCardForm(null);
   });
@@ -2334,6 +2420,7 @@
 
   loadCards();
   loadAdminStatus();
+  loadSiteSettings();
 
   // ---------- TORN CORNER ZOOM TRANSITION ----------
   // The torn corner now sits inline on the page (not a fixed viewport
