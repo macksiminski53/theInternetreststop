@@ -30,101 +30,285 @@
   // captions carry the pop-culture nods as jokes.
   var COLLEGE_MONTAGE = [
     { caption: `Dropped out of college immediately. Started wearing a backpack with teddy bears on it. Sound familiar?`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
-    <rect width="280" height="160" fill="#2b2b2b"/>
-    <rect x="10" y="10" width="260" height="90" fill="#1f3d2e" stroke="#0f2419" stroke-width="3"/>
-    <rect x="20" y="20" width="120" height="10" fill="#e8e0c8" opacity="0.5"/>
-    <rect x="20" y="40" width="80" height="10" fill="#e8e0c8" opacity="0.35"/>
-    <circle cx="140" cy="120" r="26" fill="#a4703a"/>
-    <circle cx="130" cy="112" r="4" fill="#2a1a0e"/>
-    <circle cx="150" cy="112" r="4" fill="#2a1a0e"/>
-    <ellipse cx="140" cy="128" rx="10" ry="6" fill="#e0bd8f"/>
-    <rect x="120" y="140" width="40" height="14" rx="3" fill="#8a5a2b"/>
-    <polygon points="140,86 108,100 140,114 172,100" fill="#111111"/>
-    <rect x="137" y="100" width="6" height="18" fill="#111111"/>
-    <circle cx="140" cy="120" r="2.5" fill="#ffd93b"/>
+    <defs>
+      <linearGradient id="s1bg" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#3a3a3a"/>
+        <stop offset="100%" stop-color="#1c1c1c"/>
+      </linearGradient>
+      <linearGradient id="s1board" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#2a4d3a"/>
+        <stop offset="100%" stop-color="#173324"/>
+      </linearGradient>
+      <radialGradient id="s1bear" cx="42%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#c89a5e"/>
+        <stop offset="60%" stop-color="#a4703a"/>
+        <stop offset="100%" stop-color="#7a4f24"/>
+      </radialGradient>
+      <linearGradient id="s1gown" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#262626"/>
+        <stop offset="100%" stop-color="#0d0d0d"/>
+      </linearGradient>
+    </defs>
+    <rect width="280" height="160" fill="url(#s1bg)"/>
+    <rect x="8" y="8" width="264" height="92" fill="url(#s1board)" stroke="#0f2419" stroke-width="3" rx="2"/>
+    <rect x="18" y="18" width="130" height="9" fill="#e8e0c8" opacity="0.45"/>
+    <rect x="18" y="36" width="95" height="9" fill="#e8e0c8" opacity="0.32"/>
+    <rect x="18" y="54" width="70" height="9" fill="#e8e0c8" opacity="0.22"/>
+    <rect x="222" y="16" width="34" height="46" fill="#8a6a3a" opacity="0.5" rx="2"/>
+    <rect x="0" y="98" width="280" height="62" fill="#151515"/>
+    <ellipse cx="140" cy="150" rx="46" ry="8" fill="#000000" opacity="0.35"/>
+    <path d="M100 150 Q140 165 180 150 L176 118 Q140 128 104 118 Z" fill="url(#s1gown)"/>
+    <path d="M112 122 Q140 130 168 122 L165 116 Q140 123 115 116 Z" fill="#3a3a3a"/>
+    <circle cx="140" cy="112" r="27" fill="url(#s1bear)"/>
+    <circle cx="125" cy="103" r="4.5" fill="#2a1a0e"/>
+    <circle cx="155" cy="103" r="4.5" fill="#2a1a0e"/>
+    <circle cx="126.5" cy="101.5" r="1.3" fill="#ffffff"/>
+    <circle cx="156.5" cy="101.5" r="1.3" fill="#ffffff"/>
+    <ellipse cx="140" cy="120" rx="11" ry="7" fill="#e0bd8f"/>
+    <ellipse cx="140" cy="119" rx="3" ry="2" fill="#3a2515"/>
+    <path d="M132 126 Q140 131 148 126" fill="none" stroke="#3a2515" stroke-width="2" stroke-linecap="round"/>
+    <ellipse cx="118" cy="112" rx="6" ry="9" fill="#a4703a"/>
+    <ellipse cx="162" cy="112" rx="6" ry="9" fill="#a4703a"/>
+    <polygon points="140,80 104,96 140,112 176,96" fill="#111111"/>
+    <polygon points="140,80 104,96 140,112 176,96" fill="#000000" opacity="0.2"/>
+    <rect x="137" y="96" width="6" height="20" fill="#111111"/>
+    <circle cx="140" cy="118" r="3" fill="#ffd93b"/>
+    <path d="M137 118 L143 118 M140 115 L140 121" stroke="#c9a227" stroke-width="0.8"/>
+    <rect x="205" y="120" width="22" height="26" rx="3" fill="#5a3a1a"/>
+    <circle cx="211" cy="128" r="4" fill="#a4703a"/>
+    <circle cx="221" cy="128" r="4" fill="#a4703a"/>
+    <circle cx="216" cy="136" r="4" fill="#a4703a"/>
   </svg>` },
     { caption: `Walked a gold carpet at some big music awards show. Didn't win anything. Still counts.`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
-    <rect width="280" height="160" fill="#120a1e"/>
-    <polygon points="60,0 220,0 260,160 20,160" fill="#7a5b1a" opacity="0.6"/>
-    <polygon points="90,0 190,0 210,160 70,160" fill="#c9a227" opacity="0.55"/>
-    <circle cx="140" cy="40" r="34" fill="#ffe9a8" opacity="0.25"/>
-    <circle cx="140" cy="112" r="22" fill="#a4703a"/>
-    <circle cx="131" cy="106" r="3.4" fill="#2a1a0e"/>
-    <circle cx="149" cy="106" r="3.4" fill="#2a1a0e"/>
-    <ellipse cx="140" cy="120" rx="8" ry="5" fill="#e0bd8f"/>
-    <rect x="122" y="132" width="36" height="16" rx="3" fill="#111111"/>
-    <rect x="128" y="126" width="4" height="10" fill="#111111"/>
-    <rect x="148" y="126" width="4" height="10" fill="#111111"/>
-    <text x="140" y="20" text-anchor="middle" font-size="11" fill="#ffd93b" font-family="Arial, sans-serif" font-weight="bold">* AWARDS NIGHT *</text>
+    <defs>
+      <radialGradient id="s2glow" cx="50%" cy="20%" r="60%">
+        <stop offset="0%" stop-color="#4a3a1a"/>
+        <stop offset="100%" stop-color="#120a1e"/>
+      </radialGradient>
+      <linearGradient id="s2carpetOuter" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#8a691f"/>
+        <stop offset="100%" stop-color="#5c4315"/>
+      </linearGradient>
+      <linearGradient id="s2carpetInner" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#e6c34a"/>
+        <stop offset="100%" stop-color="#b3922c"/>
+      </linearGradient>
+      <radialGradient id="s2bear" cx="42%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#c89a5e"/>
+        <stop offset="60%" stop-color="#a4703a"/>
+        <stop offset="100%" stop-color="#7a4f24"/>
+      </radialGradient>
+    </defs>
+    <rect width="280" height="160" fill="url(#s2glow)"/>
+    <polygon points="55,0 225,0 262,160 18,160" fill="url(#s2carpetOuter)"/>
+    <polygon points="88,0 192,0 212,160 68,160" fill="url(#s2carpetInner)"/>
+    <circle cx="140" cy="38" r="40" fill="#ffe9a8" opacity="0.2"/>
+    <path d="M30 60 Q30 30 30 8 L45 8 Q45 40 42 70 Z" fill="#050505" opacity="0.7"/>
+    <path d="M250 60 Q250 30 250 8 L235 8 Q235 40 238 70 Z" fill="#050505" opacity="0.7"/>
+    <circle cx="20" cy="70" r="10" fill="#050505" opacity="0.6"/>
+    <circle cx="260" cy="72" r="9" fill="#050505" opacity="0.6"/>
+    <ellipse cx="140" cy="150" rx="34" ry="7" fill="#000000" opacity="0.3"/>
+    <path d="M120 148 Q140 154 160 148 L156 108 Q140 116 124 108 Z" fill="#0d0d0d"/>
+    <path d="M124 112 Q140 118 156 112" fill="none" stroke="#e6c34a" stroke-width="2"/>
+    <circle cx="140" cy="98" r="23" fill="url(#s2bear)"/>
+    <circle cx="130" cy="90" r="3.6" fill="#2a1a0e"/>
+    <circle cx="150" cy="90" r="3.6" fill="#2a1a0e"/>
+    <circle cx="131" cy="88.8" r="1" fill="#ffffff"/>
+    <circle cx="151" cy="88.8" r="1" fill="#ffffff"/>
+    <ellipse cx="140" cy="106" rx="8.5" ry="5.5" fill="#e0bd8f"/>
+    <path d="M133 111 Q140 115 147 111" fill="none" stroke="#3a2515" stroke-width="1.6" stroke-linecap="round"/>
+    <rect x="118" y="122" width="44" height="18" rx="4" fill="#111111"/>
+    <rect x="126" y="114" width="4" height="12" fill="#111111"/>
+    <rect x="150" y="114" width="4" height="12" fill="#111111"/>
+    <path d="M120 130 L160 130" stroke="#e6c34a" stroke-width="1.5"/>
+    <text x="140" y="18" text-anchor="middle" font-size="12" fill="#ffd93b" font-family="Arial, sans-serif" font-weight="bold" letter-spacing="1">&#9733; AWARDS NIGHT &#9733;</text>
   </svg>` },
     { caption: `Learned the moonwalk from a guy in a sparkly glove. Still can't do it backwards.`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
-    <rect width="280" height="160" fill="#0d0d18"/>
-    <circle cx="140" cy="60" r="46" fill="#ffffff" opacity="0.06"/>
-    <rect x="0" y="128" width="280" height="32" fill="#1c1c2a"/>
-    <circle cx="90" cy="16" r="1.6" fill="#ffffff" opacity="0.8"/>
+    <defs>
+      <radialGradient id="s3spot" cx="50%" cy="35%" r="55%">
+        <stop offset="0%" stop-color="#3a3a55"/>
+        <stop offset="100%" stop-color="#0a0a14"/>
+      </radialGradient>
+      <linearGradient id="s3floor" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#2a2a3c"/>
+        <stop offset="100%" stop-color="#141420"/>
+      </linearGradient>
+      <radialGradient id="s3bear" cx="42%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#c89a5e"/>
+        <stop offset="60%" stop-color="#a4703a"/>
+        <stop offset="100%" stop-color="#7a4f24"/>
+      </radialGradient>
+    </defs>
+    <rect width="280" height="160" fill="url(#s3spot)"/>
+    <polygon points="110,20 170,20 220,128 60,128" fill="#ffffff" opacity="0.05"/>
+    <rect x="0" y="128" width="280" height="32" fill="url(#s3floor)"/>
+    <ellipse cx="140" cy="130" rx="90" ry="6" fill="#ffffff" opacity="0.06"/>
+    <circle cx="70" cy="18" r="1.6" fill="#ffffff" opacity="0.85"/>
     <circle cx="200" cy="26" r="1.4" fill="#ffffff" opacity="0.7"/>
     <circle cx="230" cy="10" r="1.2" fill="#ffffff" opacity="0.6"/>
-    <circle cx="140" cy="102" r="24" fill="#a4703a"/>
-    <circle cx="132" cy="96" r="3.6" fill="#2a1a0e"/>
-    <circle cx="148" cy="96" r="3.6" fill="#2a1a0e"/>
-    <ellipse cx="140" cy="112" rx="8" ry="5" fill="#e0bd8f"/>
-    <rect x="120" y="122" width="40" height="16" rx="3" fill="#1a1a1a"/>
-    <circle cx="118" cy="118" r="7" fill="#ffffff"/>
-    <path d="M112 112 L124 124 M124 112 L112 124" stroke="#dddddd" stroke-width="1"/>
-    <path d="M110 145 Q140 135 170 145" fill="none" stroke="#a4703a" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="40" cy="45" r="1" fill="#ffffff" opacity="0.5"/>
+    <circle cx="245" cy="55" r="1.2" fill="#ffffff" opacity="0.55"/>
+    <ellipse cx="140" cy="128" rx="30" ry="6" fill="#000000" opacity="0.4"/>
+    <path d="M120 126 Q140 132 160 126 L156 96 Q140 102 124 96 Z" fill="#1a1a1a"/>
+    <path d="M124 100 Q140 105 156 100" fill="none" stroke="#c9c9c9" stroke-width="1.2"/>
+    <circle cx="140" cy="86" r="21" fill="url(#s3bear)"/>
+    <circle cx="132" cy="80" r="3.4" fill="#2a1a0e"/>
+    <circle cx="148" cy="80" r="3.4" fill="#2a1a0e"/>
+    <ellipse cx="140" cy="94" rx="7.5" ry="5" fill="#e0bd8f"/>
+    <path d="M134 99 Q140 102 146 99" fill="none" stroke="#3a2515" stroke-width="1.4" stroke-linecap="round"/>
+    <rect x="123" y="108" width="34" height="14" rx="3" fill="#1a1a1a"/>
+    <path d="M108 92 Q100 100 98 112" fill="none" stroke="#a4703a" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="96" cy="114" r="8" fill="#ffffff"/>
+    <path d="M89 107 L103 121 M103 107 L89 121" stroke="#dddddd" stroke-width="1.2"/>
+    <circle cx="92" cy="110" r="1.4" fill="#a8d4ff"/>
+    <circle cx="99" cy="117" r="1.2" fill="#a8d4ff"/>
+    <path d="M108 145 Q140 133 172 145" fill="none" stroke="#a4703a" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="108" cy="147" rx="9" ry="4" fill="#111111"/>
+    <ellipse cx="172" cy="147" rx="9" ry="4" fill="#111111"/>
   </svg>` },
     { caption: `Visited a pineapple under the sea. The guy who lives there wasn't home, but the snail said hi.`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
-    <rect width="280" height="160" fill="#0f5f8c"/>
-    <rect y="120" width="280" height="40" fill="#d8c27a"/>
-    <circle cx="40" cy="30" r="4" fill="#bfe6ff" opacity="0.6"/>
-    <circle cx="60" cy="50" r="3" fill="#bfe6ff" opacity="0.5"/>
-    <circle cx="220" cy="24" r="5" fill="#bfe6ff" opacity="0.6"/>
-    <circle cx="240" cy="60" r="3" fill="#bfe6ff" opacity="0.5"/>
-    <path d="M40 120 Q45 95 55 120 Z" fill="#e0714a"/>
-    <path d="M220 120 Q228 90 238 120 Z" fill="#e0714a"/>
-    <ellipse cx="150" cy="105" rx="26" ry="30" fill="#e8c144"/>
-    <path d="M150 75 Q140 60 150 50 Q160 60 150 75" fill="#3f8f3f"/>
-    <path d="M130 90 L170 90 M130 100 L170 100 M130 110 L170 110" stroke="#c9a227" stroke-width="2"/>
-    <rect x="140" y="112" width="20" height="18" fill="#8a5a2b"/>
-    <circle cx="95" cy="128" r="12" fill="#a4703a"/>
-    <circle cx="90" cy="124" r="2.2" fill="#2a1a0e"/>
-    <circle cx="100" cy="124" r="2.2" fill="#2a1a0e"/>
-    <path d="M55 150 Q60 140 68 150" fill="none" stroke="#9c6b3a" stroke-width="3"/>
+    <defs>
+      <linearGradient id="s4water" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#1e7fae"/>
+        <stop offset="100%" stop-color="#0a4a70"/>
+      </linearGradient>
+      <linearGradient id="s4sand" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#e8d38f"/>
+        <stop offset="100%" stop-color="#c9ab5f"/>
+      </linearGradient>
+      <linearGradient id="s4pineapple" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f0d060"/>
+        <stop offset="100%" stop-color="#c9982a"/>
+      </linearGradient>
+      <radialGradient id="s4bear" cx="42%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#c89a5e"/>
+        <stop offset="60%" stop-color="#a4703a"/>
+        <stop offset="100%" stop-color="#7a4f24"/>
+      </radialGradient>
+    </defs>
+    <rect width="280" height="160" fill="url(#s4water)"/>
+    <rect y="122" width="280" height="38" fill="url(#s4sand)"/>
+    <circle cx="35" cy="28" r="4" fill="#bfe6ff" opacity="0.55"/>
+    <circle cx="55" cy="48" r="2.6" fill="#bfe6ff" opacity="0.45"/>
+    <circle cx="225" cy="22" r="5" fill="#bfe6ff" opacity="0.55"/>
+    <circle cx="245" cy="58" r="3" fill="#bfe6ff" opacity="0.45"/>
+    <circle cx="20" cy="80" r="2" fill="#bfe6ff" opacity="0.4"/>
+    <ellipse cx="55" cy="45" rx="13" ry="6" fill="#e8834f"/>
+    <path d="M42 45 L28 40 M42 45 L28 50" stroke="#e8834f" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="60" cy="43" r="1.4" fill="#111111"/>
+    <path d="M38 118 Q42 92 55 118 Z" fill="#c9503a"/>
+    <path d="M225 118 Q233 86 244 118 Z" fill="#c9503a"/>
+    <path d="M60 120 Q68 100 78 120 Z" fill="#3f8f3f" opacity="0.8"/>
+    <ellipse cx="152" cy="103" rx="28" ry="32" fill="url(#s4pineapple)"/>
+    <path d="M152 71 Q140 55 152 43 Q164 55 152 71" fill="#3f8f3f"/>
+    <path d="M140 60 Q152 50 164 60" fill="none" stroke="#2f6f2f" stroke-width="2"/>
+    <path d="M128 88 L176 88 M128 98 L176 98 M128 108 L176 108 M128 118 L176 118" stroke="#a97d1f" stroke-width="2.2"/>
+    <path d="M132 82 L172 94 M132 94 L172 82" stroke="#a97d1f" stroke-width="1" opacity="0.6"/>
+    <rect x="140" y="112" width="24" height="20" fill="#8a5a2b"/>
+    <rect x="146" y="118" width="6" height="8" fill="#3a2515"/>
+    <circle cx="96" cy="132" r="13" fill="url(#s4bear)"/>
+    <circle cx="91" cy="127" r="2.3" fill="#2a1a0e"/>
+    <circle cx="101" cy="127" r="2.3" fill="#2a1a0e"/>
+    <ellipse cx="96" cy="136" rx="5.5" ry="4" fill="#e0bd8f"/>
+    <ellipse cx="70" cy="115" rx="9" ry="6" fill="#d9b183" opacity="0.9"/>
+    <path d="M63 113 Q70 108 77 113" fill="none" stroke="#8a5a2b" stroke-width="1.5"/>
+    <circle cx="63" cy="118" r="2" fill="#111111"/>
+    <path d="M50 148 Q60 138 68 148" fill="none" stroke="#9c6b3a" stroke-width="3" stroke-linecap="round"/>
   </svg>` },
     { caption: `Took a selfie with an extremely muscular, eyebrow-raising gentleman in a wrestling ring. He could not smell what Markus was cooking.`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
-    <rect width="280" height="160" fill="#1a1a1a"/>
-    <rect x="10" y="20" width="260" height="6" fill="#e6e6e6"/>
-    <rect x="10" y="50" width="260" height="6" fill="#e6e6e6"/>
-    <rect x="10" y="80" width="260" height="6" fill="#e6e6e6"/>
-    <rect x="0" y="110" width="280" height="50" fill="#3a1f1f"/>
-    <path d="M180 158 L200 90 Q205 78 195 68 L185 58 Q175 55 165 62 L160 90 L150 158 Z" fill="#111111" opacity="0.85"/>
-    <circle cx="180" cy="52" r="16" fill="#111111" opacity="0.85"/>
-    <circle cx="90" cy="120" r="20" fill="#a4703a"/>
-    <circle cx="82" cy="113" r="3.4" fill="#2a1a0e"/>
-    <circle cx="98" cy="113" r="3.4" fill="#2a1a0e"/>
-    <ellipse cx="90" cy="127" rx="7" ry="5" fill="#e0bd8f"/>
-    <rect x="60" y="60" width="14" height="60" rx="6" fill="#a4703a" transform="rotate(-18 67 90)"/>
-    <circle cx="55" cy="55" r="9" fill="#c9c9c9"/>
-    <rect x="50" y="50" width="10" height="6" fill="#888888"/>
+    <defs>
+      <radialGradient id="s5arena" cx="50%" cy="20%" r="70%">
+        <stop offset="0%" stop-color="#332020"/>
+        <stop offset="100%" stop-color="#0d0d0d"/>
+      </radialGradient>
+      <linearGradient id="s5mat" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#4a2020"/>
+        <stop offset="100%" stop-color="#2a1010"/>
+      </linearGradient>
+      <radialGradient id="s5bear" cx="42%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#c89a5e"/>
+        <stop offset="60%" stop-color="#a4703a"/>
+        <stop offset="100%" stop-color="#7a4f24"/>
+      </radialGradient>
+    </defs>
+    <rect width="280" height="160" fill="url(#s5arena)"/>
+    <circle cx="40" cy="30" r="6" fill="#050505" opacity="0.6"/>
+    <circle cx="60" cy="20" r="5" fill="#050505" opacity="0.6"/>
+    <circle cx="230" cy="24" r="6" fill="#050505" opacity="0.6"/>
+    <circle cx="255" cy="34" r="5" fill="#050505" opacity="0.6"/>
+    <rect x="8" y="18" width="264" height="6" fill="#e6e6e6"/>
+    <rect x="8" y="48" width="264" height="6" fill="#e6e6e6"/>
+    <rect x="8" y="78" width="264" height="6" fill="#e6e6e6"/>
+    <rect x="4" y="15" width="10" height="75" fill="#888888"/>
+    <rect x="266" y="15" width="10" height="75" fill="#888888"/>
+    <rect y="105" width="280" height="55" fill="url(#s5mat)"/>
+    <ellipse cx="140" cy="155" rx="120" ry="10" fill="#000000" opacity="0.25"/>
+    <path d="M185 158 L207 92 Q212 76 200 64 L188 52 Q176 48 164 56 L157 92 L148 158 Z" fill="#050505" opacity="0.9"/>
+    <path d="M164 56 Q176 50 188 52" fill="none" stroke="#222222" stroke-width="1.5"/>
+    <circle cx="184" cy="46" r="17" fill="#050505" opacity="0.9"/>
+    <path d="M170 42 Q184 34 198 42" fill="none" stroke="#333333" stroke-width="2"/>
+    <ellipse cx="88" cy="128" rx="12" ry="6" fill="#000000" opacity="0.3"/>
+    <path d="M70 126 Q88 132 106 126 L102 98 Q88 104 74 98 Z" fill="#111111"/>
+    <circle cx="88" cy="88" r="19" fill="url(#s5bear)"/>
+    <circle cx="80" cy="81" r="3.2" fill="#2a1a0e"/>
+    <circle cx="96" cy="81" r="3.2" fill="#2a1a0e"/>
+    <ellipse cx="88" cy="95" rx="7" ry="4.6" fill="#e0bd8f"/>
+    <path d="M82 100 Q88 103 94 100" fill="none" stroke="#3a2515" stroke-width="1.4" stroke-linecap="round"/>
+    <rect x="62" y="60" width="13" height="52" rx="6" fill="#a4703a" transform="rotate(-20 68 86)"/>
+    <circle cx="52" cy="52" r="10" fill="#d4d4d4"/>
+    <rect x="46" y="45" width="12" height="7" fill="#999999"/>
+    <path d="M42 48 L38 40 M62 48 L66 40" stroke="#ffffff" stroke-width="2"/>
+    <circle cx="52" cy="52" r="3" fill="#eeeeee" opacity="0.8"/>
   </svg>` },
     { caption: `Eventually settled down in Buffalo, New York. Great wings. Rough winters. Good place to write music.`, svg: `<svg viewBox="0 0 280 160" width="280" height="160">
-    <rect width="280" height="160" fill="#dceaf5"/>
-    <rect y="130" width="280" height="30" fill="#eef6fb"/>
-    <circle cx="40" cy="30" r="4" fill="#ffffff"/>
-    <circle cx="90" cy="18" r="3" fill="#ffffff"/>
-    <circle cx="220" cy="26" r="4" fill="#ffffff"/>
-    <circle cx="60" cy="60" r="2" fill="#ffffff"/>
-    <circle cx="200" cy="55" r="2.4" fill="#ffffff"/>
-    <rect x="90" y="90" width="100" height="50" fill="#b5451f"/>
-    <polygon points="80,90 200,90 140,55" fill="#5a2e13"/>
-    <rect x="120" y="105" width="18" height="35" fill="#5a3418"/>
-    <rect x="150" y="100" width="16" height="16" fill="#dceaf5" stroke="#5a3418" stroke-width="2"/>
-    <circle cx="70" cy="125" r="14" fill="#a4703a"/>
-    <circle cx="65" cy="120" r="2.4" fill="#2a1a0e"/>
-    <circle cx="75" cy="120" r="2.4" fill="#2a1a0e"/>
-    <ellipse cx="70" cy="130" rx="5" ry="3.5" fill="#e0bd8f"/>
-    <rect x="30" y="140" width="60" height="14" rx="2" fill="#ffffff" stroke="#999999" stroke-width="1"/>
-    <text x="60" y="150" text-anchor="middle" font-size="8" fill="#333333" font-family="Arial, sans-serif" font-weight="bold">BUFFALO, NY</text>
+    <defs>
+      <linearGradient id="s6sky" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#c9e2f2"/>
+        <stop offset="100%" stop-color="#eef6fb"/>
+      </linearGradient>
+      <linearGradient id="s6roof" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#6a3418"/>
+        <stop offset="100%" stop-color="#4a2410"/>
+      </linearGradient>
+      <linearGradient id="s6house" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#c8542a"/>
+        <stop offset="100%" stop-color="#9c3d1a"/>
+      </linearGradient>
+      <radialGradient id="s6bear" cx="42%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#c89a5e"/>
+        <stop offset="60%" stop-color="#a4703a"/>
+        <stop offset="100%" stop-color="#7a4f24"/>
+      </radialGradient>
+    </defs>
+    <rect width="280" height="160" fill="url(#s6sky)"/>
+    <rect y="128" width="280" height="32" fill="#f5fafd"/>
+    <circle cx="35" cy="28" r="4" fill="#ffffff"/>
+    <circle cx="85" cy="16" r="3" fill="#ffffff"/>
+    <circle cx="215" cy="24" r="4" fill="#ffffff"/>
+    <circle cx="55" cy="55" r="2" fill="#ffffff"/>
+    <circle cx="195" cy="50" r="2.4" fill="#ffffff"/>
+    <circle cx="245" cy="35" r="2.2" fill="#ffffff"/>
+    <path d="M20 130 Q35 118 50 130" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    <path d="M200 132 Q215 120 230 132" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    <rect x="88" y="88" width="104" height="52" fill="url(#s6house)"/>
+    <rect x="88" y="88" width="104" height="6" fill="#000000" opacity="0.15"/>
+    <polygon points="78,88 202,88 140,50" fill="url(#s6roof)"/>
+    <polygon points="78,88 202,88 140,50" fill="#ffffff" opacity="0.12"/>
+    <rect x="118" y="105" width="20" height="35" fill="#5a3418"/>
+    <rect x="122" y="109" width="12" height="12" fill="#dceaf5" stroke="#5a3418" stroke-width="1.5"/>
+    <rect x="146" y="98" width="18" height="18" fill="#ffd98a" stroke="#5a3418" stroke-width="2"/>
+    <path d="M146 98 L155 107 L164 98 M146 116 L155 107 L164 116" stroke="#5a3418" stroke-width="1.2"/>
+    <rect x="90" y="98" width="16" height="16" fill="#ffd98a" stroke="#5a3418" stroke-width="2"/>
+    <rect x="130" y="60" width="8" height="18" fill="#5a3418"/>
+    <ellipse cx="134" cy="58" rx="6" ry="4" fill="#cccccc" opacity="0.6"/>
+    <circle cx="72" cy="130" r="15" fill="url(#s6bear)"/>
+    <circle cx="66" cy="124" r="2.6" fill="#2a1a0e"/>
+    <circle cx="78" cy="124" r="2.6" fill="#2a1a0e"/>
+    <ellipse cx="72" cy="136" rx="5.5" ry="4" fill="#e0bd8f"/>
+    <path d="M66 141 Q72 144 78 141" fill="none" stroke="#3a2515" stroke-width="1.3" stroke-linecap="round"/>
+    <rect x="60" y="146" width="24" height="10" rx="2" fill="#c9503a"/>
+    <rect x="30" y="140" width="66" height="15" rx="2" fill="#ffffff" stroke="#999999" stroke-width="1"/>
+    <text x="63" y="151" text-anchor="middle" font-size="8.5" fill="#333333" font-family="Arial, sans-serif" font-weight="bold">BUFFALO, NY</text>
   </svg>` }
   ];
 
