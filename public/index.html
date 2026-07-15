@@ -2320,6 +2320,7 @@
     if (!file || !uploadTargetInputId) return;
     var targetInput = document.getElementById(uploadTargetInputId);
     var originalValue = targetInput.value;
+    var originalBg = targetInput.style.backgroundColor;
     targetInput.value = 'Uploading...';
     try {
       var formData = new FormData();
@@ -2337,6 +2338,13 @@
         preview.src = data.url;
         preview.style.display = 'inline-block';
       }
+      // Quick visible confirmation -- picking a file and having the field
+      // silently swap to a new /uploads/... path can look like nothing
+      // happened, especially when the new path looks similar to the old one.
+      targetInput.style.backgroundColor = '#d4f7d4';
+      setTimeout(function () {
+        targetInput.style.backgroundColor = originalBg;
+      }, 1200);
     } catch (err) {
       targetInput.value = originalValue;
       alert('Could not reach the server to upload.');
