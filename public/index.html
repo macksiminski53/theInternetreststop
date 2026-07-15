@@ -1559,6 +1559,27 @@
     margin-top: 1px;
   }
 
+  /* ===== TOP SIDEBAR (weather + visitor counter, next to the MK banner) ===== */
+  #topSidebar {
+    width: 200px;
+    vertical-align: top;
+    padding-left: 10px;
+  }
+  #topSidebar #weatherWidgetWrap {
+    margin: 0 0 8px;
+    display: block;
+  }
+  #topSidebar #weatherWidgetIcon {
+    font-size: 20px;
+  }
+  #topSidebar #visitorCounterWrap {
+    padding: 6px 0 2px;
+  }
+  #topSidebar .vcDigit {
+    font-size: 14px;
+    width: 13px;
+  }
+
   /* ===== EASTER EGGS ===== */
   @keyframes eggPartySpin {
     0% { filter: hue-rotate(0deg); }
@@ -1767,7 +1788,8 @@
     <a href="#">Contact</a>
   </div>
 </td></tr>
-<tr><td>
+<tr>
+  <td>
   <div class="mkBanner" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com');">
     <div class="mkBannerInner">
       <div class="mkLogoCircle"><img src="/mk-logo.png" alt="MK logo"></div>
@@ -1798,7 +1820,22 @@
       </div>
     </div>
   </div>
-</td></tr>
+  </td>
+  <td id="topSidebar">
+    <div id="weatherWidgetWrap">
+      <div id="weatherWidgetIcon">&#9728;&#65039;</div>
+      <div id="weatherWidgetBody">
+        <div id="weatherWidgetTitle">Rest Stop Weather Report</div>
+        <div id="weatherWidgetCondition">Loading...</div>
+        <div id="weatherWidgetDetail"></div>
+      </div>
+    </div>
+    <div id="visitorCounterWrap">
+      <div id="visitorCounterLabel">You are visitor number</div>
+      <div id="visitorCounterDigits"></div>
+    </div>
+  </td>
+</tr>
 <tr><td>
   <div class="adSlotWrap">
     <div class="adSlotLabel">Featured</div>
@@ -1921,22 +1958,7 @@
     <div id="guestbookEmpty" style="display:none;">No one has signed yet. Be the first!</div>
   </div>
 </td></tr>
-<tr><td>
-  <div id="weatherWidgetWrap">
-    <div id="weatherWidgetIcon">&#9728;&#65039;</div>
-    <div id="weatherWidgetBody">
-      <div id="weatherWidgetTitle">Rest Stop Weather Report</div>
-      <div id="weatherWidgetCondition">Loading...</div>
-      <div id="weatherWidgetDetail"></div>
-    </div>
-  </div>
-</td></tr>
-<tr><td>
-  <div id="visitorCounterWrap">
-    <div id="visitorCounterLabel">You are visitor number</div>
-    <div id="visitorCounterDigits"></div>
-  </div>
-</td></tr>
+
 <tr><td class="footerBar">
   &copy; 2026 The Internet Rest Stop &middot; live test build &middot; best viewed at 1024x768
 </td></tr>
