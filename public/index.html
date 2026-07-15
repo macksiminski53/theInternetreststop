@@ -1670,6 +1670,7 @@
     <a href="#fun">All Stops</a>
     <a href="#mystops" id="myStopsNavLink">My Stops</a>
     <a href="#" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com'); return false;">MK Chat</a>
+    <a href="#" id="randomSiteLink">&#127922; Random Stop!</a>
     <a href="#">About</a>
     <a href="#">Contact</a>
   </div>
@@ -2818,6 +2819,15 @@
     e.preventDefault();
     await fetch('/api/logout', { method: 'POST' });
     location.reload();
+  });
+
+  // ---------- RANDOM SITE (old-school webring "Random Site!" button) ----------
+  document.getElementById('randomSiteLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    var ids = Object.keys(CARDS_BY_ID);
+    if (ids.length === 0) return;
+    var pickId = ids[Math.floor(Math.random() * ids.length)];
+    openModal(pickId);
   });
 
   function enterSite(username, avatar) {
