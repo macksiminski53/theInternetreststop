@@ -1520,6 +1520,45 @@
   }
   .soundToggleBtn.soundOff { color: #888888; }
 
+  /* ===== JOKE WEATHER WIDGET ===== */
+  #weatherWidgetWrap {
+    background: #eaf4ff;
+    border: 1px solid #a9c9e8;
+    border-radius: 4px;
+    margin: 10px 0;
+    padding: 8px 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #weatherWidgetIcon {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  #weatherWidgetBody {
+    flex: 1;
+    min-width: 0;
+  }
+  #weatherWidgetTitle {
+    font-size: 10px;
+    color: #557a9e;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  #weatherWidgetCondition {
+    font-weight: bold;
+    color: #1a3c5e;
+  }
+  #weatherWidgetDetail {
+    color: #557a9e;
+    font-size: 11px;
+    margin-top: 1px;
+  }
+
   /* ===== EASTER EGGS ===== */
   @keyframes eggPartySpin {
     0% { filter: hue-rotate(0deg); }
@@ -1880,6 +1919,16 @@
     </form>
     <div id="guestbookEntries"></div>
     <div id="guestbookEmpty" style="display:none;">No one has signed yet. Be the first!</div>
+  </div>
+</td></tr>
+<tr><td>
+  <div id="weatherWidgetWrap">
+    <div id="weatherWidgetIcon">&#9728;&#65039;</div>
+    <div id="weatherWidgetBody">
+      <div id="weatherWidgetTitle">Rest Stop Weather Report</div>
+      <div id="weatherWidgetCondition">Loading...</div>
+      <div id="weatherWidgetDetail"></div>
+    </div>
   </div>
 </td></tr>
 <tr><td>
@@ -3634,6 +3683,34 @@
   loadThemeSelect();
   bumpVisitorCounter();
   loadGuestbook();
+
+  // ---------- JOKE WEATHER WIDGET ----------
+  var JOKE_WEATHER = [
+    { icon: '☀️', condition: '72°F and suspiciously calm', detail: 'Chance of Baby Markus wandering into frame: 40%' },
+    { icon: '🌧️', condition: '58°F, raining gently', detail: 'Perfect weather for a parking lot nap' },
+    { icon: '🌫️', condition: '64°F, mysterious fog', detail: 'Visibility: you can see the vending machine, barely' },
+    { icon: '🌩️', condition: '69°F, distant thunder', detail: 'Sounds like the ice machine again, probably' },
+    { icon: '❄️', condition: '31°F, light snow', detail: 'The rest stop coffee has never been more necessary' },
+    { icon: '🌈', condition: '75°F, a rainbow appeared', detail: 'No pot of gold, just a guy selling bootleg CDs' },
+    { icon: '🌪️', condition: '70°F, mild chaos', detail: 'A plastic bag achieved low earth orbit near pump 3' },
+    { icon: '☁️', condition: '66°F, overcast', detail: '100% chance of someone asking if the bathroom is free' },
+    { icon: '🔥', condition: '91°F, uncomfortably warm', detail: 'The asphalt is doing that wavy heat thing' },
+    { icon: '🌙', condition: '54°F, clear night sky', detail: 'Great stargazing, terrible truck-stop lighting' }
+  ];
+
+  function renderJokeWeather() {
+    var pick = JOKE_WEATHER[Math.floor(Math.random() * JOKE_WEATHER.length)];
+    var iconEl = document.getElementById('weatherWidgetIcon');
+    var condEl = document.getElementById('weatherWidgetCondition');
+    var detailEl = document.getElementById('weatherWidgetDetail');
+    if (!iconEl || !condEl || !detailEl) return;
+    iconEl.textContent = pick.icon;
+    condEl.textContent = pick.condition;
+    detailEl.textContent = pick.detail;
+  }
+
+  renderJokeWeather();
+  setInterval(renderJokeWeather, 15000);
 
 </script>
 
