@@ -1483,7 +1483,7 @@
       <div id="adminBannerFormError" style="color:#800000; font-size:11px; margin-top:6px;"></div>
       <div style="margin-top:10px; text-align:right;">
         <input type="button" value="Cancel" id="abfCancelBtn">
-        <input type="button" value="Save" id="abfSaveBtn">
+        <input type="button" value="Save" id="abfSaveBtn" style="font-weight:bold; background:#2e7d32; color:#ffffff; border-color:#1b5e20;">
       </div>
     </div>
   </div>
@@ -2392,6 +2392,12 @@
       mk_marquee_text: document.getElementById('abfMarqueeText').value,
       mk_logo_url: document.getElementById('abfLogoUrl').value
     };
+    // Temporary diagnostic logging while tracking down a report that the
+    // logo field reverts to the old /mk-logo.png default right after Save
+    // -- everything reads correct in the source, so the next real attempt
+    // needs to show what's actually being sent/received instead of more
+    // guessing. Safe to remove once confirmed.
+    console.log('[banner-save] sending payload:', payload);
     try {
       const res = await fetch('/api/settings', {
         method: 'PUT',
@@ -2399,6 +2405,7 @@
         body: JSON.stringify(payload)
       });
       const data = await res.json();
+      console.log('[banner-save] server responded:', res.status, data);
       if (!res.ok || !data.ok) {
         errorEl.textContent = data.error || 'Could not save banner settings.';
         return;
@@ -2406,6 +2413,7 @@
       applySiteSettings(data.settings);
       document.getElementById('adminBannerOverlay').style.display = 'none';
     } catch (err) {
+      console.log('[banner-save] fetch threw:', err);
       errorEl.textContent = 'Could not reach the server.';
     }
   });
