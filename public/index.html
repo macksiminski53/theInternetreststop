@@ -1560,10 +1560,19 @@
   }
 
   /* ===== TOP SIDEBAR (weather + visitor counter, next to the MK banner) ===== */
+  #mkBannerRow {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+  }
+  #mkBannerRow .mkBanner {
+    flex: 1;
+    min-width: 0;
+  }
   #topSidebar {
     width: 200px;
-    vertical-align: top;
-    padding-left: 10px;
+    flex-shrink: 0;
+    padding-top: 2px;
   }
   #topSidebar #weatherWidgetWrap {
     margin: 0 0 8px;
@@ -1578,6 +1587,10 @@
   #topSidebar .vcDigit {
     font-size: 14px;
     width: 13px;
+  }
+  @media (max-width: 720px) {
+    #mkBannerRow { flex-direction: column; }
+    #topSidebar { width: auto; }
   }
 
   /* ===== EASTER EGGS ===== */
@@ -1788,8 +1801,8 @@
     <a href="#">Contact</a>
   </div>
 </td></tr>
-<tr>
-  <td>
+<tr><td>
+  <div id="mkBannerRow">
   <div class="mkBanner" onclick="openModal('mk','MK','Browse','Online chatting better than discord???','Just now','42 times','980 times','/mk-screenshot-chat.png','https://mk-app-1.onrender.com');">
     <div class="mkBannerInner">
       <div class="mkLogoCircle"><img src="/mk-logo.png" alt="MK logo"></div>
@@ -1820,8 +1833,7 @@
       </div>
     </div>
   </div>
-  </td>
-  <td id="topSidebar">
+  <div id="topSidebar">
     <div id="weatherWidgetWrap">
       <div id="weatherWidgetIcon">&#9728;&#65039;</div>
       <div id="weatherWidgetBody">
@@ -1834,8 +1846,9 @@
       <div id="visitorCounterLabel">You are visitor number</div>
       <div id="visitorCounterDigits"></div>
     </div>
-  </td>
-</tr>
+  </div>
+  </div>
+</td></tr>
 <tr><td>
   <div class="adSlotWrap">
     <div class="adSlotLabel">Featured</div>
