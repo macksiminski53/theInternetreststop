@@ -2351,10 +2351,21 @@
     overlay.style.transformOrigin = originX + 'px ' + originY + 'px';
     overlay.classList.add('zooming');
     setTimeout(function () {
-      window.location.href = dest;
+      // Hand off from the zoom-in visual to the fake loading screen rather
+      // than navigating immediately -- the zoom already sold "diving into
+      // the field," the loader sells "now it's actually loading" (it
+      // isn't, but that's the bit).
+      if (window.RestStopLoader) {
+        window.RestStopLoader.show('Heading to baby-markus', function () {
+          window.location.href = dest;
+        });
+      } else {
+        window.location.href = dest;
+      }
     }, 650);
   });
 </script>
 
+<script src="/page-loader.js"></script>
 </body>
 </html>
