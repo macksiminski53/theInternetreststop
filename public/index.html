@@ -1520,6 +1520,49 @@
   }
   .soundToggleBtn.soundOff { color: #888888; }
 
+  /* ===== EASTER EGGS ===== */
+  @keyframes eggPartySpin {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+  body.eggPartyMode {
+    animation: eggPartySpin 1.2s linear infinite;
+  }
+  #eggConfettiLayer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+  }
+  .eggConfettiPiece {
+    position: absolute;
+    top: -30px;
+    font-size: 22px;
+    animation: eggConfettiFall linear forwards;
+  }
+  @keyframes eggConfettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0.9; }
+  }
+  #eggMarkusCameo {
+    position: fixed;
+    bottom: 10px;
+    left: -80px;
+    font-size: 40px;
+    z-index: 9999;
+    pointer-events: none;
+    animation: eggMarkusRun 4s linear forwards;
+  }
+  @keyframes eggMarkusRun {
+    0% { left: -80px; transform: scaleX(1); }
+    48% { transform: scaleX(1); }
+    50% { left: calc(100% + 80px); transform: scaleX(-1); }
+    50.01% { left: calc(100% + 80px); transform: scaleX(-1); }
+    98% { transform: scaleX(-1); }
+    100% { left: -80px; transform: scaleX(-1); }
+  }
+
   .vcDigit {
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
@@ -1625,6 +1668,8 @@
 </style>
 </head>
 <body>
+
+<div id="eggConfettiLayer"></div>
 
 <div id="loginScreen">
   <h2 id="loginTitle">Member Login</h2>
@@ -2836,6 +2881,89 @@
     if (ids.length === 0) return;
     var pickId = ids[Math.floor(Math.random() * ids.length)];
     openModal(pickId);
+  });
+
+  // ---------- EASTER EGGS ----------
+  // 1. Konami code: up up down down left right left right B A -- classic
+  //    "party mode" gag, no real function, just a fun surprise for anyone
+  //    who still remembers the code.
+  var KONAMI_SEQUENCE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+  var konamiProgress = 0;
+
+  var CONFETTI_EMOJI = ['🎉', '🎊', '✨', '🥳', '🍔', '🚗', '🧸'];
+
+  function spawnConfettiBurst() {
+    var layer = document.getElementById('eggConfettiLayer');
+    if (!layer) return;
+    for (var i = 0; i < 40; i++) {
+      (function () {
+        var piece = document.createElement('span');
+        piece.className = 'eggConfettiPiece';
+        piece.textContent = CONFETTI_EMOJI[Math.floor(Math.random() * CONFETTI_EMOJI.length)];
+        piece.style.left = (Math.random() * 100) + 'vw';
+        var duration = 2.5 + Math.random() * 2;
+        piece.style.animationDuration = duration + 's';
+        piece.style.animationDelay = (Math.random() * 1.2) + 's';
+        layer.appendChild(piece);
+        setTimeout(function () { piece.remove(); }, (duration + 1.5) * 1000);
+      })();
+    }
+  }
+
+  function triggerPartyMode() {
+    document.body.classList.add('eggPartyMode');
+    spawnConfettiBurst();
+    var banner = document.querySelector('.banner');
+    var originalBannerText = banner ? banner.textContent : null;
+    if (banner) banner.textContent = '🎉 PARTY MODE ACTIVATED 🎉 (you found the Konami code!)';
+    setTimeout(function () {
+      document.body.classList.remove('eggPartyMode');
+      if (banner && originalBannerText !== null) banner.textContent = originalBannerText;
+    }, 6000);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    var key = e.key;
+    var expected = KONAMI_SEQUENCE[konamiProgress];
+    var matches = (key === expected) || (key.toLowerCase() === expected);
+    if (matches) {
+      konamiProgress++;
+      if (konamiProgress === KONAMI_SEQUENCE.length) {
+        konamiProgress = 0;
+        triggerPartyMode();
+      }
+    } else {
+      konamiProgress = (key === KONAMI_SEQUENCE[0]) ? 1 : 0;
+    }
+  });
+
+  // 2. Secret word: type "markus" anywhere on the page (no search box needed,
+  //    same "just start typing" pattern as old Google easter eggs) and a tiny
+  //    Baby Markus cameo runs across the bottom of the screen.
+  var SECRET_WORD = 'markus';
+  var secretWordTyped = '';
+
+  function triggerMarkusCameo() {
+    var existing = document.getElementById('eggMarkusCameo');
+    if (existing) existing.remove();
+    var cameo = document.createElement('div');
+    cameo.id = 'eggMarkusCameo';
+    cameo.textContent = '🐻';
+    document.body.appendChild(cameo);
+    setTimeout(function () { cameo.remove(); }, 4100);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    // Ignore while typing in an actual form field so this doesn't fire while
+    // someone's just naming their pet or writing a guestbook entry.
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if (e.key.length !== 1) return;
+    secretWordTyped = (secretWordTyped + e.key.toLowerCase()).slice(-SECRET_WORD.length);
+    if (secretWordTyped === SECRET_WORD) {
+      secretWordTyped = '';
+      triggerMarkusCameo();
+    }
   });
 
   function enterSite(username, avatar) {
