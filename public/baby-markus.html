@@ -432,6 +432,104 @@
   }
   .bm-inventory-btn { display: block; width: 100%; margin-bottom: 6px; text-align: left; }
 
+  /* ===== BADGES ===== */
+  #bm-badges-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  #bm-badges-box {
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 6px;
+    width: 360px;
+    max-width: 92vw;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  #bm-badges-titlebar {
+    background: #000080;
+    color: #ffffff;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 13px;
+  }
+  #bm-badges-titlebar a { color: #ffffff; font-size: 11px; font-weight: normal; }
+  #bm-badges-progress {
+    padding: 8px 12px 0;
+    font-size: 11px;
+    color: #555555;
+  }
+  #bm-badges-list {
+    padding: 6px 12px 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .bm-badge {
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    padding: 8px 6px;
+    text-align: center;
+    font-size: 11px;
+    background: #f7f7f7;
+  }
+  .bm-badge.unlocked {
+    background: #fffbe6;
+    border-color: #d9b84a;
+  }
+  .bm-badge-icon {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 3px;
+    filter: grayscale(100%);
+    opacity: 0.35;
+  }
+  .bm-badge.unlocked .bm-badge-icon {
+    filter: none;
+    opacity: 1;
+  }
+  .bm-badge-name {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .bm-badge-desc {
+    color: #888888;
+    font-size: 10px;
+    display: block;
+  }
+  .bm-badge.unlocked .bm-badge-desc { color: #6b5a1e; }
+
+  #bm-badge-toast {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-140%);
+    background: #fffbe6;
+    border: 2px solid #d9b84a;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #6b5a1e;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    z-index: 200;
+    transition: transform 0.4s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #bm-badge-toast.show { transform: translateX(-50%) translateY(0); }
+  #bm-badge-toast .bm-badge-toast-icon { font-size: 20px; }
+
   /* ---------- Mini-games overlay ---------- */
   #bmg-overlay {
     display: none;
@@ -787,6 +885,7 @@
     <div class="bmActions">
       <input type="button" value="Shop" id="bm-shop-btn">
       <input type="button" value="Play Games" id="bm-games-btn">
+      <input type="button" value="Badges" id="bm-badges-btn">
       <span id="bm-coins-badge">&#129689; <span id="bm-coins">0</span> coins</span>
     </div>
   </div>
@@ -820,6 +919,19 @@
     </div>
   </div>
 </div>
+
+<div id="bm-badges-overlay">
+  <div id="bm-badges-box">
+    <div id="bm-badges-titlebar">
+      <span>Baby Markus's Badges</span>
+      <a href="#" id="bm-badges-close">Close X</a>
+    </div>
+    <div id="bm-badges-progress"></div>
+    <div id="bm-badges-list"></div>
+  </div>
+</div>
+
+<div id="bm-badge-toast"><span class="bm-badge-toast-icon"></span><span id="bm-badge-toast-text"></span></div>
 
 <script src="/page-loader.js"></script>
 <script src="/baby-markus-pet.js"></script>

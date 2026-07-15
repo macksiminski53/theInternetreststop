@@ -378,6 +378,66 @@
 
   var pet = loadPet();
 
+  // ---------- Achievements / Badges ----------
+  var BADGES = [
+    { key: 'first_steps', icon: '👣', name: 'First Steps', desc: 'Started caring for Baby Markus' },
+    { key: 'toddler', icon: '🍼', name: 'Growing Fast', desc: 'Grew into a Toddler' },
+    { key: 'kid', icon: '🎒', name: 'Big Kid', desc: 'Grew into a Kid' },
+    { key: 'tween', icon: '🎓', name: 'Almost Grown', desc: 'Grew into a Tween' },
+    { key: 'graduated', icon: '🏓', name: 'Off to College', desc: 'Graduated and headed to college' },
+    { key: 'shopper', icon: '🧸', name: 'First Toy', desc: 'Bought a toy from the shop' },
+    { key: 'well_fed', icon: '🍎', name: 'Well Fed', desc: 'Bought food from the shop' },
+    { key: 'squeaky_clean', icon: '🧽', name: 'Squeaky Clean', desc: 'Scrubbed 10 dirt spots' },
+    { key: 'big_spender', icon: '💸', name: 'Big Spender', desc: 'Spent 100 coins total' },
+    { key: 'coin_collector', icon: '🪙', name: 'Coin Collector', desc: 'Earned 100 coins total' },
+    { key: 'rich_kid', icon: '💰', name: 'Rich Kid', desc: 'Held 100 coins at once' },
+    { key: 'game_on', icon: '🎮', name: 'Game On', desc: 'Played a mini-game' },
+    { key: 'regular', icon: '📅', name: 'Regular Visitor', desc: 'Visited on 7 different days' }
+  ];
+
+  function ensureBadgeState() {
+    if (!Array.isArray(pet.badges)) pet.badges = [];
+    if (typeof pet.totalCoinsEarned !== 'number') pet.totalCoinsEarned = 0;
+    if (typeof pet.totalCoinsSpent !== 'number') pet.totalCoinsSpent = 0;
+    if (typeof pet.dirtScrubbedTotal !== 'number') pet.dirtScrubbedTotal = 0;
+    if (!Array.isArray(pet.visitDates)) pet.visitDates = [];
+  }
+
+  function unlockBadge(key, notifyFn) {
+    ensureBadgeState();
+    if (pet.badges.indexOf(key) !== -1) return;
+    pet.badges.push(key);
+    savePet();
+    var def = BADGES.filter(function (b) { return b.key === key; })[0];
+    if (def && notifyFn) notifyFn(def);
+  }
+
+  function recordVisitToday() {
+    ensureBadgeState();
+    var today = todayKey();
+    if (pet.visitDates.indexOf(today) === -1) {
+      pet.visitDates.push(today);
+      if (pet.visitDates.length > 60) pet.visitDates = pet.visitDates.slice(-60);
+      savePet();
+    }
+  }
+
+  function checkBadges(notifyFn) {
+    ensureBadgeState();
+    unlockBadge('first_steps', notifyFn);
+    if (pet.stage === 'toddler' || pet.stage === 'kid' || pet.stage === 'tween') unlockBadge('toddler', notifyFn);
+    if (pet.stage === 'kid' || pet.stage === 'tween') unlockBadge('kid', notifyFn);
+    if (pet.stage === 'tween') unlockBadge('tween', notifyFn);
+    if (pet.graduated) unlockBadge('graduated', notifyFn);
+    if (pet.ownedToys && pet.ownedToys.length > 0) unlockBadge('shopper', notifyFn);
+    if (pet.dirtScrubbedTotal >= 10) unlockBadge('squeaky_clean', notifyFn);
+    if (pet.totalCoinsSpent >= 100) unlockBadge('big_spender', notifyFn);
+    if (pet.totalCoinsEarned >= 100) unlockBadge('coin_collector', notifyFn);
+    if (pet.coins >= 100) unlockBadge('rich_kid', notifyFn);
+    if (pet.visitDates && pet.visitDates.length >= 7) unlockBadge('regular', notifyFn);
+  }
+
+
   function careScoreNow() {
     // Simple average of the three core stats -- a rough "how well is he
     // doing right now" number from 0-100, sampled once per day into
@@ -470,6 +530,8 @@
     pet.cleanliness = Math.min(100, pet.cleanliness + 12);
     pet.happiness = Math.min(100, pet.happiness + 2);
     if (pet.hasCold && pet.cleanliness > 70) pet.hasCold = false;
+    ensureBadgeState();
+    pet.dirtScrubbedTotal += 1;
     sampleCareForToday();
     savePet();
     return true;
@@ -477,6 +539,9 @@
 
   // ---------- Coins / shop ----------
   function addCoins(amount) {
+    ensureBadgeState();
+    if (amount > 0) pet.totalCoinsEarned += amount;
+    if (amount < 0) pet.totalCoinsSpent += -amount;
     pet.coins = Math.max(0, pet.coins + amount);
     savePet();
   }
@@ -485,7 +550,9 @@
     var item = SHOP_FOOD.filter(function (f) { return f.key === key; })[0];
     if (!item) return { ok: false, error: 'Unknown item.' };
     if (pet.coins < item.cost) return { ok: false, error: 'Not enough coins.' };
+    ensureBadgeState();
     pet.coins -= item.cost;
+    pet.totalCoinsSpent += item.cost;
     feedPet(item.hunger, item.happiness);
     return { ok: true, item: item };
   }
@@ -495,7 +562,9 @@
     if (!item) return { ok: false, error: 'Unknown item.' };
     if (pet.ownedToys.indexOf(key) !== -1) return { ok: false, error: 'Already owned.' };
     if (pet.coins < item.cost) return { ok: false, error: 'Not enough coins.' };
+    ensureBadgeState();
     pet.coins -= item.cost;
+    pet.totalCoinsSpent += item.cost;
     pet.ownedToys.push(key);
     savePet();
     return { ok: true, item: item };
@@ -686,6 +755,9 @@
     render();
     savePet(); // persist any x/y correction positionCreature() just made
 
+    recordVisitToday();
+    checkBadges(badgeToast);
+
     var collegeCard = document.getElementById('bm-college-card');
     var collegeIntro = document.getElementById('bm-college-intro');
     var collegeSub = document.getElementById('bm-college-sub');
@@ -762,6 +834,7 @@
     function sendToCollege() {
       pet.graduated = true;
       savePet();
+      checkBadges(badgeToast);
       if (wanderTimer) clearInterval(wanderTimer);
       isDragging = false;
 
@@ -917,6 +990,7 @@
           if (scrubDirt(id)) {
             notify('Scrubbing ' + pet.name + ' clean!');
             render();
+            checkBadges(badgeToast);
           }
         }
       }
@@ -954,6 +1028,7 @@
             notify('Fed ' + pet.name + ' a ' + item.label + '!');
             render();
             renderShop();
+            checkBadges(badgeToast);
           } else {
             notify(result.error);
           }
@@ -976,6 +1051,7 @@
             if (result.ok) {
               notify('Bought a ' + item.label + '!');
               renderShop();
+              checkBadges(badgeToast);
             } else {
               notify(result.error);
             }
@@ -1021,6 +1097,44 @@
       });
     });
 
+    // ---- Badges ----
+    function badgeToast(def) {
+      var toast = document.getElementById('bm-badge-toast');
+      var iconEl = toast.querySelector('.bm-badge-toast-icon');
+      var textEl = document.getElementById('bm-badge-toast-text');
+      iconEl.textContent = def.icon;
+      textEl.textContent = 'Badge unlocked: ' + def.name;
+      toast.classList.add('show');
+      clearTimeout(badgeToast._t);
+      badgeToast._t = setTimeout(function () { toast.classList.remove('show'); }, 3800);
+    }
+
+    function renderBadges() {
+      ensureBadgeState();
+      var list = document.getElementById('bm-badges-list');
+      var progress = document.getElementById('bm-badges-progress');
+      var unlockedCount = pet.badges.length;
+      progress.textContent = unlockedCount + ' of ' + BADGES.length + ' badges unlocked';
+      list.innerHTML = '';
+      BADGES.forEach(function (def) {
+        var unlocked = pet.badges.indexOf(def.key) !== -1;
+        var card = document.createElement('div');
+        card.className = 'bm-badge' + (unlocked ? ' unlocked' : '');
+        card.innerHTML = '<span class="bm-badge-icon">' + def.icon + '</span>' +
+          '<span class="bm-badge-name">' + def.name + '</span>' +
+          '<span class="bm-badge-desc">' + def.desc + '</span>';
+        list.appendChild(card);
+      });
+    }
+
+    document.getElementById('bm-badges-btn').addEventListener('click', function () {
+      renderBadges();
+      document.getElementById('bm-badges-overlay').style.display = 'flex';
+    });
+    document.getElementById('bm-badges-close').addEventListener('click', function () {
+      document.getElementById('bm-badges-overlay').style.display = 'none';
+    });
+
     // ---- Games menu ----
     document.getElementById('bm-games-btn').addEventListener('click', function () {
       window.BabyMarkusGames.open({
@@ -1028,6 +1142,8 @@
           addCoins(coinAmount);
           coinsEl.textContent = pet.coins;
           notify('Earned ' + coinAmount + ' coins!');
+          unlockBadge('game_on', badgeToast);
+          checkBadges(badgeToast);
         },
         getCoins: function () {
           return pet.coins;
@@ -1035,6 +1151,7 @@
         onSpend: function (coinAmount) {
           addCoins(-coinAmount);
           coinsEl.textContent = pet.coins;
+          checkBadges(badgeToast);
         }
       });
     });
@@ -1079,6 +1196,8 @@
       } else if (grown2) {
         notify(pet.name + ' grew into a ' + STAGE_LABELS[grown2] + '!');
       }
+      recordVisitToday();
+      checkBadges(badgeToast);
       render();
     }, 20000);
 
