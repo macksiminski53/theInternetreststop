@@ -1206,6 +1206,99 @@
     font-size: 11px;
     margin-bottom: 20px;
   }
+
+  /* =====================================================================
+     THEME: VISTA (Windows Vista Aero) -- admin-selectable via site_theme
+     setting, applied by adding data-theme="vista" to <html> at runtime.
+     Targets the highest-impact chrome (page background, header/title
+     bars, nav, section headers, sidebar headers, and all buttons) with
+     a glassy blue gradient + glossy top highlight + soft glow, rather
+     than repainting every single hardcoded color in the file. Default
+     ("classic") theme is untouched -- these rules only apply when the
+     data-theme attribute is present, so nothing changes unless an admin
+     picks this theme.
+     ===================================================================== */
+
+  html[data-theme="vista"] body {
+    background: linear-gradient(180deg, #b9d8f2 0%, #dce9f7 40%, #eef4fb 100%);
+    background-attachment: fixed;
+  }
+
+  html[data-theme="vista"] .headtable,
+  html[data-theme="vista"] .banner,
+  html[data-theme="vista"] .navbar,
+  html[data-theme="vista"] .sectionHead,
+  html[data-theme="vista"] td.sidebarCell h4,
+  html[data-theme="vista"] #loginScreen h2 {
+    background: linear-gradient(180deg, #7db9f2 0%, #4a8fd9 45%, #2a6bc4 46%, #1c53a8 100%);
+    border: 1px solid #0d3d82;
+    color: #ffffff;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Aero's signature glossy highlight -- a soft white sheen across the
+     top third of any "title bar" style element. */
+  html[data-theme="vista"] .headtable::before,
+  html[data-theme="vista"] .banner::before,
+  html[data-theme="vista"] .navbar::before,
+  html[data-theme="vista"] .sectionHead::before,
+  html[data-theme="vista"] td.sidebarCell h4::before,
+  html[data-theme="vista"] #loginScreen h2::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    height: 55%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.08) 100%);
+    pointer-events: none;
+  }
+
+  html[data-theme="vista"] .mainbody {
+    border: 1px solid #6a9fd8;
+    box-shadow: 0 0 14px rgba(58,120,201,0.35);
+    background: rgba(255,255,255,0.55);
+  }
+
+  html[data-theme="vista"] td.sidebarCell {
+    background: rgba(219,235,252,0.6);
+    border-right: 1px solid #a9c9ec;
+  }
+
+  html[data-theme="vista"] table.itemTable td {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid #a9c9ec;
+    border-radius: 4px;
+  }
+
+  html[data-theme="vista"] .footerBar {
+    background: rgba(219,235,252,0.6);
+  }
+
+  /* Aero-glass buttons: rounded, glossy, glowing on hover/focus like real
+     Vista chrome buttons rather than flat OS-default rectangles. */
+  html[data-theme="vista"] input[type="button"],
+  html[data-theme="vista"] input[type="submit"] {
+    background: linear-gradient(180deg, #f5f9fd 0%, #d9e8f9 45%, #b7d4f0 46%, #9dc3ea 100%);
+    border: 1px solid #6a9fd8;
+    border-radius: 5px;
+    color: #1a3a5c;
+    padding: 3px 10px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 1px 2px rgba(0,0,0,0.15);
+    cursor: pointer;
+  }
+
+  html[data-theme="vista"] input[type="button"]:hover,
+  html[data-theme="vista"] input[type="submit"]:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #e4f0fc 45%, #c3ddf5 46%, #a9d0f0 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 0 6px rgba(74,143,217,0.6);
+  }
+
+  html[data-theme="vista"] input[type="button"]:active,
+  html[data-theme="vista"] input[type="submit"]:active {
+    background: linear-gradient(180deg, #b7d4f0 0%, #d9e8f9 100%);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
+  }
 </style>
 </head>
 <body>
@@ -1409,6 +1502,10 @@
           <input type="button" value="Edit Site Banner" id="adminEditBannerBtn">
           <input type="button" value="Local Businesses" id="adminLocalBizBtn">
           <input type="button" value="Maintenance Mode: OFF" id="adminMaintenanceBtn" style="background:#e8e8e8;">
+          <select id="adminThemeSelect" style="font-size:11px; margin-left:4px;">
+            <option value="classic">Theme: Classic</option>
+            <option value="vista">Theme: Windows Vista</option>
+          </select>
         </div>
 
         <div class="sectionHead" id="mystops">My Stops</div>
@@ -2627,6 +2724,16 @@
         el.src = settings.mk_logo_url;
       });
     }
+    // 'classic' (or missing/unrecognized) means no data-theme attribute at
+    // all, which is the original look -- only known alternate themes get
+    // the attribute set, so an unrecognized value can't accidentally leave
+    // a stale theme applied.
+    var KNOWN_THEMES = ['vista'];
+    if (settings.site_theme && KNOWN_THEMES.indexOf(settings.site_theme) !== -1) {
+      document.documentElement.setAttribute('data-theme', settings.site_theme);
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
   }
 
   async function loadSiteSettings() {
@@ -2680,6 +2787,42 @@
           return;
         }
         updateMaintenanceBtn(turningOn);
+      } catch (err) {
+        alert('Could not reach the server.');
+      }
+    });
+  }
+
+  // ---------- THEME PICKER ----------
+  async function loadThemeSelect() {
+    var select = document.getElementById('adminThemeSelect');
+    if (!select) return;
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      var current = (data.ok && data.settings && data.settings.site_theme) || 'classic';
+      select.value = current;
+    } catch (err) {
+      // non-fatal -- dropdown just defaults to Classic if this fails
+    }
+  }
+
+  var themeSelectEl = document.getElementById('adminThemeSelect');
+  if (themeSelectEl) {
+    themeSelectEl.addEventListener('change', async function () {
+      var chosen = themeSelectEl.value;
+      try {
+        const res = await fetch('/api/settings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ site_theme: chosen })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          alert(data.error || 'Could not switch themes.');
+          return;
+        }
+        applySiteSettings(data.settings);
       } catch (err) {
         alert('Could not reach the server.');
       }
@@ -2910,6 +3053,7 @@
   loadSiteSettings();
   loadLocalBiz();
   loadMaintenanceStatus();
+  loadThemeSelect();
 
   // ---------- TORN CORNER ZOOM TRANSITION ----------
   // The torn corner now sits inline on the page (not a fixed viewport
