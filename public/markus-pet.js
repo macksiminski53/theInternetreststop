@@ -319,6 +319,7 @@
 
   function petSound(mood) {
     if (!mood) return;
+    if (window.SoundPrefs && !window.SoundPrefs.isEnabled()) return;
     var spec = MOOD_TONES[mood];
     if (!spec) return;
     try {

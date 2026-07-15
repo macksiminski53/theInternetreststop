@@ -43,6 +43,14 @@
     text-decoration: none;
   }
 
+  .soundToggleBtn {
+    font-size: 11px;
+    padding: 4px 10px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  .soundToggleBtn.soundOff { color: #888888; }
+
   .headerBar a.backLink {
     font-size: 11px;
   }
@@ -292,7 +300,10 @@
 <div class="banner">theinternetreststop.com &mdash; pull over and stretch your legs</div>
 <div class="headerBar">
   <a class="sitename" href="/">The Internet Rest Stop</a>
-  <a class="backLink" href="/">&larr; Back to the Rest Stop</a>
+  <span>
+    <input type="button" class="soundToggleBtn" data-sound-toggle value="Sound">
+    <a class="backLink" href="/">&larr; Back to the Rest Stop</a>
+  </span>
 </div>
 
 <div class="pageWrap">
@@ -422,6 +433,7 @@
 
 <div class="footerBar">&copy; 2026 The Internet Rest Stop &middot; live test build</div>
 
+<script src="/sound-prefs.js"></script>
 <script src="/page-loader.js"></script>
 <script src="/markus-pet.js"></script>
 </body>
