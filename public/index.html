@@ -1299,6 +1299,325 @@
     background: linear-gradient(180deg, #b7d4f0 0%, #d9e8f9 100%);
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
   }
+
+  /* =====================================================================
+     THEME: WIN10 (Windows 10 flat design) -- same selector targets as
+     the Vista theme above, opposite visual philosophy: no gradients, no
+     gloss, no glow. Flat solid colors, sharp/minimal corners, a single
+     accent blue (#0078D7, the actual Windows 10 default accent), and
+     Segoe-style system font stack. Reads as clean and modern next to
+     Vista's glassy skeuomorphism and Classic's beveled Windows 98 look.
+     ===================================================================== */
+
+  html[data-theme="win10"] body {
+    background: #f3f3f3;
+    font-family: "Segoe UI", "Segoe UI Historic", "Segoe UI Emoji", Tahoma, Arial, sans-serif;
+  }
+
+  html[data-theme="win10"] .headtable,
+  html[data-theme="win10"] .banner,
+  html[data-theme="win10"] .navbar,
+  html[data-theme="win10"] .sectionHead,
+  html[data-theme="win10"] td.sidebarCell h4,
+  html[data-theme="win10"] #loginScreen h2 {
+    background: #0078D7;
+    border: none;
+    color: #ffffff;
+    text-shadow: none;
+    border-radius: 0;
+  }
+
+  /* Explicitly cancel the Aero gloss-highlight pseudo-elements -- both
+     themes target the same base elements, so Win10 needs to actively
+     turn that effect off rather than just not defining it. */
+  html[data-theme="win10"] .headtable::before,
+  html[data-theme="win10"] .banner::before,
+  html[data-theme="win10"] .navbar::before,
+  html[data-theme="win10"] .sectionHead::before,
+  html[data-theme="win10"] td.sidebarCell h4::before,
+  html[data-theme="win10"] #loginScreen h2::before {
+    content: none;
+  }
+
+  html[data-theme="win10"] .mainbody {
+    border: 1px solid #d2d2d2;
+    box-shadow: none;
+    background: #ffffff;
+    border-radius: 0;
+  }
+
+  html[data-theme="win10"] td.sidebarCell {
+    background: #fafafa;
+    border-right: 1px solid #e1e1e1;
+  }
+
+  html[data-theme="win10"] table.itemTable td {
+    background: #ffffff;
+    border: 1px solid #e1e1e1;
+    border-radius: 0;
+  }
+
+  html[data-theme="win10"] .footerBar {
+    background: #fafafa;
+    color: #666666;
+  }
+
+  html[data-theme="win10"] a { color: #0078D7; }
+  html[data-theme="win10"] a:visited { color: #005A9E; }
+
+  /* Win10 flat buttons: solid fill, hard corners, a thin border that
+     just gets a slightly darker fill on hover -- no gloss, no gradient,
+     no shadow. This is the whole visual language of the era. */
+  html[data-theme="win10"] input[type="button"],
+  html[data-theme="win10"] input[type="submit"] {
+    background: #e1e1e1;
+    border: 1px solid #adadad;
+    border-radius: 0;
+    color: #000000;
+    padding: 4px 12px;
+    box-shadow: none;
+    cursor: pointer;
+  }
+
+  html[data-theme="win10"] input[type="button"]:hover,
+  html[data-theme="win10"] input[type="submit"]:hover {
+    background: #e5f1fb;
+    border-color: #0078D7;
+    box-shadow: none;
+  }
+
+  html[data-theme="win10"] input[type="button"]:active,
+  html[data-theme="win10"] input[type="submit"]:active {
+    background: #cce4f7;
+    border-color: #005A9E;
+    box-shadow: none;
+  }
+
+  /* =====================================================================
+     THEME: MODERN (clean modern-web minimal) -- lots of whitespace,
+     soft shadows instead of hard borders, muted neutral palette, rounded
+     cards, sans-serif everywhere. The opposite instinct of the retro
+     Windows themes: no chrome-y title bars at all, section headers just
+     become quiet labels with a colored underline instead of a filled bar.
+     ===================================================================== */
+
+  html[data-theme="modern"] body {
+    background: #fafafa;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #222222;
+  }
+
+  html[data-theme="modern"] .headtable,
+  html[data-theme="modern"] .banner,
+  html[data-theme="modern"] .navbar {
+    background: #ffffff;
+    border: none;
+    border-bottom: 1px solid #ececec;
+    color: #222222;
+    text-shadow: none;
+    border-radius: 0;
+  }
+
+  html[data-theme="modern"] .headtable::before,
+  html[data-theme="modern"] .banner::before,
+  html[data-theme="modern"] .navbar::before,
+  html[data-theme="modern"] .sectionHead::before,
+  html[data-theme="modern"] td.sidebarCell h4::before,
+  html[data-theme="modern"] #loginScreen h2::before {
+    content: none;
+  }
+
+  html[data-theme="modern"] .sitename {
+    color: #222222;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  html[data-theme="modern"] .navbar a {
+    color: #555555;
+  }
+
+  html[data-theme="modern"] .sectionHead {
+    background: transparent;
+    color: #222222;
+    border-bottom: 2px solid #6c5ce7;
+    padding: 4px 2px;
+    border-radius: 0;
+  }
+
+  html[data-theme="modern"] td.sidebarCell h4 {
+    background: transparent;
+    color: #6c5ce7;
+    border-bottom: 2px solid #6c5ce7;
+    padding: 2px;
+  }
+
+  html[data-theme="modern"] #loginScreen h2 {
+    background: #6c5ce7;
+    color: #ffffff;
+    border-radius: 8px 8px 0 0;
+  }
+
+  html[data-theme="modern"] .mainbody {
+    border: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    background: #ffffff;
+    border-radius: 8px;
+  }
+
+  html[data-theme="modern"] td.sidebarCell {
+    background: #ffffff;
+    border-right: 1px solid #ececec;
+  }
+
+  html[data-theme="modern"] table.itemTable td {
+    background: #ffffff;
+    border: 1px solid #ececec;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  html[data-theme="modern"] .footerBar {
+    background: #ffffff;
+    color: #999999;
+    border-top: 1px solid #ececec;
+  }
+
+  html[data-theme="modern"] a { color: #6c5ce7; }
+  html[data-theme="modern"] a:visited { color: #5341c9; }
+
+  /* Soft rounded buttons, subtle shadow instead of a hard bevel, a gentle
+     lift-and-darken on hover rather than a gloss sweep. */
+  html[data-theme="modern"] input[type="button"],
+  html[data-theme="modern"] input[type="submit"] {
+    background: #6c5ce7;
+    border: none;
+    border-radius: 20px;
+    color: #ffffff;
+    padding: 5px 16px;
+    box-shadow: 0 1px 3px rgba(108,92,231,0.4);
+    cursor: pointer;
+  }
+
+  html[data-theme="modern"] input[type="button"]:hover,
+  html[data-theme="modern"] input[type="submit"]:hover {
+    background: #5b4bd6;
+    box-shadow: 0 2px 6px rgba(108,92,231,0.5);
+  }
+
+  html[data-theme="modern"] input[type="button"]:active,
+  html[data-theme="modern"] input[type="submit"]:active {
+    background: #4c3ec4;
+    box-shadow: 0 1px 2px rgba(108,92,231,0.4);
+  }
+
+  /* =====================================================================
+     THEME: SKEU (heavy skeuomorphism, iOS-2010-era / early-2000s web
+     style) -- rich textures, deep drop shadows, glossy embossed buttons,
+     leather/wood-ish gradients standing in for actual photographic
+     textures (kept as CSS gradients rather than image assets so this
+     theme doesn't depend on new files existing). The most maximalist of
+     the four themes on purpose -- it's meant to feel tactile and a
+     little over-the-top next to Modern's restraint.
+     ===================================================================== */
+
+  html[data-theme="skeu"] body {
+    background: linear-gradient(180deg, #3e2b1f 0%, #2a1c13 100%);
+  }
+
+  html[data-theme="skeu"] .headtable,
+  html[data-theme="skeu"] .banner,
+  html[data-theme="skeu"] .navbar,
+  html[data-theme="skeu"] .sectionHead,
+  html[data-theme="skeu"] td.sidebarCell h4,
+  html[data-theme="skeu"] #loginScreen h2 {
+    background: linear-gradient(180deg, #8a5a2e 0%, #6b431f 45%, #5a3717 46%, #3f2711 100%);
+    border: 1px solid #2a1a0c;
+    color: #f5e6c8;
+    text-shadow: 0 -1px 1px rgba(0,0,0,0.6), 0 1px 0 rgba(255,220,160,0.15);
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(255,220,160,0.3), 0 3px 6px rgba(0,0,0,0.5);
+  }
+
+  html[data-theme="skeu"] .headtable::before,
+  html[data-theme="skeu"] .banner::before,
+  html[data-theme="skeu"] .navbar::before,
+  html[data-theme="skeu"] .sectionHead::before,
+  html[data-theme="skeu"] td.sidebarCell h4::before,
+  html[data-theme="skeu"] #loginScreen h2::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    height: 45%;
+    background: linear-gradient(180deg, rgba(255,220,160,0.35) 0%, rgba(255,220,160,0.02) 100%);
+    pointer-events: none;
+  }
+
+  html[data-theme="skeu"] .sitename {
+    color: #f5e6c8;
+    text-shadow: 0 -1px 1px rgba(0,0,0,0.7), 0 1px 0 rgba(255,220,160,0.2);
+  }
+
+  html[data-theme="skeu"] .navbar a {
+    color: #f5e6c8;
+  }
+
+  html[data-theme="skeu"] .mainbody {
+    border: 1px solid #1a0f07;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+    background: linear-gradient(180deg, #f7f0e2 0%, #eee2cc 100%);
+    border-radius: 6px;
+  }
+
+  html[data-theme="skeu"] td.sidebarCell {
+    background: linear-gradient(180deg, #ece0c8 0%, #ddcda8 100%);
+    border-right: 1px solid #c9b688;
+  }
+
+  html[data-theme="skeu"] table.itemTable td {
+    background: linear-gradient(180deg, #fffdf7 0%, #f3ead4 100%);
+    border: 1px solid #d4c19a;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(80,55,20,0.25), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+
+  html[data-theme="skeu"] .footerBar {
+    background: linear-gradient(180deg, #ddcda8 0%, #c9b688 100%);
+    color: #4a3418;
+  }
+
+  html[data-theme="skeu"] a { color: #6b431f; }
+  html[data-theme="skeu"] a:visited { color: #4a2e12; }
+
+  /* Deep, glossy, physically-pressable-looking buttons -- strong bevel,
+     heavy shadow, a distinct pressed-in state on :active rather than
+     just a color swap. This is the whole point of skeuomorphism: the
+     button should look like an object, not a flat rectangle. */
+  html[data-theme="skeu"] input[type="button"],
+  html[data-theme="skeu"] input[type="submit"] {
+    background: linear-gradient(180deg, #ffe9b8 0%, #ecc477 30%, #d9a441 45%, #b9822a 46%, #8a5f1c 100%);
+    border: 1px solid #5a3d12;
+    border-radius: 6px;
+    color: #3a2408;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    padding: 4px 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 3px 6px rgba(0,0,0,0.4);
+    cursor: pointer;
+  }
+
+  html[data-theme="skeu"] input[type="button"]:hover,
+  html[data-theme="skeu"] input[type="submit"]:hover {
+    background: linear-gradient(180deg, #fff2cc 0%, #eac264 45%, #dcae54 46%, #9c7226 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 4px 8px rgba(0,0,0,0.5);
+  }
+
+  html[data-theme="skeu"] input[type="button"]:active,
+  html[data-theme="skeu"] input[type="submit"]:active {
+    background: linear-gradient(180deg, #b9822a 0%, #d9a441 100%);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+  }
 </style>
 </head>
 <body>
@@ -1505,6 +1824,9 @@
           <select id="adminThemeSelect" style="font-size:11px; margin-left:4px;">
             <option value="classic">Theme: Classic</option>
             <option value="vista">Theme: Windows Vista</option>
+            <option value="win10">Theme: Windows 10</option>
+            <option value="modern">Theme: Modern Minimal</option>
+            <option value="skeu">Theme: Skeuomorphic</option>
           </select>
         </div>
 
@@ -2728,7 +3050,7 @@
     // all, which is the original look -- only known alternate themes get
     // the attribute set, so an unrecognized value can't accidentally leave
     // a stale theme applied.
-    var KNOWN_THEMES = ['vista'];
+    var KNOWN_THEMES = ['vista', 'win10', 'modern', 'skeu'];
     if (settings.site_theme && KNOWN_THEMES.indexOf(settings.site_theme) !== -1) {
       document.documentElement.setAttribute('data-theme', settings.site_theme);
     } else {
