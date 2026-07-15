@@ -10,132 +10,6 @@
     max-width: 100%;
   }
 
-  /* ===== TORN CORNER -> MARKUS'S FIELD (small corner tear, sitting in the
-     blank gap between the Featured carousel and the news ticker) ===== */
-  .tornCornerWrap {
-    position: relative;
-    height: 130px;
-    background: #EFEFEF;
-    border-bottom: 1px solid #999999;
-  }
-
-  #tornCornerLink {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    display: block;
-    width: 150px;
-    height: 110px;
-    text-decoration: none;
-    cursor: pointer;
-    overflow: hidden;
-  }
-
-  #tornCornerPaper {
-    position: absolute;
-    inset: 0;
-    background: #ffffff;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-  }
-
-  /* A slightly darker, offset copy of the same jagged edge sitting just
-     under the field layer -- reads as the shadowed, frayed underside of
-     the torn paper lip instead of a clean cut. */
-  #tornCornerShadow {
-    position: absolute;
-    inset: 0;
-    top: 3px;
-    left: 3px;
-    background: rgba(0,0,0,0.22);
-    clip-path: polygon(
-      100% 100%, 100% 0%, 82% 8%, 70% 2%, 60% 12%, 48% 4%,
-      38% 16%, 26% 6%, 16% 18%, 6% 8%, 0% 16%, 0% 100%
-    );
-  }
-
-  #tornCornerField {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, #8fd3f4 0%, #8fd3f4 35%, #6cc96a 35%, #4caf50 100%);
-    overflow: hidden;
-    /* Torn-off top-left corner of the paper, revealing the field peeking
-       out underneath -- irregular jagged edge, not a straight diagonal. */
-    clip-path: polygon(
-      100% 100%, 100% 0%, 84% 5%, 72% 0%, 62% 9%, 50% 2%,
-      40% 13%, 28% 3%, 18% 15%, 8% 5%, 0% 13%, 0% 100%
-    );
-  }
-
-  #tornCornerLink:hover #tornCornerField {
-    background: linear-gradient(180deg, #a8e0fa 0%, #a8e0fa 35%, #7bd979 35%, #58bb5c 100%);
-  }
-
-  .tcCloud {
-    position: absolute;
-    background: #ffffff;
-    border-radius: 50%;
-    opacity: 0.85;
-  }
-  .tcCloud1 { width: 26px; height: 12px; top: 30px; left: 16px; }
-  .tcCloud2 { width: 18px; height: 9px; top: 40px; left: 55px; }
-
-  .tcMarkusPeek {
-    position: absolute;
-    bottom: 14px;
-    right: 12px;
-    animation: tcBob 2.6s ease-in-out infinite;
-  }
-
-  @keyframes tcBob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-  }
-
-  #tornCornerLabel {
-    position: absolute;
-    bottom: 6px;
-    left: 10px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 10px;
-    font-weight: bold;
-    color: #ffffff;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-    pointer-events: none;
-  }
-
-  /* ===== ZOOM-IN TRANSITION (corner rip -> full screen -> navigate) ===== */
-  #zoomTransitionOverlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: linear-gradient(180deg, #8fd3f4 0%, #8fd3f4 35%, #6cc96a 35%, #4caf50 100%);
-    pointer-events: none;
-  }
-
-  #zoomTransitionOverlay.zooming {
-    display: block;
-    animation: zoomIntoField 0.7s ease-in forwards;
-  }
-
-  #zoomTransitionOverlay .ztCloud {
-    position: absolute;
-    background: #ffffff;
-    border-radius: 50%;
-    opacity: 0.9;
-  }
-
-  @keyframes zoomIntoField {
-    0% {
-      clip-path: polygon(100% 100%, 100% 0%, 84% 5%, 72% 0%, 62% 9%, 50% 2%, 40% 13%, 28% 3%, 18% 15%, 8% 5%, 0% 13%, 0% 100%);
-      transform: scale(1);
-    }
-    100% {
-      clip-path: polygon(100% 100%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 0% 0%, 0% 100%);
-      transform: scale(8);
-    }
-  }
-
   body {
     margin: 0;
     background: #ffffff;
@@ -1618,6 +1492,38 @@
     background: linear-gradient(180deg, #b9822a 0%, #d9a441 100%);
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
   }
+
+  /* ===== RETRO VISITOR COUNTER (the "you are visitor #004213" gag) ===== */
+  #visitorCounterWrap {
+    text-align: center;
+    padding: 10px 0 4px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  #visitorCounterLabel {
+    font-size: 10px;
+    color: #666666;
+    margin-bottom: 4px;
+  }
+
+  #visitorCounterDigits {
+    display: inline-flex;
+    background: #000000;
+    padding: 4px 6px;
+    border: 2px inset #888888;
+  }
+
+  .vcDigit {
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    font-size: 18px;
+    color: #00ff00;
+    background: #001a00;
+    width: 16px;
+    text-align: center;
+    margin: 0 1px;
+    text-shadow: 0 0 4px #00ff00;
+  }
 </style>
 </head>
 <body>
@@ -1748,33 +1654,6 @@
   </div>
 </td></tr>
 <tr><td>
-  <div class="tornCornerWrap">
-    <a href="/baby-markus.html" id="tornCornerLink" title="Go raise Baby Markus">
-      <div id="tornCornerPaper"></div>
-      <div id="tornCornerShadow"></div>
-      <div id="tornCornerField">
-        <div class="tcCloud tcCloud1"></div>
-        <div class="tcCloud tcCloud2"></div>
-        <div class="tcMarkusPeek">
-          <svg viewBox="0 0 140 140" width="52" height="52">
-            <circle cx="38" cy="34" r="16" fill="#8a5a2b"/>
-            <circle cx="102" cy="34" r="16" fill="#8a5a2b"/>
-            <circle cx="38" cy="34" r="8" fill="#b3814f"/>
-            <circle cx="102" cy="34" r="8" fill="#b3814f"/>
-            <ellipse cx="70" cy="72" rx="46" ry="42" fill="#8a5a2b"/>
-            <ellipse cx="70" cy="88" rx="24" ry="18" fill="#d9b183"/>
-            <ellipse cx="70" cy="80" rx="7" ry="5" fill="#2a1a0e"/>
-            <path d="M 58 96 Q 70 104 82 96" fill="none" stroke="#2a1a0e" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="48" cy="63" r="2.5" fill="#2a1a0e"/>
-            <circle cx="92" cy="63" r="2.5" fill="#2a1a0e"/>
-          </svg>
-        </div>
-      </div>
-      <div id="tornCornerLabel">raise baby markus</div>
-    </a>
-  </div>
-</td></tr>
-<tr><td>
   <div class="newsTicker">
     <span class="newsTickerLabel">Verified News</span>
     <div class="newsTickerViewport">
@@ -1842,6 +1721,12 @@
 </td></tr>
 <tr><td>
   <div id="footerLocalBizStrip"></div>
+</td></tr>
+<tr><td>
+  <div id="visitorCounterWrap">
+    <div id="visitorCounterLabel">You are visitor number</div>
+    <div id="visitorCounterDigits"></div>
+  </div>
 </td></tr>
 <tr><td class="footerBar">
   &copy; 2026 The Internet Rest Stop &middot; live test build &middot; best viewed at 1024x768
@@ -2022,11 +1907,6 @@
 
 </div>
 
-<div id="zoomTransitionOverlay">
-  <div class="ztCloud" style="width:80px; height:34px; top:10%; left:15%;"></div>
-  <div class="ztCloud" style="width:60px; height:26px; top:22%; left:60%;"></div>
-  <div class="ztCloud" style="width:100px; height:40px; top:6%; left:70%;"></div>
-</div>
 
 <script>
   var presenceColorKeys = ["mp-traveler","mp-trucker","mp-raccoon","mp-robot","mp-ghost","mp-cat","mp-alien","mp-cowboy","mp-rand1","mp-rand2","mp-rand3","mp-rand4"];
@@ -3370,60 +3250,38 @@
     }
   });
 
+  // ---------- VISITOR COUNTER (retro odometer) ----------
+  function renderVisitorCounter(count) {
+    var wrap = document.getElementById('visitorCounterDigits');
+    if (!wrap) return;
+    var padded = String(count).padStart(6, '0');
+    wrap.innerHTML = '';
+    padded.split('').forEach(function (digit) {
+      var span = document.createElement('span');
+      span.className = 'vcDigit';
+      span.textContent = digit;
+      wrap.appendChild(span);
+    });
+  }
+
+  async function bumpVisitorCounter() {
+    try {
+      const res = await fetch('/api/visitor-counter/increment', { method: 'POST' });
+      const data = await res.json();
+      if (data.ok) renderVisitorCounter(data.count);
+    } catch (err) {
+      // non-fatal -- this is a purely cosmetic feature
+    }
+  }
+
   loadCards();
   loadAdminStatus();
   loadSiteSettings();
   loadLocalBiz();
   loadMaintenanceStatus();
   loadThemeSelect();
+  bumpVisitorCounter();
 
-  // ---------- TORN CORNER ZOOM TRANSITION ----------
-  // The torn corner now sits inline on the page (not a fixed viewport
-  // corner), so the zoom-in overlay's transform-origin has to match
-  // wherever the element actually is, or the animation looks like it's
-  // exploding out of the bottom-right of the screen instead of out of
-  // the tear the person just clicked.
-  document.getElementById('tornCornerLink').addEventListener('click', function (e) {
-    e.preventDefault();
-    var dest = this.href;
-    var rect = this.getBoundingClientRect();
-    var originX = rect.left + rect.width / 2;
-    var originY = rect.top + rect.height / 2;
-    var overlay = document.getElementById('zoomTransitionOverlay');
-    overlay.style.transformOrigin = originX + 'px ' + originY + 'px';
-    overlay.classList.add('zooming');
-
-    // Safety net: if anything in the loader hand-off below breaks (loader
-    // script failed to load, threw partway through its animation loop,
-    // etc.) the zoom overlay's `forwards` fill-mode leaves a solid green
-    // screen covering everything with no way off it. This guarantees the
-    // actual navigation happens no matter what, even if the fancy
-    // transition misbehaves -- whichever fires first wins, and the
-    // duplicate is harmless since navigating away cancels the other timer.
-    var navigated = false;
-    function goNow() {
-      if (navigated) return;
-      navigated = true;
-      window.location.href = dest;
-    }
-    setTimeout(goNow, 2500);
-
-    setTimeout(function () {
-      // Hand off from the zoom-in visual to the fake loading screen rather
-      // than navigating immediately -- the zoom already sold "diving into
-      // the field," the loader sells "now it's actually loading" (it
-      // isn't, but that's the bit).
-      try {
-        if (window.RestStopLoader) {
-          window.RestStopLoader.show('Heading to baby-markus', goNow);
-        } else {
-          goNow();
-        }
-      } catch (err) {
-        goNow();
-      }
-    }, 650);
-  });
 </script>
 
 <script src="/page-loader.js"></script>

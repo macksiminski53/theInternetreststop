@@ -106,3 +106,31 @@ CREATE TABLE IF NOT EXISTS local_biz_ads (
 );
 
 CREATE INDEX IF NOT EXISTS idx_local_biz_ads_sort ON local_biz_ads(sort_order);
+
+-- Purely cosmetic retro visitor counter -- a single row that gets
+-- incremented on each homepage load. Real count, not faked, but with no
+-- illusions about it being meaningful -- it's the "you are visitor
+-- #004213" gag done for real. Seeded with a nonzero starting number so
+-- it doesn't look broken/empty on day one.
+CREATE TABLE IF NOT EXISTS visitor_counter (
+  id INTEGER PRIMARY KEY DEFAULT 1,
+  count BIGINT NOT NULL DEFAULT 0,
+  CONSTRAINT single_row CHECK (id = 1)
+);
+
+INSERT INTO visitor_counter (id, count) VALUES (1, 4213)
+ON CONFLICT (id) DO NOTHING;
+
+-- Guestbook -- classic early-2000s "sign my guestbook" wall. Only logged
+-- in users can sign (keeps it from being an open spam target), message
+-- capped at a friendly length so the wall doesn't get one entry that's
+-- an entire novel.
+CREATE TABLE IF NOT EXISTS guestbook_entries (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  username VARCHAR(50) NOT NULL,
+  message VARCHAR(500) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_guestbook_created ON guestbook_entries(created_at DESC);

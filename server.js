@@ -14,6 +14,7 @@ const cardRoutes = require('./routes/cards');
 const settingsRoutes = require('./routes/settings');
 const uploadRoutes = require('./routes/upload');
 const localBizRoutes = require('./routes/local-biz');
+const communityRoutes = require('./routes/community');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -119,6 +120,7 @@ app.use('/api', cardRoutes);
 app.use('/api', settingsRoutes);
 app.use('/api', uploadRoutes);
 app.use('/api', localBizRoutes);
+app.use('/api', communityRoutes);
 
 app.get('/healthz', (req, res) => res.send('ok'));
 
