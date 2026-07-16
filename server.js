@@ -6,6 +6,8 @@ const express = require('express');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 
+const rateLimit = require('express-rate-limit');
+
 const pool = require('./db');
 const authRoutes = require('./routes/auth');
 const linkRoutes = require('./routes/links');
@@ -112,6 +114,30 @@ async function maintenanceGate(req, res, next) {
 app.use(maintenanceGate);
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Rate limits: brute-force login/register attempts and guestbook spam are
+// the two realistic abuse paths on a site this size, so those get their own
+// tighter limits rather than one blanket rule for all of /api -- everything
+// else (browsing cards, reading the guestbook, etc) stays unlimited.
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many attempts. Please wait a few minutes and try again.' }
+});
+
+const guestbookPostLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Slow down a bit -- you can sign the guestbook again in a few minutes.' }
+});
+
+app.use('/api/login', authLimiter);
+app.use('/api/register', authLimiter);
+app.post('/api/guestbook', guestbookPostLimiter);
 
 app.use('/api', authRoutes);
 app.use('/api', linkRoutes);
