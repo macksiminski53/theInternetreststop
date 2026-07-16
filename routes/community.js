@@ -3,6 +3,22 @@ const pool = require('../db');
 
 const router = express.Router();
 
+async function requireAdmin(req, res, next) {
+  if (!req.session || !req.session.userId) {
+    return res.status(401).json({ error: 'You need to be logged in for that.' });
+  }
+  try {
+    const result = await pool.query('SELECT is_admin FROM users WHERE id = $1', [req.session.userId]);
+    if (result.rows.length === 0 || !result.rows[0].is_admin) {
+      return res.status(403).json({ error: 'Admins only.' });
+    }
+    next();
+  } catch (err) {
+    console.error('Admin check error:', err);
+    res.status(500).json({ error: 'Could not verify admin status.' });
+  }
+}
+
 // ---------- VISITOR COUNTER ----------
 // Purely cosmetic retro touch -- a real, atomically-incrementing count,
 // bumped once per homepage load. No auth needed, this isn't sensitive data,
@@ -88,6 +104,27 @@ router.post('/guestbook', async (req, res) => {
   } catch (err) {
     console.error('Sign guestbook error:', err);
     res.status(500).json({ error: 'Could not sign the guestbook.' });
+  }
+});
+
+// DELETE /api/guestbook/:id - remove a single entry (admin only, for basic
+// moderation -- there's no self-delete for regular users on purpose, since
+// this is meant for removing spam/abuse rather than letting people edit
+// their own history after the fact).
+router.delete('/guestbook/:id', requireAdmin, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ error: 'Invalid entry id.' });
+  }
+  try {
+    const result = await pool.query('DELETE FROM guestbook_entries WHERE id = $1 RETURNING id', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Entry not found.' });
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Delete guestbook entry error:', err);
+    res.status(500).json({ error: 'Could not delete entry.' });
   }
 });
 

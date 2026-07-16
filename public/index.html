@@ -1738,6 +1738,15 @@
     padding: 6px 0;
     text-align: center;
   }
+  .gbDeleteBtn {
+    background: none;
+    border: none;
+    color: #cc0000;
+    font-size: 10px;
+    cursor: pointer;
+    padding: 0 0 0 8px;
+    text-decoration: underline;
+  }
 </style>
 </head>
 <body>
@@ -3242,6 +3251,7 @@
       isAdminUser = !!data.isAdmin;
       document.getElementById('adminAddCardWrap').style.display = isAdminUser ? 'block' : 'none';
       if (isAdminUser) loadCards(); // re-render with Edit links visible
+      if (isAdminUser) loadGuestbook(); // re-render with delete buttons visible
     } catch (err) {
       // non-fatal
     }
@@ -3650,6 +3660,15 @@
       head.appendChild(user);
       head.appendChild(time);
 
+      if (isAdminUser) {
+        var delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'gbDeleteBtn';
+        delBtn.textContent = 'delete';
+        delBtn.addEventListener('click', function () { deleteGuestbookEntry(entry.id); });
+        head.appendChild(delBtn);
+      }
+
       var msg = document.createElement('div');
       msg.className = 'gbEntryMsg';
       msg.textContent = entry.message;
@@ -3658,6 +3677,21 @@
       row.appendChild(msg);
       list.appendChild(row);
     });
+  }
+
+  async function deleteGuestbookEntry(id) {
+    if (!confirm('Delete this guestbook entry?')) return;
+    try {
+      const res = await fetch('/api/guestbook/' + encodeURIComponent(id), { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        alert(data.error || 'Could not delete entry.');
+        return;
+      }
+      loadGuestbook();
+    } catch (err) {
+      alert('Could not reach the server.');
+    }
   }
 
   async function loadGuestbook() {
